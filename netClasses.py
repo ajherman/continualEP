@@ -715,6 +715,7 @@ class EPcont(nn.Module):
 
 class EPdisc(nn.Module):
     def __init__(self, args):
+        print("Using EP disc class")
         super(EPdisc, self).__init__()
 
 
@@ -760,6 +761,7 @@ class EPdisc(nn.Module):
         self = self.to(device)
 
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
+        print("Using this stepper fn")
         dsdt = []
         dsdt.append(-s[0] + rho(self.w[0](s[1])))
         if np.abs(beta) > 0:
