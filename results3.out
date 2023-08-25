@@ -1,4 +1,21 @@
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using EP disc class
+Using this stepper fn
 Traceback (most recent call last):
-  File "/vast/home/ajherman/continualEP/main.py", line 2, in <module>
-    import torchvision.datasets as datasets
-ModuleNotFoundError: No module named 'torchvision'
+  File "/vast/home/ajherman/continualEP/main.py", line 288, in <module>
+    error_train = train(net, train_loader, epoch, args.learning_rule)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netFunctions.py", line 32, in train
+    s = net.forward(data, s)
+        ^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netClasses.py", line 824, in forward
+    s = self.stepper(data, s)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netClasses.py", line 765, in stepper
+    print(rho(0.5))
+          ^^^^^^^^
+  File "/vast/home/ajherman/continualEP/main.py", line 189, in rho
+    return 1/(1+torch.exp(-(4*(x-0.5))))
+                ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: exp(): argument 'input' (position 1) must be Tensor, not float
