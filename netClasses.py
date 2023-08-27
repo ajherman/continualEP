@@ -24,6 +24,7 @@ class VFcont(nn.Module):
         self.ns = len(args.size_tab) - 1
         self.nsyn = 2*(self.ns - 1) + 1
         self.cep = args.cep
+        self.use_bias = args.use_bias
 
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
@@ -39,9 +40,8 @@ class VFcont(nn.Module):
         w = nn.ModuleList([])
 
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
-            w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False))
-
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = self.use_bias))
+            w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False)) # Why default bias = False???
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
 
         #By default, reciprocal weights have the same initial values
@@ -240,12 +240,12 @@ class VFcont(nn.Module):
         for i in range(self.ns - 1):
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
-            gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
-            gradw_bias.append(None)
-
+            if self.use_ bias:
+                gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+                gradw_bias.append(None)
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
-        gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
-
+        if self.use_bias:
+            gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
         return  gradw, gradw_bias
 
@@ -283,6 +283,7 @@ class VFdisc(nn.Module):
             self.cuda = False
         self.device = device
         self.beta = args.beta
+        self.use_bias = args.use_bias
 
 
         #*********RANDOM BETA*********#
@@ -291,7 +292,7 @@ class VFdisc(nn.Module):
 
         w = nn.ModuleList([])
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = self.use_bias))
             w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False))
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
@@ -492,12 +493,13 @@ class VFdisc(nn.Module):
 
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]))
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), seq[i]))
-            gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
-
-            gradw_bias.append(None)
+            if self.use_bias:
+                gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+                gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
-        gradw_bias.append(None)
+        if self.use_bias:
+            gradw_bias.append(None)
 
         return  gradw, gradw_bias
 
@@ -532,11 +534,12 @@ class EPcont(nn.Module):
         self.device = device
         self.no_clamp = args.no_clamp
         self.beta = args.beta
+        self.use_bias = args.use_bias
 
         w = nn.ModuleList([])
         for i in range(self.ns - 1):
 
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = self.use_bias))
             w.append(None)
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
@@ -694,11 +697,13 @@ class EPcont(nn.Module):
         for i in range(self.ns - 1):
             gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
             gradw.append(None)
-            gradw_bias.append((1/(beta*batch_size))*(rho(s[i]) - rho(seq[i])).sum(0))
-            gradw_bias.append(None)
+            if self.use_bias:
+                gradw_bias.append((1/(beta*batch_size))*(rho(s[i]) - rho(seq[i])).sum(0))
+                gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-1]) - rho(seq[-1]), 0, 1), rho(data)))
-        gradw_bias.append((1/(beta*batch_size))*(rho(s[-1]) - rho(seq[-1])).sum(0))
+        if self.use_bias:
+            gradw_bias.append((1/(beta*batch_size))*(rho(s[-1]) - rho(seq[-1])).sum(0))
 
         return  gradw, gradw_bias
 
@@ -735,6 +740,7 @@ class EPdisc(nn.Module):
             self.cuda = False
         self.device = device
         self.beta = args.beta
+        self.use_bias = args.use_bias
 
         #**************debug_cep C-EP**************#
         self.debug_cep = args.debug_cep
@@ -753,7 +759,7 @@ class EPdisc(nn.Module):
         w = nn.ModuleList([])
 
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = self.use_bias))
             w.append(None)
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
@@ -945,11 +951,13 @@ class EPdisc(nn.Module):
         for i in range(self.ns - 1):
             gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(s[i], 0, 1), s[i + 1]) - torch.mm(torch.transpose(seq[i], 0, 1), seq[i + 1])))
             gradw.append(None)
-            gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
-            gradw_bias.append(None)
+            if self.use_bias:
+                gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+                gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
-        gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
+        if self.use_bias:
+            gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
         return  gradw, gradw_bias
 
