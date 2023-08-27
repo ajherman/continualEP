@@ -6,7 +6,7 @@ import pickle
 import datetime
 
 from netClasses import *
-from netFunctions import * 
+from netFunctions import *
 from plotFunctions import *
 
 
@@ -26,13 +26,13 @@ parser.add_argument(
     type=int,
     default=1000,
     metavar='N',
-    help='input batch size for testing (default: 1000)') 
+    help='input batch size for testing (default: 1000)')
 parser.add_argument(
     '--epochs',
     type=int,
     default=1,
     metavar='N',
-help='number of epochs to train (default: 1)')    
+help='number of epochs to train (default: 1)')
 parser.add_argument(
     '--lr_tab',
     nargs = '+',
@@ -57,14 +57,14 @@ parser.add_argument(
 parser.add_argument(
     '--discrete',
     action='store_true',
-    default=False, 
-    help='discrete-time dynamics (default: False)')   
+    default=False,
+    help='discrete-time dynamics (default: False)')
 parser.add_argument(
     '--dt',
     type=float,
     default=0.2,
     metavar='DT',
-    help='time discretization (default: 0.2)') 
+    help='time discretization (default: 0.2)')
 parser.add_argument(
     '--T',
     type=int,
@@ -82,7 +82,7 @@ parser.add_argument(
     type=float,
     default=1,
     metavar='BETA',
-    help='nudging parameter (default: 1)') 
+    help='nudging parameter (default: 1)')
 parser.add_argument(
     '--activation-function',
     type=str,
@@ -103,7 +103,7 @@ parser.add_argument(
 parser.add_argument(
     '--cep',
     action='store_true',
-    default=False, 
+    default=False,
     help='continual ep/vf (default: False)')
 parser.add_argument(
     '--angle',
@@ -116,7 +116,7 @@ parser.add_argument(
     '--action',
     type=str,
     default='train',
-    help='action to execute (default: train)')                                                 
+    help='action to execute (default: train)')
 parser.add_argument(
     '--device-label',
     type=int,
@@ -125,7 +125,7 @@ parser.add_argument(
 parser.add_argument(
     '--debug-cep',
     action='store_true',
-    default=False, 
+    default=False,
     help='debug cep (default: False)')
 parser.add_argument(
     '--seed',
@@ -137,14 +137,19 @@ parser.add_argument(
 parser.add_argument(
     '--angle-grad',
     action='store_true',
-    default=False, 
+    default=False,
+    help='computes initial angle between EP updates and BPTT gradients (default: False)')
+parser.add_argument(
+    '--use-bias',
+    action='store_true',
+    default=False,
     help='computes initial angle between EP updates and BPTT gradients (default: False)')
 
 args = parser.parse_args()
 
 
 if not not args.seed:
-    torch.manual_seed(args.seed[0])	
+    torch.manual_seed(args.seed[0])
 
 
 batch_size = args.batch_size
@@ -156,18 +161,18 @@ class ReshapeTransform:
 
     def __call__(self, img):
         return torch.reshape(img, self.new_size)
-        
-        
+
+
 class ReshapeTransformTarget:
     def __init__(self, number_classes):
         self.number_classes = number_classes
-    
+
     def __call__(self, target):
         target=torch.tensor(target).unsqueeze(0).unsqueeze(1)
-        target_onehot=torch.zeros((1,self.number_classes))    
+        target_onehot=torch.zeros((1,self.number_classes))
         return target_onehot.scatter_(1, target, 1).squeeze(0)
 
-        
+
 
 mnist_transforms=[torchvision.transforms.ToTensor(),ReshapeTransform((-1,))]
 
@@ -203,13 +208,13 @@ elif args.activation_function == 'tanh':
     def rhop(x):
         return 1 - torch.tanh(x)**2
 
-     
-                    
+
+
 if __name__ == '__main__':
-    
+
     input_size = 28
 
-    #Build the net 
+    #Build the net
     if  (not args.discrete) & (args.learning_rule == 'vf') :
         net = VFcont(args)
 
@@ -217,70 +222,70 @@ if __name__ == '__main__':
         net = EPcont(args)
 
     elif (args.discrete) & (args.learning_rule == 'vf'):
-        net = VFdisc(args)        
+        net = VFdisc(args)
 
     elif (args.discrete) & (args.learning_rule == 'ep'):
         net = EPdisc(args)
 
-                
+
     if args.action == 'plotcurves':
 
-        batch_idx, (example_data, example_targets) = next(enumerate(train_loader))    
+        batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
 
-        if net.cuda: 
-            example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)    
-	    
+        if net.cuda:
+            example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
+
         x = example_data
-        target = example_targets 
-                    
+        target = example_targets
+
         nS, dS, dT, _ = compute_nSdSdT(net, x, target)
         plot_S(nS, dS)
         plt.show()
         nT = compute_nT(net, x, target)
-	 
+
         plot_T(nT, dT, args)
         plt.show()
-                        		
-        #create path              
+
+        #create path
         BASE_PATH, name = createPath(args)
 
         #save hyperparameters
         createHyperparameterfile(BASE_PATH, name, args)
-        
+
         results_dict = {'nS' : nS, 'dS' : dS, 'nT': nT, 'dT': dT, 'args': args}
-                          
+
         #outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
         #pickle.dump(results_dict, outfile)
         #outfile.close()
 
 
-                  
+
     elif args.action == 'train':
 
-        #create path              
+        #create path
         BASE_PATH, name = createPath(args)
 
         #save hyperparameters
         createHyperparameterfile(BASE_PATH, name, args)
 
-        
+
         #compute initial angle between EP update and BPTT gradient
         if args.angle_grad:
-            batch_idx, (example_data, example_targets) = next(enumerate(train_loader))                      
-            if net.cuda: 
-                example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)    	    
+            batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
+            if net.cuda:
+                example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
             x = example_data
-            target = example_targets                    
+            target = example_targets
             nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-            nT = compute_nT(net, x, target)                       
+            nT = compute_nT(net, x, target)
             theta_T = compute_angleGrad(nS, dS, nT, dT)
             results_dict_angle = {'theta_T': theta_T}
-            print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))		
+            print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
 
 
         #train with EP
         error_train_tab = []
-        error_test_tab = []  
+        error_test_tab = []
 
         start_time = datetime.datetime.now()
 
@@ -289,7 +294,7 @@ if __name__ == '__main__':
             error_train_tab.append(error_train)
 
 
-            error_test = evaluate(net, test_loader)         
+            error_test = evaluate(net, test_loader)
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}
@@ -300,7 +305,3 @@ if __name__ == '__main__':
             outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
             pickle.dump(results_dict, outfile)
             outfile.close()
-
-            
-            
-
