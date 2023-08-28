@@ -4,9 +4,9 @@ Traceback (most recent call last):
   File "/vast/home/ajherman/continualEP/main.py", line 293, in <module>
     error_train = train(net, train_loader, epoch, args.learning_rule)
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/vast/home/ajherman/continualEP/netFunctions.py", line 39, in train
-    if not net.debug_cep:
-           ^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netFunctions.py", line 40, in train
+    if net.randbeta > 0:
+       ^^^^^^^^^^^^
   File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1614, in __getattr__
     raise AttributeError("'{}' object has no attribute '{}'".format(
-AttributeError: 'EPcont' object has no attribute 'debug_cep'
+AttributeError: 'EPcont' object has no attribute 'randbeta'
