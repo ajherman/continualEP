@@ -144,6 +144,11 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='computes initial angle between EP updates and BPTT gradients (default: False)')
+parser.add_argument(
+    '--use-rhop',
+    action='store_true',
+    default=False,
+    help='computes initial angle between EP updates and BPTT gradients (default: False)')
 
 args = parser.parse_args()
 
@@ -192,21 +197,33 @@ batch_size = args.test_batch_size, shuffle=True)
 if  args.activation_function == 'sigm':
     def rho(x):
         return 1/(1+torch.exp(-(4*(x-0.5))))
-    def rhop(x):
-        return 4*torch.mul(rho(x), 1 -rho(x))
+    if args.use_rhop:
+        def rhop(x):
+            return 4*torch.mul(rho(x), 1 -rho(x))
+    else:
+        def rhop(x):
+            return torch.ones_like(x)
 
 elif args.activation_function == 'hardsigm':
     def rho(x):
         return x.clamp(min = 0).clamp(max = 1)
 
-    def rhop(x):
-        return ((x >= 0) & (x <= 1)).float()
+    if args.use_rhop:
+        def rhop(x):
+            return ((x >= 0) & (x <= 1)).float()
+    else:
+        def rhop(x):
+            return torch.ones_like(x)
 
 elif args.activation_function == 'tanh':
     def rho(x):
         return torch.tanh(x)
-    def rhop(x):
-        return 1 - torch.tanh(x)**2
+    if args.use_rhop:
+        def rhop(x):
+            return 1 - torch.tanh(x)**2
+    else:
+        def rhop(x):
+            return torch.ones_like(x)
 
 
 
