@@ -25,6 +25,7 @@ class VFcont(nn.Module):
         self.nsyn = 2*(self.ns - 1) + 1
         self.cep = args.cep
         self.use_bias = args.use_bias
+        self.debug_cep = args.debug_cep
 
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
@@ -284,6 +285,7 @@ class VFdisc(nn.Module):
         self.device = device
         self.beta = args.beta
         self.use_bias = args.use_bias
+        self.debug_cep = args.debug_cep
 
 
         #*********RANDOM BETA*********#
@@ -535,6 +537,7 @@ class EPcont(nn.Module):
         self.no_clamp = args.no_clamp
         self.beta = args.beta
         self.use_bias = args.use_bias
+        self.debug_cep = args.debug_cep
 
         w = nn.ModuleList([])
         for i in range(self.ns - 1):
