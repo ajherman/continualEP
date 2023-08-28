@@ -38,6 +38,10 @@ class VFcont(nn.Module):
         self.no_clamp = args.no_clamp
         self.beta = args.beta
 
+        #*********RANDOM BETA*********#
+        self.randbeta = args.randbeta
+        #*****************************#
+
         w = nn.ModuleList([])
 
         for i in range(self.ns - 1):
@@ -538,6 +542,10 @@ class EPcont(nn.Module):
         self.beta = args.beta
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
+
+        #*********RANDOM BETA*********#
+        self.randbeta = args.randbeta
+        #*****************************#
 
         w = nn.ModuleList([])
         for i in range(self.ns - 1):
