@@ -709,11 +709,21 @@ class EPcont(nn.Module):
         beta = self.beta
 
         for i in range(self.ns - 1):
-            gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
+            if self.update_rule == 'cep-alt'
+                # gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) +  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) +  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
+            elif self.update_rule == 'cep': # Original version
+                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
+            elif self.update_rule == 'skew-sym'
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(seq[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
             gradw.append(None)
-            if self.use_bias:
-                gradw_bias.append((1/(beta*batch_size))*(rho(s[i]) - rho(seq[i])).sum(0))
-                gradw_bias.append(None)
+
+        # for i in range(self.ns - 1):
+        #     gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
+        #     gradw.append(None)
+        #     if self.use_bias:
+        #         gradw_bias.append((1/(beta*batch_size))*(rho(s[i]) - rho(seq[i])).sum(0))
+        #         gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-1]) - rho(seq[-1]), 0, 1), rho(data)))
         if self.use_bias:
@@ -966,7 +976,7 @@ class EPdisc(nn.Module):
         for i in range(self.ns - 1):
             if self.update_rule == 'cep-alt'
                 # gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) +  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) +  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) +  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
             elif self.update_rule == 'cep': # Original version
                 gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(s[i], 0, 1), s[i + 1]) - torch.mm(torch.transpose(seq[i], 0, 1), seq[i + 1])))
             elif self.update_rule == 'skew-sym'
