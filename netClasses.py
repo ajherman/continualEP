@@ -752,7 +752,7 @@ class EPdisc(nn.Module):
         self.device = device
         self.beta = args.beta
         self.use_bias = args.use_bias
-
+        self.use_alt_update = args.use_alt_update
         #**************debug_cep C-EP**************#
         self.debug_cep = args.debug_cep
         if args.debug_cep:
@@ -960,13 +960,21 @@ class EPdisc(nn.Module):
 
 
         for i in range(self.ns - 1):
-            gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(s[i], 0, 1), s[i + 1]) - torch.mm(torch.transpose(seq[i], 0, 1), seq[i + 1])))
+            if self.use_alt_update:
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) +  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+            else:
+                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(s[i], 0, 1), s[i + 1]) - torch.mm(torch.transpose(seq[i], 0, 1), seq[i + 1])))
             gradw.append(None)
+
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
 
-        gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+        if self.use_alt_update:
+            pass
+        else:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
