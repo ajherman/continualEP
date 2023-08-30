@@ -1,0 +1,19 @@
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Using EP disc class
+Traceback (most recent call last):
+  File "/vast/home/ajherman/continualEP/main.py", line 314, in <module>
+    error_train = train(net, train_loader, epoch, args.learning_rule)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netFunctions.py", line 46, in train
+    s = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netClasses.py", line 845, in forward
+    s = self.stepper(data, s, target, beta)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/continualEP/netClasses.py", line 806, in stepper
+    self.updateWeights(dw)
+  File "/vast/home/ajherman/continualEP/netClasses.py", line 990, in updateWeights
+    self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
+                                                   ~~~~~~~~^^^
+IndexError: list index out of range
