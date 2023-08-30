@@ -154,6 +154,11 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='computes initial angle between EP updates and BPTT gradients (default: False)')
+parser.add_argument(
+    '--update_rule',
+    type=str,
+    default='cep',
+    help='set which learning rule to use')
 args = parser.parse_args()
 
 
