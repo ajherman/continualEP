@@ -72,7 +72,7 @@ class VFcont(nn.Module):
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
         dsdt = []
         dsdt.append(-s[0] + self.w[0](rho(s[1])))
-        if beta > 0:
+        if np.abs(beta) > 0:
             dsdt[0] = dsdt[0] + beta*(target-s[0])
 
         for i in range(1, self.ns - 1):
@@ -94,7 +94,7 @@ class VFcont(nn.Module):
                 dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
         #*****************************C-EP*****************************#
-        if (beta > 0):
+        if (np.abs(beta) > 0):
             dw = self.computeGradients(data, s, s_old)
             if self.cep:
                 with torch.no_grad():
@@ -573,7 +573,7 @@ class EPcont(nn.Module):
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
         dsdt = []
         dsdt.append(-s[0] + self.w[0](rho(s[1])))
-        if beta > 0:
+        if np.abs(beta) > 0:
             dsdt[0] = dsdt[0] + beta*(target-s[0])
 
         if net.no_rhop:
@@ -598,7 +598,7 @@ class EPcont(nn.Module):
                 dsdt[i] = torch.where((s[i] == 0)|(s[i] == 1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
         #*****************************C-EP*****************************#
-        if (self.cep) & (beta > 0):
+        if (self.cep) & (np.abs(beta) > 0):
             dw = self.computeGradients(data, s, s_old)
             if self.cep:
                 with torch.no_grad():
@@ -787,14 +787,14 @@ class EPdisc(nn.Module):
         self.update_rule = args.update_rule
         self.reset = args.reset
         self.no_rhop = args.no_rhop
-        #**************debug_cep C-EP**************#
-        self.debug_cep = args.debug_cep
-        if args.debug_cep:
-            lr_tab_debug = []
-            for lr in self.lr_tab:
-                lr_tab_debug.append(10**(-5)*lr)
-            self.lr_tab_debug = lr_tab_debug
-        #**************************************#
+        # #**************debug_cep C-EP**************#
+        # self.debug_cep = args.debug_cep
+        # if args.debug_cep:
+        #     lr_tab_debug = []
+        #     for lr in self.lr_tab:
+        #         lr_tab_debug.append(10**(-5)*lr)
+        #     self.lr_tab_debug = lr_tab_debug
+        # #**************************************#
 
 
         #*********RANDOM BETA*********#
@@ -877,18 +877,18 @@ class EPdisc(nn.Module):
                     s = self.stepper(data, s, target, beta)
                 return s
 
-            elif (np.abs(beta) > 0) & (self.debug_cep):
-                Dw = self.initGrad()
-                for t in range(Kmax):
-                    s, _, dw = self.stepper(data, s, target, beta, return_derivatives = True)
-
-                    with torch.no_grad():
-                        for ind_type, dw_temp in enumerate(dw):
-                            for ind, dw_temp_layer in enumerate(dw_temp):
-                                if dw_temp_layer is not None:
-                                    Dw[ind_type][ind] += dw_temp_layer
-
-                return s, Dw
+            # elif (np.abs(beta) > 0) & (self.debug_cep):
+            #     Dw = self.initGrad()
+            #     for t in range(Kmax):
+            #         s, _, dw = self.stepper(data, s, target, beta, return_derivatives = True)
+            #
+            #         with torch.no_grad():
+            #             for ind_type, dw_temp in enumerate(dw):
+            #                 for ind, dw_temp_layer in enumerate(dw_temp):
+            #                     if dw_temp_layer is not None:
+            #                         Dw[ind_type][ind] += dw_temp_layer
+            #
+            #     return s, Dw
 
         elif (method == 'nS'):
             assert(0)
@@ -1015,8 +1015,8 @@ class EPdisc(nn.Module):
     def updateWeights(self, gradw, debug_cep = False):
         if not debug_cep:
             lr_tab = self.lr_tab
-        else:
-            lr_tab = self.lr_tab_debug
+        # else:
+        #     lr_tab = self.lr_tab_debug
 
         for i in range(len(self.w)):
             if self.w[i] is not None:
