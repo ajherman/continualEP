@@ -72,8 +72,6 @@ nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_t
 #nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --device-label 2 > cont2.out &
 
 #nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.2 --cep --device-label 3 > cont3.out &
->>>>>>> 033e9a1d8dcfc5bf2ffd51c5012280c94821c6ee
-
 
 # Experiments! 2 layer
 
