@@ -31,21 +31,21 @@
 
 # Experiments! 2 layer - check symmetric rule
 
-nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule1.out &
-nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule2.out &
-nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule3.out &
-nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule4.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule1.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule2.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule3.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --update_rule cep-alt >> new_rule4.out &
 
 
-nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --update_rule cep-alt > noreset1.out &
-nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --no-reset --update_rule cep-alt > noreset2.out &
-nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --no-reset --update_rule cep-alt 0 > noreset3.out &
-nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --no-reset --update_rule cep > noreset4.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --update_rule cep-alt > noreset1.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --no-reset --update_rule cep-alt > noreset2.out &
+#nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --no-reset --no-rhop --update_rule cep-alt > noreset3.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --no-reset --update_rule cep > noreset4.out &
 
 
 # Experiments! 1 layer - compare different epsilons
 # nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 1.0 --cep --device-label 0 > cont1.out &
-# nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --device-label 0 > cont2.out &
+ nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --no-rhop --device-label 0 > cont2.out &
 # nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.2 --cep --device-label 0 > cont3.out &
 
 # nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 80 --Kmax 15 --beta 0.2 --dt 0.2 --cep --no-reset > cont4.out &

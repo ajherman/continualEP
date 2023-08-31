@@ -576,7 +576,7 @@ class EPcont(nn.Module):
         if np.abs(beta) > 0:
             dsdt[0] = dsdt[0] + beta*(target-s[0])
 
-        if net.no_rhop:
+        if self.no_rhop:
             for i in range(1, self.ns - 1):
                 dsdt.append(-s[i] + self.w[2*i](rho(s[i + 1])) + torch.mm(rho(s[i - 1]), self.w[2*(i-1)].weight))
             dsdt.append(-s[-1] + self.w[-1](rho(data)) + torch.mm(rho(s[-2]), self.w[-3].weight))
