@@ -26,7 +26,7 @@ class VFcont(nn.Module):
         self.cep = args.cep
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
 
         if args.device_label >= 0:
@@ -295,7 +295,7 @@ class VFdisc(nn.Module):
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
         self.update_rule = args.update_rule
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
@@ -553,7 +553,7 @@ class EPcont(nn.Module):
         self.beta = args.beta
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         self.update_rule = args.update_rule
         #*********RANDOM BETA*********#
@@ -785,7 +785,7 @@ class EPdisc(nn.Module):
         self.use_bias = args.use_bias
         #self.use_alt_update = args.use_alt_update
         self.update_rule = args.update_rule
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         # #**************debug_cep C-EP**************#
         # self.debug_cep = args.debug_cep
