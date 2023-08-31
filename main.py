@@ -240,38 +240,38 @@ if __name__ == '__main__':
     elif (args.discrete) & (args.learning_rule == 'ep'):
         net = EPdisc(args)
 
-
-    if args.action == 'plotcurves':
-
-        batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-
-        if net.cuda:
-            example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
-
-        x = example_data
-        target = example_targets
-
-        nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-        plot_S(nS, dS)
-        plt.show()
-        nT = compute_nT(net, x, target)
-
-        plot_T(nT, dT, args)
-        plt.show()
-
-        #create path
-        BASE_PATH, name = createPath(args)
-
-        #save hyperparameters
-        createHyperparameterfile(BASE_PATH, name, args)
-
-        results_dict = {'nS' : nS, 'dS' : dS, 'nT': nT, 'dT': dT, 'args': args}
-
-        #outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-        #pickle.dump(results_dict, outfile)
-        #outfile.close()
-
-
+    #
+    # if args.action == 'plotcurves':
+    #
+    #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
+    #
+    #     if net.cuda:
+    #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
+    #
+    #     x = example_data
+    #     target = example_targets
+    #
+    #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
+    #     plot_S(nS, dS)
+    #     plt.show()
+    #     nT = compute_nT(net, x, target)
+    #
+    #     plot_T(nT, dT, args)
+    #     plt.show()
+    #
+    #     #create path
+    #     BASE_PATH, name = createPath(args)
+    #
+    #     #save hyperparameters
+    #     createHyperparameterfile(BASE_PATH, name, args)
+    #
+    #     results_dict = {'nS' : nS, 'dS' : dS, 'nT': nT, 'dT': dT, 'args': args}
+    #
+    #     #outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
+    #     #pickle.dump(results_dict, outfile)
+    #     #outfile.close()
+    #
+    #
 
     elif args.action == 'train':
 
