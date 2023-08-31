@@ -226,7 +226,7 @@ elif args.activation_function == 'tanh':
         return torch.tanh(x)
     def rhop(x):
         return 1 - torch.tanh(x)**2
-    
+
 
 if __name__ == '__main__':
 
