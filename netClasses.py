@@ -440,7 +440,7 @@ class VFdisc(nn.Module):
             # return s, nS
 
         elif (method == 'dSdT'):
-
+            assert(0)
     #         DT = []
     #
     #         for i in range(len(self.w)):
