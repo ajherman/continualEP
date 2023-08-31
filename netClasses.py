@@ -9,7 +9,6 @@ import torch.nn.functional as F
 
 from main import rho, rhop
 
-
 #*****************************VF, real-time setting *********************************#
 
 class VFcont(nn.Module):
@@ -108,117 +107,31 @@ class VFcont(nn.Module):
             return s
         #**************************************************************#
 
-    def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, seq = None,  beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
             K = Kmax
-        if (method == 'withgrad'):
-            assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
-            #         for i in range(self.ns):
-            #             s[i] = s[i].detach()
-            #             s[i].requires_grad = True
-            #         data = data.detach()
-            #         data.requires_grad = True
-            #     s = self.stepper(data, s)
-            # return s
 
-        elif (method == 'nograd'):
-
-            #*************ADD GRADIENT ACCUMULATION HERE*************#
-            if beta == 0:
-                for t in range(T):
-                    s = self.stepper(data, s)
-                return s
-            else:
-                Dw = self.initGrad()
-                for t in range(Kmax):
-                    s, dw = self.stepper(data, s, target, beta)
+        if beta == 0:
+            for t in range(T):
+                s = self.stepper(data, s)
+            return s
+        else:
+            Dw = self.initGrad()
+            for t in range(Kmax):
+                s, dw = self.stepper(data, s, target, beta)
 
 
-                    with torch.no_grad():
-                        for ind_type, dw_temp in enumerate(dw):
-                            for ind, dw_temp_layer in enumerate(dw_temp):
-                                if dw_temp_layer is not None:
-                                    Dw[ind_type][ind] += dw_temp_layer
+                with torch.no_grad():
+                    for ind_type, dw_temp in enumerate(dw):
+                        for ind, dw_temp_layer in enumerate(dw_temp):
+                            if dw_temp_layer is not None:
+                                Dw[ind_type][ind] += dw_temp_layer
 
-                return s, Dw
-            #********************************************************#
-
-        elif (method == 'nS'):
-            assert(0)
-            # s_tab = []
-            # for i in range(self.ns):
-            #     s_tab.append([])
-            #
-            # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
-            #     for i in range(self.ns):
-            #         s_tab[i].append(s[i])
-            #         s_tab[i][t].retain_grad()
-            #     s = self.stepper(data, s)
-            #
-            # for i in range(self.ns):
-            #     s_tab[i].append(s[i])
-            #     s_tab[i][-1].retain_grad()
-            # loss = (1/(2.0*s[0].size(0)))*criterion(s[0], target)
-            # loss.backward()
-            #
-            # nS = []
-            # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
-            #
-            # for t in range(Kmax):
-            #     #**********************************nS COMPUTATION**********************************#
-            #     for i in range(self.ns):
-            #         if (t < i):
-            #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
-            #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
-            #     #**********************************************************************************#
-            #
-            #
-            # return s, nS
-
-        elif (method == 'dSdT'):
-            assert(0)
-            # DT = []
-            #
-            # for i in range(len(self.w)):
-            #     if self.w[i] is not None:
-            #         DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
-            #     else:
-            #         DT.append(None)
-            #
-            # dS = []
-            # for i in range(self.ns):
-            #     dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
-            #
-            # #*******************************************C-EP*******************************************#
-            #
-            # for t in range(Kmax):
-            #     s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
-            #     #***********************************dS COMPUTATION***********************************#
-            #     for i in range(self.ns):
-            #         if (t < i):
-            #             dS[i][t, :, :] = torch.zeros_like(dS[i][t, :, :])
-            #         else:
-            #             dS[i][t, :, :] = -(1/(beta*s[i].size(0)))*dsdt[i].sum(0).unsqueeze(0)
-            #     #************************************************************************************#
-            #
-            #     #*******************dT COMPUTATION******************#
-            #     for ind, dw_temp in enumerate(dw[0]):
-            #         if (dw_temp is not None) & (t > 0):
-            #             DT[ind][t, :, :] = - dw_temp
-            #     #***************************************************#
-            #
-            # #******************************************************************************************#
-        #
-        # return s, dS, DT
+            return s, Dw
 
     def initHidden(self, batch_size):
         s = []
@@ -267,8 +180,6 @@ class VFcont(nn.Module):
                 if gradw[1][i] is not None:
                     self.w[i].bias += lr_tab[int(np.floor(i/2))]*gradw[1][i]
     #*******************************************************#
-
-
 
 #*****************************VF, discrete-time setting *********************************#
 
@@ -366,118 +277,31 @@ class VFdisc(nn.Module):
             return s
         #**************************************************************#
 
-    def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, seq = None,  beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
             K = Kmax
-        if (method == 'withgrad'):
-            assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
-            #         for i in range(self.ns):
-            #             s[i] = s[i].detach()
-            #             s[i].requires_grad = True
-            #         data = data.detach()
-            #         data.requires_grad = True
-            #     s = self.stepper(data, s)
-            # return s
 
-        elif (method == 'nograd'):
             #*************ADD GRADIENT ACCUMULATION HERE*************#
-            if beta == 0:
-                for t in range(T):
-                    s = self.stepper(data, s)
-                return s
-            else:
-                Dw = self.initGrad()
-                for t in range(Kmax):
-                    s, dw = self.stepper(data, s, target, beta)
-                    with torch.no_grad():
-                        for ind_type, dw_temp in enumerate(dw):
-                            for ind, dw_temp_layer in enumerate(dw_temp):
-                                if dw_temp_layer is not None:
-                                    Dw[ind_type][ind] += dw_temp_layer
+        if beta == 0:
+            for t in range(T):
+                s = self.stepper(data, s)
+            return s
+        else:
+            Dw = self.initGrad()
+            for t in range(Kmax):
+                s, dw = self.stepper(data, s, target, beta)
+                with torch.no_grad():
+                    for ind_type, dw_temp in enumerate(dw):
+                        for ind, dw_temp_layer in enumerate(dw_temp):
+                            if dw_temp_layer is not None:
+                                Dw[ind_type][ind] += dw_temp_layer
 
-                return s, Dw
+            return s, Dw
             #********************************************************#
-
-        elif (method == 'nS'):
-            assert(0)
-            # s_tab = []
-            # for i in range(self.ns):
-            #     s_tab.append([])
-            #
-            # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
-            #     for i in range(self.ns):
-            #         s_tab[i].append(s[i])
-            #         s_tab[i][t].retain_grad()
-            #     s = self.stepper(data, s)
-            #
-            # for i in range(self.ns):
-            #     s_tab[i].append(s[i])
-            #     s_tab[i][-1].retain_grad()
-            # loss = (1/(2.0*s[0].size(0)))*criterion(s[0], target)
-            # loss.backward()
-            #
-            #
-            # nS = []
-            # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
-            #
-            # for t in range(Kmax):
-            #     #**********************************nS COMPUTATION**********************************#
-            #     for i in range(self.ns):
-            #         if (t < i):
-            #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
-            #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
-            #     #**********************************************************************************#
-            #
-            # return s, nS
-
-        elif (method == 'dSdT'):
-            assert(0)
-    #         DT = []
-    #
-    #         for i in range(len(self.w)):
-    #             if self.w[i] is not None:
-    #                 DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
-    #             else:
-    #                 DT.append(None)
-    #
-    #
-    #         dS = []
-    #         for i in range(self.ns):
-    #             dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
-    #
-    #
-    #         #*******************************************C-EP*******************************************#
-    #
-    #         for t in range(Kmax):
-    #             s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
-    #             #*********************************dS COMPUTATION*************************************#
-    #             for i in range(self.ns):
-    #                 if (t < i):
-    #                     dS[i][t, :, :] = torch.zeros_like(dS[i][t, :, :])
-    #                 else:
-    #                     dS[i][t, :, :] = -(1/(beta*s[i].size(0)))*dsdt[i].sum(0).unsqueeze(0)
-    #             #************************************************************************************#
-    #
-    #             #*******************dT COMPUTATION******************#
-    #             for ind, dw_temp in enumerate(dw[0]):
-    #                 if (dw_temp is not None) & (t > 0):
-    #                     DT[ind][t, :, :] = - dw_temp
-    #             #***************************************************#
-    #
-    #         #******************************************************************************************#
-    #
-    #
-    #   return s, dS, DT
-
 
     def initHidden(self, batch_size):
         s = []
@@ -611,7 +435,7 @@ class EPcont(nn.Module):
             return s
         #**************************************************************#
 
-    def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, seq = None,  beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
 
@@ -620,97 +444,13 @@ class EPcont(nn.Module):
         else:
             K = Kmax
 
-        if (method == 'withgrad'):
-            assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
-            #         for i in range(self.ns):
-            #             s[i] = s[i].detach()
-            #             s[i].requires_grad = True
-            #         data = data.detach()
-            #         data.requires_grad = True
-            #     s = self.stepper(data, s)
-            # return s
-
-        elif (method == 'nograd'):
-            if beta == 0:
-                for t in range(T):
-                    s = self.stepper(data, s)
-            else:
-                for t in range(Kmax):
-                    s = self.stepper(data, s, target, beta)
-            return s
-
-        elif (method == 'nS'):
-            assert(0)
-            # s_tab = []
-            # for i in range(self.ns):
-            #     s_tab.append([])
-            #
-            # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
-            #     for i in range(self.ns):
-            #         s_tab[i].append(s[i])
-            #         s_tab[i][t].retain_grad()
-            #     s = self.stepper(data, s)
-            #
-            # for i in range(self.ns):
-            #     s_tab[i].append(s[i])
-            #     s_tab[i][-1].retain_grad()
-            # loss = (1/(2.0*s[0].size(0)))*criterion(s[0], target)
-            # loss.backward()
-            # nS = []
-            # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
-            #
-            # for t in range(Kmax):
-            #     for i in range(self.ns):
-            #     #***********************************nS COMPUTATION*********************************#
-            #         if (t < i):
-            #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
-            #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
-            #     #**********************************************************************************#
-            #
-            #
-            # return s, nS
-
-        elif (method == 'dSdT'):
-            assert(0)
-        #     DT = []
-        #     for i in range(len(self.w)):
-        #         if self.w[i] is not None:
-        #             DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
-        #         else:
-        #             DT.append(None)
-        #     dS = []
-        #     for i in range(self.ns):
-        #         dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
-        #
-        #
-        #     #*******************************************C-EP*******************************************#
-        #
-        #     for t in range(Kmax):
-        #         s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
-        #         #***********************************dS COMPUTATION***********************************#
-        #         for i in range(self.ns):
-        #             if (t < i):
-        #                 dS[i][t, :, :] = torch.zeros_like(dS[i][t, :, :])
-        #             else:
-        #                 dS[i][t, :, :] = -(1/(beta*s[i].size(0)))*dsdt[i].sum(0).unsqueeze(0)
-        #         #************************************************************************************#
-        #
-        #         #********************dT COMPUTATION*****************#
-        #         for ind, dw_temp in enumerate(dw[0]):
-        #             if (dw_temp is not None) & (t > 0):
-        #                 DT[ind][t, :, :] = - dw_temp
-        #         #***************************************************#
-        #
-        #     #******************************************************************************************#
-        #
-        #
-            # return s, dS, DT
-
+        if beta == 0:
+            for t in range(T):
+                s = self.stepper(data, s)
+        else:
+            for t in range(Kmax):
+                s = self.stepper(data, s, target, beta)
+        return s
 
     def initHidden(self, batch_size):
         s = []
@@ -734,13 +474,6 @@ class EPcont(nn.Module):
             elif self.update_rule == 'skew-sym':
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(seq[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
             gradw.append(None)
-
-        # for i in range(self.ns - 1):
-        #     gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
-        #     gradw.append(None)
-        #     if self.use_bias:
-        #         gradw_bias.append((1/(beta*batch_size))*(rho(s[i]) - rho(seq[i])).sum(0))
-        #         gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-1]) - rho(seq[-1]), 0, 1), rho(data)))
         if self.use_bias:
@@ -847,124 +580,36 @@ class EPdisc(nn.Module):
             return s
         #**************************************************************#
 
-    def forward(self, data, s, seq = None, method = 'nograd', beta = 0, target = None, **kwargs):
+    def forward(self, data, s, seq = None, beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
             K = Kmax
-        if (method == 'withgrad'):
-            assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
-            #         for i in range(self.ns):
-            #             s[i] = s[i].detach()
-            #             s[i].requires_grad = True
-            #         data = data.detach()
-            #         data.requires_grad = True
-            #     s = self.stepper(data, s)
-            # return s
 
-        elif (method == 'nograd'):
-            if beta == 0:
-                for t in range(T):
-                    s = self.stepper(data, s)
-                return s
+        if beta == 0:
+            for t in range(T):
+                s = self.stepper(data, s)
+            return s
 
-            elif (np.abs(beta) > 0) & (not self.debug_cep):
-                for t in range(Kmax):
-                    s = self.stepper(data, s, target, beta)
-                return s
+        elif (np.abs(beta) > 0) & (not self.debug_cep):
+            for t in range(Kmax):
+                s = self.stepper(data, s, target, beta)
+            return s
 
-            elif (np.abs(beta) > 0) & (self.debug_cep):
-                Dw = self.initGrad()
-                for t in range(Kmax):
-                    s, _, dw = self.stepper(data, s, target, beta, return_derivatives = True)
+        elif (np.abs(beta) > 0) & (self.debug_cep):
+            Dw = self.initGrad()
+            for t in range(Kmax):
+                s, _, dw = self.stepper(data, s, target, beta, return_derivatives = True)
 
-                    with torch.no_grad():
-                        for ind_type, dw_temp in enumerate(dw):
-                            for ind, dw_temp_layer in enumerate(dw_temp):
-                                if dw_temp_layer is not None:
-                                    Dw[ind_type][ind] += dw_temp_layer
+                with torch.no_grad():
+                    for ind_type, dw_temp in enumerate(dw):
+                        for ind, dw_temp_layer in enumerate(dw_temp):
+                            if dw_temp_layer is not None:
+                                Dw[ind_type][ind] += dw_temp_layer
 
-                return s, Dw
-
-        elif (method == 'nS'):
-            assert(0)
-            # s_tab = []
-            # for i in range(self.ns):
-            #     s_tab.append([])
-            #
-            # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
-            #     for i in range(self.ns):
-            #         s_tab[i].append(s[i])
-            #         s_tab[i][t].retain_grad()
-            #     s = self.stepper(data, s)
-            #
-            # for i in range(self.ns):
-            #     s_tab[i].append(s[i])
-            #     s_tab[i][-1].retain_grad()
-            # loss = (1/(2.0*s[0].size(0)))*criterion(s[0], target)
-            # loss.backward()
-            #
-            # nS = []
-            # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
-            #
-            # for t in range(Kmax):
-            #     for i in range(self.ns):
-            #         #**********************************nS COMPUTATION**********************************#
-            #         if (t < i):
-            #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
-            #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
-            #         #**********************************************************************************#
-            #
-            #
-            #
-            # return s, nS
-
-        elif (method == 'dSdT'):
-            assert(0)
-            # DT = []
-            #
-            # for i in range(len(self.w)):
-            #     if self.w[i] is not None:
-            #         DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
-            #     else:
-            #         DT.append(None)
-            #
-            #
-            # dS = []
-            # for i in range(self.ns):
-            #     dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
-            #
-            #
-            # #*******************************************C-EP*******************************************#
-            #
-            # for t in range(Kmax):
-            #     s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
-            #     #***********************************dS COMPUTATION***********************************#
-            #     for i in range(self.ns):
-            #         if (t < i):
-            #             dS[i][t, :, :] = torch.zeros_like(dS[i][t, :, :])
-            #         else:
-            #             dS[i][t, :, :] = -(1/(beta*s[i].size(0)))*dsdt[i].sum(0).unsqueeze(0)
-            #     ##***********************************************************************************#
-            #
-            #     #********************dT COMPUTATION*****************#
-            #     for ind, dw_temp in enumerate(dw[0]):
-            #         if (dw_temp is not None) & (t > 0):
-            #             DT[ind][t, :, :] = - dw_temp
-            #     #***************************************************#
-            #
-            # #******************************************************************************************#
-            #
-            #
-            # return s, dS, DT
-
+            return s, Dw
 
     def initHidden(self, batch_size):
         s = []
