@@ -762,7 +762,6 @@ class EPcont(nn.Module):
 
 class EPdisc(nn.Module):
     def __init__(self, args):
-        print("Using EP disc class")
         super(EPdisc, self).__init__()
 
 
