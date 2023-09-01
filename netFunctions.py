@@ -19,6 +19,9 @@ def train(net, train_loader, epoch, learning_rule):
     criterion = nn.MSELoss(reduction = 'sum')
     # s = net.initHidden(data.size(0))
     for batch_idx, (data, targets) in enumerate(train_loader):
+        #print(data.size)
+        #print(targets.size)
+        #assert(0)
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
 
