@@ -39,7 +39,7 @@
 
 #nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --update_rule cep-alt > noreset1.out &
 #nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep --no-reset --update_rule cep-alt > noreset2.out &
-#nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --no-reset --no-rhop --update_rule cep-alt > noreset3.out &
+#nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --no-reset --no-rhop --update-rule cep-alt > test1.out &
 #nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --no-reset --update_rule cep > noreset4.out &
 
 # Experiments! 1 layer - compare different epsilons
@@ -85,12 +85,19 @@
 #nohup python -u main.py --action 'train' --no-clamp --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --dt 0.5 --cep --no-rhop --no-reset --update-rule cep-alt > exp111.out &
 
 # Skew and asym experiments
-nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'asym' --cep > asym.out &
-nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --no-reset --learning-rule 'vf' --update-rule 'skew' > skew.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'asym1' --cep > asym1disc.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'asym2' --cep > asym2disc.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'skew1' --cep > skew1disc.out &
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'skew2' --cep > skew2disc.out &
+
+#nohup python -u main.py --action 'train' --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'asym1' --cep > asym1cont.out &
+#nohup python -u main.py --action 'train' --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'asym2' --cep > asym2cont.out &
+#nohup python -u main.py --action 'train' --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'skew1' --cep > skew1cont.out &
+#nohup python -u main.py --action 'train' --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --learning-rule 'vf' --update-rule 'skew2' --cep > skew2cont.out &
 
 
 # CVF
-#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 784 --lr_tab 0.0038 0.0076 --epochs 100 --T 40 --Kmax 15 --beta 0.20 --cep --learning-rule 'vf' > results5.out & --randbeta 0.5
+nohup python -u main.py --action 'train' --discrete --size_tab 10 512 784 --lr_tab 0.0038 0.0076 --epochs 100 --T 40 --Kmax 15 --beta 0.20 --cep --learning-rule 'vf' --update-rule 'asym1' > test2.out & 
 
 
 # CVF
