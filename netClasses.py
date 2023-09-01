@@ -29,6 +29,7 @@ class VFcont(nn.Module):
         self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         self.plain_data = args.plain_data
+        self.update_rule = args.update_rule
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
             self.cuda = True
