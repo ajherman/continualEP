@@ -787,8 +787,8 @@ class EPdisc(nn.Module):
         self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         # #**************debug_cep C-EP**************#
-        # self.debug_cep = args.debug_cep
-        # if args.debug_cep:
+        self.debug_cep = args.debug_cep
+        #if args.debug_cep:
         #     lr_tab_debug = []
         #     for lr in self.lr_tab:
         #         lr_tab_debug.append(10**(-5)*lr)
