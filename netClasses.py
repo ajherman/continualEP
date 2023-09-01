@@ -249,8 +249,19 @@ class VFcont(nn.Module):
         beta = self.beta
 
         for i in range(self.ns - 1):
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+            if self.update_rule == 'asym1':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+            elif self.update_rule == 'asym2':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(s[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(s[i])))
+            elif self.update_rule == 'skew1':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+            elif self.update_rule == 'skew2':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
@@ -510,15 +521,30 @@ class VFdisc(nn.Module):
         batch_size = s[0].size(0)
 
         for i in range(self.ns - 1):
-            if self.update_rule == 'vf':
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]))
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), seq[i]))
-            elif self.update_rule == 'skew': # Is the implemented correctly???
+            # if self.update_rule == 'vf':
+            #     gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]))
+            #     gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), seq[i]))
+            # elif self.update_rule == 'skew': # Is the implemented correctly???
+            #     gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+            #     gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+            if self.update_rule == 'asym1':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+            elif self.update_rule == 'asym2':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(s[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(s[i])))
+            elif self.update_rule == 'skew1':
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+            elif self.update_rule == 'skew2':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
+
+
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
         if self.use_bias:
@@ -747,7 +773,7 @@ class EPcont(nn.Module):
             elif self.update_rule == 'cep': # Original version
                 gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
             elif self.update_rule == 'skew-sym':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(seq[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
             gradw.append(None)
 
         # for i in range(self.ns - 1):

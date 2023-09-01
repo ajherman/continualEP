@@ -17,11 +17,7 @@ def train(net, train_loader, epoch, learning_rule):
     loss_tot = 0
     correct = 0
     criterion = nn.MSELoss(reduction = 'sum')
-    # s = net.initHidden(data.size(0))
     for batch_idx, (data, targets) in enumerate(train_loader):
-        #print(data.size)
-        #print(targets.size)
-        #assert(0)
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
 
@@ -118,7 +114,6 @@ def evaluate(net, test_loader):
     loss_tot_test = 0
     correct_test = 0
     with torch.no_grad():
-        # s = net.initHidden(data.size(0))
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
