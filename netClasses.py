@@ -26,7 +26,7 @@ class VFcont(nn.Module):
         self.cep = args.cep
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
 
         if args.device_label >= 0:
@@ -295,7 +295,7 @@ class VFdisc(nn.Module):
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
         self.update_rule = args.update_rule
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
@@ -553,7 +553,7 @@ class EPcont(nn.Module):
         self.beta = args.beta
         self.use_bias = args.use_bias
         self.debug_cep = args.debug_cep
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         self.update_rule = args.update_rule
         #*********RANDOM BETA*********#
@@ -576,7 +576,7 @@ class EPcont(nn.Module):
         if np.abs(beta) > 0:
             dsdt[0] = dsdt[0] + beta*(target-s[0])
 
-        if net.no_rhop:
+        if self.no_rhop:
             for i in range(1, self.ns - 1):
                 dsdt.append(-s[i] + self.w[2*i](rho(s[i + 1])) + torch.mm(rho(s[i - 1]), self.w[2*(i-1)].weight))
             dsdt.append(-s[-1] + self.w[-1](rho(data)) + torch.mm(rho(s[-2]), self.w[-3].weight))
@@ -784,7 +784,7 @@ class EPdisc(nn.Module):
         self.use_bias = args.use_bias
         #self.use_alt_update = args.use_alt_update
         self.update_rule = args.update_rule
-        self.reset = args.reset
+        self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         # #**************debug_cep C-EP**************#
         # self.debug_cep = args.debug_cep
