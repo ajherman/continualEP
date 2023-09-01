@@ -273,7 +273,7 @@ if __name__ == '__main__':
     #
     #
 
-    elif args.action == 'train':
+    if args.action == 'train':
 
         #create path
         BASE_PATH, name = createPath(args)
