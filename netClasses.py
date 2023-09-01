@@ -28,7 +28,7 @@ class VFcont(nn.Module):
         self.debug_cep = args.debug_cep
         self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
-
+        self.plain_data = args.plain_data
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
             self.cuda = True
@@ -78,7 +78,10 @@ class VFcont(nn.Module):
         for i in range(1, self.ns - 1):
             dsdt.append(-s[i] + self.w[2*i](rho(s[i + 1])) + self.w[2*i - 1](rho(s[i - 1])))
 
-        dsdt.append(-s[-1] + self.w[-1](rho(data)) + self.w[-2](rho(s[-2])))
+        if self.plain_data:
+            dsdt.append(-s[-1] + self.w[-1](data) + self.w[-2](rho(s[-2])))
+        else:
+            dsdt.append(-s[-1] + self.w[-1](rho(data)) + self.w[-2](rho(s[-2])))
 
 
         s_old = []
@@ -251,7 +254,10 @@ class VFcont(nn.Module):
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
-        gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
+        if self.plain_data:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+        else:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
@@ -297,6 +303,7 @@ class VFdisc(nn.Module):
         self.update_rule = args.update_rule
         self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
+        self.plain_data = args.plain_data
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
         #*****************************#
@@ -556,6 +563,7 @@ class EPcont(nn.Module):
         self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
         self.update_rule = args.update_rule
+        self.plain_data = args.plain_data
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
         #*****************************#
@@ -579,11 +587,18 @@ class EPcont(nn.Module):
         if self.no_rhop:
             for i in range(1, self.ns - 1):
                 dsdt.append(-s[i] + self.w[2*i](rho(s[i + 1])) + torch.mm(rho(s[i - 1]), self.w[2*(i-1)].weight))
-            dsdt.append(-s[-1] + self.w[-1](rho(data)) + torch.mm(rho(s[-2]), self.w[-3].weight))
+            if self.plain_data:
+                dsdt.append(-s[-1] + self.w[-1](data) + torch.mm(rho(s[-2]), self.w[-3].weight))
+            else:
+                dsdt.append(-s[-1] + self.w[-1](rho(data)) + torch.mm(rho(s[-2]), self.w[-3].weight))
         else:
             for i in range(1, self.ns - 1):
                 dsdt.append(-s[i] + torch.mul(rhop(s[i]), self.w[2*i](rho(s[i + 1])) + torch.mm(rho(s[i - 1]), self.w[2*(i-1)].weight)))
-            dsdt.append(-s[-1] + torch.mul(rhop(s[-1]), self.w[-1](rho(data)) + torch.mm(rho(s[-2]), self.w[-3].weight)))
+
+            if self.plain_data:
+                dsdt.append(-s[-1] + torch.mul(rhop(s[-1]), self.w[-1](data) + torch.mm(rho(s[-2]), self.w[-3].weight)))
+            else:
+                dsdt.append(-s[-1] + torch.mul(rhop(s[-1]), self.w[-1](rho(data)) + torch.mm(rho(s[-2]), self.w[-3].weight)))
 
         s_old = []
         for ind, s_temp in enumerate(s):
@@ -742,7 +757,10 @@ class EPcont(nn.Module):
         #         gradw_bias.append((1/(beta*batch_size))*(rho(s[i]) - rho(seq[i])).sum(0))
         #         gradw_bias.append(None)
 
-        gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-1]) - rho(seq[-1]), 0, 1), rho(data)))
+        if self.plain_data:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-1]) - rho(seq[-1]), 0, 1), data))
+        else:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-1]) - rho(seq[-1]), 0, 1), rho(data)))
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(rho(s[-1]) - rho(seq[-1])).sum(0))
 
@@ -786,6 +804,7 @@ class EPdisc(nn.Module):
         self.update_rule = args.update_rule
         self.no_reset = args.no_reset
         self.no_rhop = args.no_rhop
+        self.plain_data = args.plain_data
         # #**************debug_cep C-EP**************#
         self.debug_cep = args.debug_cep
         #if args.debug_cep:
