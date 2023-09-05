@@ -9,6 +9,191 @@ import torch.nn.functional as F
 
 from main import rho, rhop
 
+class SNN(nn.Module):
+
+    def __init__(self, args):
+        super(VFcont, self).__init__()
+        self.T = args.T
+        self.Kmax = args.Kmax
+        self.dt = args.dt
+        self.size_tab = args.size_tab
+        self.lr_tab = args.lr_tab
+        self.ns = len(args.size_tab) - 1
+        self.nsyn = 2*(self.ns - 1) + 1
+        self.cep = args.cep
+        self.use_bias = args.use_bias
+        self.debug_cep = args.debug_cep
+        self.no_reset = args.no_reset
+        self.no_rhop = args.no_rhop
+        self.plain_data = args.plain_data
+        self.update_rule = args.update_rule
+        if args.device_label >= 0:
+            device = torch.device("cuda:"+str(args.device_label))
+            self.cuda = True
+        else:
+            device = torch.device("cpu")
+            self.cuda = False
+
+        self.device = device
+        self.no_clamp = args.no_clamp
+        self.beta = args.beta
+
+        #*********RANDOM BETA*********#
+        self.randbeta = args.randbeta
+        #*****************************#
+
+        w = nn.ModuleList([])
+
+        for i in range(self.ns - 1):
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = self.use_bias))
+            w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False)) # Why default bias = False???
+        w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
+
+        #By default, reciprocal weights have the same initial values
+        for i in range(self.ns - 1):
+            w[2*i + 1].weight.data = torch.transpose(w[2*i].weight.data.clone(), 0, 1)
+
+        #****************************TUNE INITIAL ANGLE****************************#
+        if args.angle > 0:
+            p_switch = 0.5*(1 - np.cos(np.pi*args.angle/180))
+            for i in range(self.ns - 1):
+                mask = 2*torch.bernoulli((1 - p_switch)*torch.ones_like(w[2*i + 1].weight.data)) - 1
+                w[2*i + 1].weight.data = w[2*i + 1].weight.data*mask
+                angle = (180/np.pi)*np.arccos((w[2*i + 1].weight.data*torch.transpose(w[2*i].weight.data, 0 ,1)).sum().item()/np.sqrt((w[2*i + 1].weight.data**2).sum().item()*(w[2*i].weight.data**2).sum().item()))
+                print('Angle between forward and backward weights: {:.2f} degrees'.format(angle))
+                del angle, mask
+        #**************************************************************************#
+
+        self.w = w
+        self = self.to(device)
+
+    def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
+        spikes = [torch.rand(torch.shape(s[i])<rho(s[i]) for i range(self.ns)] # Get Poisson spikes
+        data_spikes torch.rand(torch.shape(data))<data
+        dsdt = []
+
+        # Output layer
+        dsdt.append(-s[0] + self.w[0](spikes[1]))
+        if np.abs(beta) > 0:
+            dsdt[0] = dsdt[0] + beta*(target-spikes[0])
+
+        # Other layers
+        for i in range(1, self.ns - 1):
+            dsdt.append(-s[i] + self.w[2*i](spikes[i+1]) + self.w[2*i - 1](spikes[i-1]))
+
+        # Post-input layer
+        dsdt.append(-s[-1] + self.w[-1](data_spikes) + self.w[-2](spikes[-2]))
+
+        s_old = []
+        for ind, s_temp in enumerate(s):
+            s_old.append(s_temp.clone())
+
+        if self.no_clamp:
+            for i in range(self.ns):
+                s[i] = s[i] + self.dt*dsdt[i]
+        else:
+            for i in range(self.ns):
+                s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
+
+                # I don't think the line is necessary, since we are clamping...
+                # dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
+
+        #*****************************C-EP*****************************#
+        if (np.abs(beta) > 0):
+            dw = self.computeGradients(data, s, s_old)
+            if self.cep:
+                with torch.no_grad():
+                    self.updateWeights(dw)
+        else:
+            return s
+        #**************************************************************#
+
+    def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+        T = self.T
+        Kmax = self.Kmax
+        if len(kwargs) > 0:
+            K = kwargs['K']
+        else:
+            K = Kmax
+
+        if beta == 0:
+            for t in range(T):
+                s = self.stepper(data, s)
+            return s
+        else:
+            Dw = self.initGrad()
+            for t in range(Kmax):
+                s, dw = self.stepper(data, s, target, beta)
+
+                with torch.no_grad():
+                    for ind_type, dw_temp in enumerate(dw):
+                        for ind, dw_temp_layer in enumerate(dw_temp):
+                            if dw_temp_layer is not None:
+                                Dw[ind_type][ind] += dw_temp_layer
+
+    def initHidden(self, batch_size):
+        s = []
+        for i in range(self.ns):
+            s.append(torch.zeros(batch_size, self.size_tab[i], requires_grad = True))
+        return s
+
+    def initGrad(self):
+        gradw = []
+        gradw_bias =[]
+        for ind, w_temp in enumerate(self.w):
+            gradw.append(torch.zeros_like(w_temp.weight))
+            if w_temp.bias is not None:
+                gradw_bias.append(torch.zeros_like(w_temp.bias))
+            else:
+                gradw_bias.append(None)
+        return gradw, gradw_bias
+
+
+    def computeGradients(self, data, s, seq):
+        gradw = []
+        gradw_bias = []
+        batch_size = s[0].size(0)
+        beta = self.beta
+        for i in range(self.ns - 1):
+            if self.update_rule == 'asym1':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+            elif self.update_rule == 'asym2':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(s[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(s[i])))
+            elif self.update_rule == 'skew1':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+            elif self.update_rule == 'skew2':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+
+            if self.use_bias:
+                gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+                gradw_bias.append(None)
+
+        if self.plain_data:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+        else:
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
+        if self.use_bias:
+            gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
+
+        return  gradw, gradw_bias
+
+    #**************************NEW**************************#
+    def updateWeights(self, gradw):
+        lr_tab = self.lr_tab
+        for i in range(len(self.w)):
+            if self.w[i] is not None:
+                self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
+            if self.use_bias:
+                if gradw[1][i] is not None:
+                    self.w[i].bias += lr_tab[int(np.floor(i/2))]*gradw[1][i]
+    #*******************************************************#
+
+
+
 
 #*****************************VF, real-time setting *********************************#
 
