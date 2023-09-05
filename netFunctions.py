@@ -89,29 +89,30 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s = net.forward(data, s)
-                pred = s[0].data.max(1, keepdim=True)[1]                                                     loss_tot += loss
-                loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)                                         targets_temp = targets.data.max(1, keepdim=True)[1]
-                #*******************************************VF-EQPROP *******************************        correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
+                pred = s[0].data.max(1, keepdim=True)[1]
+                loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+                #*******************************************VF-EQPROP ******************************************#
                 seq = []
-                for i in range(len(s)): seq.append(s[i].clone())                                             if (batch_idx + 1)% 100 == 0:
-                                                                                                                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                #******************************************FORMER C-VF*******************************               epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
-                if net.randbeta > 0:                                                                                100. * (batch_idx + 1) / len(train_loader), loss.data))
+                for i in range(len(s)): seq.append(s[i].clone())
+
+                #******************************************FORMER C-VF******************************************#
+                if net.randbeta > 0:
                     signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
                     beta = signbeta*net.beta
-                else:                                                                                    loss_tot /= len(train_loader.dataset)
+                else:
                     beta = net.beta
 
-                s, Dw = net.forward(data, s, target = targets, beta = beta, method = 'nograd')           print('\nAverage Training loss: {:.4f}, Training Error Rate: {:.2f}% ({}/{})\n'.format(
-                #************************************************************************************       loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
-                                                                                                            ))
+                s, Dw = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
+                #***********************************************************************************************#
+
                 if not net.cep:
-                    if not net.former:                                                                   return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
+                    if not net.former:
                         net.updateWeights(Dw)
                     else:
-                        Dw_former = net.computeGradients(data, s, seq, beta)                         def evaluate(net, test_loader):
+                        Dw_former = net.computeGradients(data, s, seq, beta)
                         net.updateWeights(Dw_former)
-                #####################################################################################    net.eval()
+                #########################################################################################
+
     loss_tot_test = 0
     correct_test = 0
     with torch.no_grad():
