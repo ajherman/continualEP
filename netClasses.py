@@ -12,7 +12,7 @@ from main import rho, rhop
 class SNN(nn.Module):
 
     def __init__(self, args):
-        super(VFcont, self).__init__()
+        super(SNN, self).__init__()
         self.T = args.T
         self.Kmax = args.Kmax
         self.dt = args.dt
@@ -68,8 +68,8 @@ class SNN(nn.Module):
         self = self.to(device)
 
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
-        spikes = [torch.rand(torch.shape(s[i])<rho(s[i]) for i range(self.ns)] # Get Poisson spikes
-        data_spikes torch.rand(torch.shape(data))<data
+        spikes = [torch.rand((torch.shape(s[i]))<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
+        data_spikes = (torch.rand(torch.shape(data))<data).float()
         dsdt = []
 
         # Output layer

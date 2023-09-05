@@ -245,7 +245,7 @@ if __name__ == '__main__':
     elif (args.discrete) & (args.learning_rule == 'ep'):
         net = EPdisc(args)
 
-    elif learning_rule == 'stdp':
+    elif args.learning_rule == 'stdp':
         net = SNN(args)
 
     #
