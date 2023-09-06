@@ -75,7 +75,9 @@ class SNN(nn.Module):
         spikes = [rho(si) for si in s] # Get Poisson spikes
         #data_spikes = (torch.rand(data.size(),device=self.device)<data).float()
         data_spikes = rho(data)
-
+        print(torch.min(data).cpu())
+        print(torch.max(data).cpu())
+        assert(0)
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spikes[1]))
