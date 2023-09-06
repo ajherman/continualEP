@@ -69,16 +69,18 @@ class SNN(nn.Module):
         self = self.to(device)
 
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
-        #spikes = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
-        spikes = [rho(s[i]) for i in range(self.ns)] # Get Poisson spikes  
-        #data_spikes = (torch.rand(data.size(),device=self.device)<data).float()
-        data_spikes = data        
         dsdt = []
+
+        #spikes = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
+        spikes = [rho(si) for si in s] # Get Poisson spikes
+        #data_spikes = (torch.rand(data.size(),device=self.device)<data).float()
+        data_spikes = rho(data)
+
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spikes[1]))
         if np.abs(beta) > 0:
-            dsdt[0] = dsdt[0] + beta*(target-spikes[0])
+            dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spikes[0]...
 
         # Other layers
         for i in range(1, self.ns - 1):
@@ -86,6 +88,11 @@ class SNN(nn.Module):
 
         # Post-input layer
         dsdt.append(-s[-1] + self.w[-1](data_spikes) + self.w[-2](spikes[-2]))
+
+        if self.plain_data:
+            dsdt.append(-s[-1] + self.w[-1](data) + self.w[-2](rho(s[-2])))
+        else:
+            dsdt.append(-s[-1] + self.w[-1](data_spikes) + self.w[-2](rho(s[-2])))
 
         s_old = []
         for ind, s_temp in enumerate(s):
@@ -97,9 +104,7 @@ class SNN(nn.Module):
         else:
             for i in range(self.ns):
                 s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
-
-                # I don't think the line is necessary, since we are clamping...
-                # dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
+                dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
         #*****************************C-EP*****************************#
         if (np.abs(beta) > 0):
@@ -135,7 +140,7 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
-                return s, Dw
+            return s, Dw
 
 
     def initHidden(self, batch_size):
@@ -318,6 +323,7 @@ class VFcont(nn.Module):
 
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
         dsdt = []
+
         dsdt.append(-s[0] + self.w[0](rho(s[1])))
         if np.abs(beta) > 0:
             dsdt[0] = dsdt[0] + beta*(target-s[0])
@@ -350,10 +356,11 @@ class VFcont(nn.Module):
                 with torch.no_grad():
                     self.updateWeights(dw)
 
-            if return_derivatives:
-                return s, dsdt, dw
-            else:
-                return s, dw
+            # if return_derivatives:
+            #     return s, dsdt, dw
+            # else:
+            #     return s, dw
+            return s,dw
         else:
             return s
         #**************************************************************#
