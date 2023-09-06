@@ -33,7 +33,7 @@
 #nohup python -u main.py --action train --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --update-rule skew-sym1 > skewsym3.out &
 #nohup python -u main.py --action train --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 45 --beta 0.2 --dt 0.2 --cep --update-rule skew-sym1 > skewsym4.out &
 #nohup python -u main.py --action train --activation-function hardsigm  --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --update-rule skew-sym1 > skewsym5.out
-nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skew-sym1 > spike1.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  asym1 > spike1.out
 
 # Experiments! 2 layer - check symmetric rule
 
@@ -103,7 +103,7 @@ nohup python -u main.py --action train --activation-function hardsigm --size_tab
 
 
 # CVF
-#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 784 --lr_tab 0.0038 0.0076 --epochs 100 --T 40 --Kmax 15 --beta 0.20 --cep --learning-rule 'vf' --update-rule 'asym1' > test2.out & 
+#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 784 --lr_tab 0.0038 0.0076 --epochs 100 --T 40 --Kmax 15 --beta 0.20 --cep --learning-rule 'vf' --update-rule 'asym1' > test2.out &
 
 
 # CVF

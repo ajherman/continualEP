@@ -29,7 +29,7 @@ class SNN(nn.Module):
         self.update_rule = args.update_rule
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
-         
+
             self.cuda = True
         else:
             device = torch.device("cpu")
@@ -105,6 +105,7 @@ class SNN(nn.Module):
             if self.cep:
                 with torch.no_grad():
                     self.updateWeights(dw)
+            return s,dw
         else:
             return s
         #**************************************************************#
@@ -132,6 +133,9 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
+                return s, Dw
+
+
     def initHidden(self, batch_size):
         s = []
         for i in range(self.ns):
@@ -155,6 +159,9 @@ class SNN(nn.Module):
         gradw_bias = []
         batch_size = s[0].size(0)
         beta = self.beta
+        # print(self.ns)
+        # print("===")
+        # print(len(gradw))
         for i in range(self.ns - 1):
             if self.update_rule == 'asym1':
                 gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
@@ -168,15 +175,16 @@ class SNN(nn.Module):
             elif self.update_rule == 'skew2':
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
-
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
-
+        # print(len(gradw))
         if self.plain_data:
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
         else:
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
+        # print(len(gradw))
+        # print("===")
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
@@ -186,6 +194,11 @@ class SNN(nn.Module):
     def updateWeights(self, gradw):
         lr_tab = self.lr_tab
         for i in range(len(self.w)):
+            # print(len(self.w))
+            # print(len(gradw[0]))
+            # print(len(gradw[0]))
+
+            # assert(0)
             if self.w[i] is not None:
                 self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
             if self.use_bias:
@@ -193,6 +206,51 @@ class SNN(nn.Module):
                     self.w[i].bias += lr_tab[int(np.floor(i/2))]*gradw[1][i]
     #*******************************************************#
 
+    #
+    #
+    # def computeGradients(self, data, s, seq):
+    #     gradw = []
+    #     gradw_bias = []
+    #     batch_size = s[0].size(0)
+    #     beta = self.beta
+    #     for i in range(self.ns - 1):
+    #         if self.update_rule == 'asym1':
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+    #         elif self.update_rule == 'asym2':
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(s[i + 1])))
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(s[i])))
+    #         elif self.update_rule == 'skew1':
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+    #         elif self.update_rule == 'skew2':
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+    #
+    #         if self.use_bias:
+    #             gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+    #             gradw_bias.append(None)
+    #
+    #     if self.plain_data:
+    #         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+    #     else:
+    #         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
+    #     if self.use_bias:
+    #         gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
+    #
+    #     return  gradw, gradw_bias
+    #
+    # #**************************NEW**************************#
+    # def updateWeights(self, gradw):
+    #     lr_tab = self.lr_tab
+    #     for i in range(len(self.w)):
+    #         if self.w[i] is not None:
+    #             self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
+    #         if self.use_bias:
+    #             if gradw[1][i] is not None:
+    #                 self.w[i].bias += lr_tab[int(np.floor(i/2))]*gradw[1][i]
+    # #*******************************************************#
+    #
 
 
 
@@ -434,6 +492,50 @@ class VFcont(nn.Module):
         gradw_bias = []
         batch_size = s[0].size(0)
         beta = self.beta
+
+    # def computeGradients(self, data, s, seq):
+    #     gradw = []
+    #     gradw_bias = []
+    #     batch_size = s[0].size(0)
+    #     beta = self.beta
+    #
+    #     for i in range(self.ns - 1):
+    #         if self.update_rule == 'asym1':
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+    #         elif self.update_rule == 'asym2':
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(s[i + 1])))
+    #             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(s[i])))
+    #         elif self.update_rule == 'skew1':
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+    #         elif self.update_rule == 'skew2':
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+    #             gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+    #
+    #         if self.use_bias:
+    #             gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+    #             gradw_bias.append(None)
+    #
+    #     if self.plain_data:
+    #         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+    #     else:
+    #         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
+    #     if self.use_bias:
+    #         gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
+    #
+    #     return  gradw, gradw_bias
+    #
+    # #**************************NEW**************************#
+    # def updateWeights(self, gradw):
+    #     lr_tab = self.lr_tab
+    #     for i in range(len(self.w)):
+    #         if self.w[i] is not None:
+    #             self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
+    #         if self.use_bias:
+    #             if gradw[1][i] is not None:
+    #                 self.w[i].bias += lr_tab[int(np.floor(i/2))]*gradw[1][i]
+    # #*******************************************************#
 
         for i in range(self.ns - 1):
             if self.update_rule == 'asym1':
