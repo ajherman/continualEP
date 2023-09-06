@@ -113,6 +113,28 @@ def train(net, train_loader, epoch, learning_rule):
                         net.updateWeights(Dw_former)
                 #########################################################################################
 
+        loss_tot += loss
+        targets_temp = targets.data.max(1, keepdim=True)[1]
+        correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
+
+        if (batch_idx + 1)% 100 == 0:
+           print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+               epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
+               100. * (batch_idx + 1) / len(train_loader), loss.data))
+
+
+    loss_tot /= len(train_loader.dataset)
+
+
+    print('\nAverage Training loss: {:.4f}, Training Error Rate: {:.2f}% ({}/{})\n'.format(
+       loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
+       ))
+
+    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
+
+
+def evaluate(net, test_loader):
+    net.eval()
     loss_tot_test = 0
     correct_test = 0
     with torch.no_grad():
