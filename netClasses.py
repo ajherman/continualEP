@@ -68,8 +68,8 @@ class SNN(nn.Module):
         self = self.to(device)
 
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
-        spikes = [torch.rand((torch.shape(s[i]))<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
-        data_spikes = (torch.rand(torch.shape(data))<data).float()
+        spikes = [(torch.rand(s[i].size())<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
+        data_spikes = (torch.rand(data.size())<data).float()
         dsdt = []
 
         # Output layer
