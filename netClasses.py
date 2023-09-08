@@ -181,6 +181,9 @@ class SNN(nn.Module):
             elif self.update_rule == 'skew2':
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+            elif self.update_rule == 'skewsym':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1], 0, 1), s[i] - seq[i]) -  torch.mm(torch.transpose(s[i+1]-seq[i+1],0,1),s[i]) ))
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
