@@ -33,7 +33,14 @@
 #nohup python -u main.py --action train --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --update-rule skew-sym1 > skewsym3.out &
 #nohup python -u main.py --action train --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 45 --beta 0.2 --dt 0.2 --cep --update-rule skew-sym1 > skewsym4.out &
 #nohup python -u main.py --action train --activation-function hardsigm  --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --update-rule skew-sym1 > skewsym5.out
-nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  asym1 > nonspike_test.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skew1 > spike1.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skew1 > spike2.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skew1 > spike3.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skew1 > spike4.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > spike5.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > spike6.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > spike7.out
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > spike8.out
 
 # Experiments! 2 layer - check symmetric rule
 
