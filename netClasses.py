@@ -71,27 +71,27 @@ class SNN(nn.Module):
     def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
         dsdt = []
 
-        #spikes = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
-        spikes = [rho(si) for si in s] # Get Poisson spikes
-        #data_spikes = (torch.rand(data.size(),device=self.device)<data).float()
-        data_spikes = rho(data)
+        spike = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
+        #spike = [rho(si) for si in s] # Get Poisson spikes
+        trace = []
+        data_spike = (torch.rand(data.size(),device=self.device)<data).float()
+        #data_spike = rho(data)
 
         # Output layer
-        dsdt.append(-s[0] + self.w[0](spikes[1]))
+        dsdt.append(-s[0] + self.w[0](spike[1]))
         if np.abs(beta) > 0:
-            dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spikes[0]...
+            dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spike[0]...
 
         # Other layers
         for i in range(1, self.ns - 1):
-            dsdt.append(-s[i] + self.w[2*i](spikes[i+1]) + self.w[2*i - 1](spikes[i-1]))
-
+            dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i - 1](spike[i-1]))
         # Post-input layer
-        dsdt.append(-s[-1] + self.w[-1](data_spikes) + self.w[-2](spikes[-2]))
+        dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](spike[-2]))
 
         if self.plain_data:
             dsdt.append(-s[-1] + self.w[-1](data) + self.w[-2](rho(s[-2])))
         else:
-            dsdt.append(-s[-1] + self.w[-1](data_spikes) + self.w[-2](rho(s[-2])))
+            dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](rho(s[-2])))
 
         s_old = []
         for ind, s_temp in enumerate(s):
