@@ -20,11 +20,10 @@ def train(net, train_loader, epoch, learning_rule):
     for batch_idx, (data, targets) in enumerate(train_loader):
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
-
-        if net.cuda:
-            data, targets = data.to(net.device), targets.to(net.device)
-            for i in range(net.ns):
-                s[i] = s[i].to(net.device)
+        trace = net.initHidden(data.size(0))
+        data, targets = data.to(net.device), targets.to(net.device)
+        for i in range(net.ns):
+            s[i] = s[i].to(net.device)
 
 
         if learning_rule == 'ep':
@@ -43,7 +42,7 @@ def train(net, train_loader, epoch, learning_rule):
                     else:
                         beta = net.beta
 
-                    s = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
+                    s = net.forward(data, s, trace, target = targets, beta = beta, method = 'nograd')
                     if not net.cep:
                         Dw = net.computeGradients(data, s, seq, beta)
                         net.updateWeights(Dw)
@@ -88,6 +87,7 @@ def train(net, train_loader, epoch, learning_rule):
 
         elif learning_rule == 'stdp':
             with torch.no_grad():
+                s[self.ns] = data
                 s = net.forward(data, s)
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)

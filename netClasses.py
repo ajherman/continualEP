@@ -120,15 +120,16 @@ class SNN(nn.Module):
         dsdt = []
         trace_decay = 0.9
         # Spikes
-        spike = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
-        #spike = [rho(si) for si in s] # Get Poisson spikes
-        data_spike = (torch.rand(data.size(),device=self.device)<data).float()
+        # spike = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns+1)] # Get Poisson spikes
+        spike = [rho(si) for si in s] # Get Poisson spikes
+        # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
-        # Traces
-        if False:
-            for i in range(self.ns):
-                trace[i] = trace_decay*trace[i] + spike[i]
-            trace[self.ns] = trace_decay*trace[self.ns] + data_spike
+
+        # # Traces
+        # if False:
+        #     for i in range(self.ns):
+        #         trace[i] = trace_decay*trace[i] + spike[i]
+        #     trace[self.ns] = trace_decay*trace[self.ns] + data_spike
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
@@ -142,9 +143,9 @@ class SNN(nn.Module):
         # dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](spike[-2]))
 
         if self.plain_data:
-            dsdt.append(-s[-1] + self.w[-1](data) + self.w[-2](rho(s[-2])))
+            dsdt.append(-s[-1] + self.w[-1](s[-1]) + self.w[-2](rho(s[-2])))
         else:
-            dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](rho(s[-2])))
+            dsdt.append(-s[-1] + self.w[-1](rho(s[-1])) + self.w[-2](rho(s[-2])))
 
         s_old = []
         for ind, s_temp in enumerate(s):
@@ -170,7 +171,7 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, trace, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
@@ -185,7 +186,7 @@ class SNN(nn.Module):
         else:
             Dw = self.initGrad()
             for t in range(Kmax):
-                s, dw = self.stepper(data, s, target, beta)
+                s, dw = self.stepper(data, s, trace, target, beta)
 
                 with torch.no_grad():
                     for ind_type, dw_temp in enumerate(dw):
@@ -198,7 +199,7 @@ class SNN(nn.Module):
 
     def initHidden(self, batch_size):
         s = []
-        for i in range(self.ns):
+        for i in range(self.ns+1):
             s.append(torch.zeros(batch_size, self.size_tab[i], requires_grad = True))
         return s
 
