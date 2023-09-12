@@ -22,8 +22,9 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
-        for i in range(net.ns):
+        for i in range(net.ns+1):
             s[i] = s[i].to(net.device)
+            trace[i] = trace[i].to(net.device)
 
         if learning_rule == 'ep':
             with torch.no_grad():
@@ -41,7 +42,7 @@ def train(net, train_loader, epoch, learning_rule):
                     else:
                         beta = net.beta
 
-                    s = net.forward(data, s, trace, target = targets, beta = beta, method = 'nograd')
+                    s = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
                     if not net.cep:
                         Dw = net.computeGradients(data, s, seq, beta)
                         net.updateWeights(Dw)
@@ -101,7 +102,7 @@ def train(net, train_loader, epoch, learning_rule):
                 else:
                     beta = net.beta
 
-                s, Dw = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
+                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, method = 'nograd')
                 #***********************************************************************************************#
 
                 if not net.cep:

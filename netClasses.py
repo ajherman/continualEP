@@ -118,7 +118,7 @@ class SNN(nn.Module):
 
     def stepper(self, data, s, trace=None, target = None, beta = 0, return_derivatives = False):
         dsdt = []
-        trace_decay = 0.9
+        trace_decay = 0.8
         # Spikes
 
         spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
@@ -129,9 +129,13 @@ class SNN(nn.Module):
 
         # Traces
         if not trace is None:
-            for i in range(self.ns):
+            for i in range(self.ns+1):
                 trace[i] = trace_decay*trace[i] + spike[i]
-            trace[self.ns] = trace_decay*trace[self.ns] + data_spike
+                # print(i)
+                # print(trace[i].get_device())
+                # print(spike[i].get_device())
+
+            # trace[self.ns] = trace_decay*trace[self.ns] + data_spike
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
@@ -142,7 +146,6 @@ class SNN(nn.Module):
         for i in range(1, self.ns - 1):
             dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i - 1](spike[i-1]))
         # Post-input layer
-        # dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](spike[-2]))
 
         if self.plain_data:
             dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
@@ -163,7 +166,7 @@ class SNN(nn.Module):
 
         #*****************************C-EP*****************************#
         if (np.abs(beta) > 0):
-            dw = self.computeGradients(data, s, s_old)
+            dw = self.computeGradients(data, s, s_old, trace, spike)
             if self.cep:
                 with torch.no_grad():
                     self.updateWeights(dw)
@@ -173,7 +176,7 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, trace= None, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
@@ -188,6 +191,8 @@ class SNN(nn.Module):
         else:
             Dw = self.initGrad()
             for t in range(Kmax):
+                # print(type(trace))
+                # assert(0)
                 s, dw = self.stepper(data, s, trace, target, beta)
 
                 with torch.no_grad():
@@ -217,7 +222,7 @@ class SNN(nn.Module):
         return gradw, gradw_bias
 
 
-    def computeGradients(self, data, s, seq):
+    def computeGradients(self, data, s, seq, trace, spike):
         gradw = []
         gradw_bias = []
         batch_size = s[0].size(0)
@@ -241,16 +246,22 @@ class SNN(nn.Module):
             elif self.update_rule == 'skewsym':
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1], 0, 1), s[i] - seq[i]) -  torch.mm(torch.transpose(s[i+1]-seq[i+1],0,1),s[i]) ))
+            elif self.update_rule == 'stdp':
+                # dW_xh = (tf.transpose(x.trace1())@h.spike() + tf.transpose(x.spike())@h.trace2())/batch_size
+                gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
-        # print(len(gradw))
-        if self.plain_data:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), s[-1]))
+
+        if self.update_rule == 'stdp':
+            gradw.append( (1/(beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), spike[-1]) ))
         else:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), rho(s[-1])))
-        # print(len(gradw))
-        # print("===")
+            if self.plain_data:
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), s[-1]))
+            else:
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), rho(s[-1])))
+
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
