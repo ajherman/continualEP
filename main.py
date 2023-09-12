@@ -315,7 +315,7 @@ if __name__ == '__main__':
             error_train_tab.append(error_train)
 
 
-            error_test = evaluate(net, test_loader)
+            error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}

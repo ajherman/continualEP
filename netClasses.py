@@ -120,16 +120,18 @@ class SNN(nn.Module):
         dsdt = []
         trace_decay = 0.9
         # Spikes
-        # spike = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns+1)] # Get Poisson spikes
-        spike = [rho(si) for si in s] # Get Poisson spikes
+
+        spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
+        # spike = [rho(si) for si in s] # Get Poisson spikes
+
         # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
 
-        # # Traces
-        # if False:
-        #     for i in range(self.ns):
-        #         trace[i] = trace_decay*trace[i] + spike[i]
-        #     trace[self.ns] = trace_decay*trace[self.ns] + data_spike
+        # Traces
+        if not trace is None:
+            for i in range(self.ns):
+                trace[i] = trace_decay*trace[i] + spike[i]
+            trace[self.ns] = trace_decay*trace[self.ns] + data_spike
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
@@ -143,9 +145,9 @@ class SNN(nn.Module):
         # dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](spike[-2]))
 
         if self.plain_data:
-            dsdt.append(-s[-1] + self.w[-1](s[-1]) + self.w[-2](rho(s[-2])))
+            dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
         else:
-            dsdt.append(-s[-1] + self.w[-1](rho(s[-1])) + self.w[-2](rho(s[-2])))
+            dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
 
         s_old = []
         for ind, s_temp in enumerate(s):
@@ -171,7 +173,7 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, trace, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, trace= None, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
@@ -244,9 +246,9 @@ class SNN(nn.Module):
                 gradw_bias.append(None)
         # print(len(gradw))
         if self.plain_data:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), s[-1]))
         else:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), rho(s[-1])))
         # print(len(gradw))
         # print("===")
         if self.use_bias:

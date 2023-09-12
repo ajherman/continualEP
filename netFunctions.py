@@ -25,7 +25,6 @@ def train(net, train_loader, epoch, learning_rule):
         for i in range(net.ns):
             s[i] = s[i].to(net.device)
 
-
         if learning_rule == 'ep':
             with torch.no_grad():
                 s = net.forward(data, s)
@@ -87,7 +86,7 @@ def train(net, train_loader, epoch, learning_rule):
 
         elif learning_rule == 'stdp':
             with torch.no_grad():
-                s[self.ns] = data
+                s[net.ns] = data
                 s = net.forward(data, s)
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
@@ -133,7 +132,7 @@ def train(net, train_loader, epoch, learning_rule):
     return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
 
 
-def evaluate(net, test_loader):
+def evaluate(net, test_loader, learning_rule=None):
     net.eval()
     loss_tot_test = 0
     correct_test = 0
@@ -145,7 +144,8 @@ def evaluate(net, test_loader):
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns):
                     s[i] = s[i].to(net.device)
-
+                if learning_rule == 'stdp':
+                    s[net.ns] = data
             s = net.forward(data, s, method = 'nograd')
 
             loss_tot_test += (1/2)*((s[0]-targets)**2).sum()
