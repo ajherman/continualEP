@@ -55,8 +55,11 @@
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 90 --Kmax 30 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  skewsym > spike17.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  skewsym > spike18.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 60 --Kmax 20 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  skewsym > spike19.out &
-#nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 90 --Kmax 30 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  skewsym > spike20.out &
-# nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  skewsym > spike21.out &
+#nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 90 --Kmax 30 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  skewsym > spike20.out & 
+#nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  skewsym > spike21.out &
+
+#nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  skewsym > spike22.out &
+
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  skewsym > stdp.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  skewsym > stdp.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule stdp > stdp.out &
