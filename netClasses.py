@@ -27,6 +27,7 @@ class SNN(nn.Module):
         self.no_rhop = args.no_rhop
         self.plain_data = args.plain_data
         self.update_rule = args.update_rule
+        self.trace_decay = args.trace_decay
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
 
@@ -118,7 +119,7 @@ class SNN(nn.Module):
 
     def stepper(self, data, s, trace=None, target = None, beta = 0, return_derivatives = False):
         dsdt = []
-        trace_decay = 0.8
+        trace_decay = self.trace_decay
         # Spikes
 
         spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
@@ -130,17 +131,16 @@ class SNN(nn.Module):
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
-                trace[i] = trace_decay*trace[i] + spike[i]
-                # print(i)
-                # print(trace[i].get_device())
-                # print(spike[i].get_device())
-
+                trace[i] = trace_decay*(trace[i] + spike[i]) # CHANGED
+                # trace[i] = trace_decay*trace[i] + spike[i]
+#
             # trace[self.ns] = trace_decay*trace[self.ns] + data_spike
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
         if np.abs(beta) > 0:
-            dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spike[0]...
+            # dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spike[0]...
+            dsdt[0] = dsdt[0] + beta*(target-spike[0]) #was spike[0]... # CHANGED
 
         # Other layers
         for i in range(1, self.ns - 1):

@@ -164,6 +164,11 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='reset weights for each batch')
+parser.add_argument(
+    '--trace-decay',
+    type=float,
+    default=0.5,
+    help='decay factor for traces')
 
 args = parser.parse_args()
 

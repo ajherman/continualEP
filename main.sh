@@ -61,7 +61,25 @@
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  skewsym > stdp.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule stdp > stdp.out &
 
-nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 120 --Kmax 40 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp1.out &
+# nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  stdp > stdp1.out &
+# nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp2.out &
+# nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp3.out &
+
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.0025 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  stdp > stdp1.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.0025 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp2.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.0025 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.2 --cep --learning-rule stdp --update-rule  stdp > stdp3.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.05 --cep --learning-rule stdp --update-rule  stdp > stdp4.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp5.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 1.0 --dt 0.2 --cep --learning-rule stdp --update-rule  stdp > stdp6.out &
+
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.0025 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.05 --cep --learning-rule stdp --update-rule  stdp > stdp7.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.0025 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp8.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.0025 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.2 --cep --learning-rule stdp --update-rule  stdp > stdp9.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.05 --cep --learning-rule stdp --update-rule  stdp > stdp10.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp11.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.2 --cep --learning-rule stdp --update-rule  stdp > stdp12.out &
+
+
 
 
 # Experiments! 2 layer - check symmetric rule
