@@ -17,19 +17,14 @@ def train(net, train_loader, epoch, learning_rule):
     loss_tot = 0
     correct = 0
     criterion = nn.MSELoss(reduction = 'sum')
-    # s = net.initHidden(data.size(0))
     for batch_idx, (data, targets) in enumerate(train_loader):
-        #print(data.size)
-        #print(targets.size)
-        #assert(0)
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
-
-        if net.cuda:
-            data, targets = data.to(net.device), targets.to(net.device)
-            for i in range(net.ns):
-                s[i] = s[i].to(net.device)
-
+        trace = net.initHidden(data.size(0))
+        data, targets = data.to(net.device), targets.to(net.device)
+        for i in range(net.ns+1):
+            s[i] = s[i].to(net.device)
+            trace[i] = trace[i].to(net.device)
 
         if learning_rule == 'ep':
             with torch.no_grad():
@@ -90,7 +85,33 @@ def train(net, train_loader, epoch, learning_rule):
                         net.updateWeights(Dw_former)
                 #########################################################################################
 
+        elif learning_rule == 'stdp':
+            with torch.no_grad():
+                s[net.ns] = data
+                s = net.forward(data, s)
+                pred = s[0].data.max(1, keepdim=True)[1]
+                loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+                #*******************************************VF-EQPROP ******************************************#
+                seq = []
+                for i in range(len(s)): seq.append(s[i].clone())
 
+                #******************************************FORMER C-VF******************************************#
+                if net.randbeta > 0:
+                    signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
+                    beta = signbeta*net.beta
+                else:
+                    beta = net.beta
+
+                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, method = 'nograd')
+                #***********************************************************************************************#
+
+                if not net.cep:
+                    if not net.former:
+                        net.updateWeights(Dw)
+                    else:
+                        Dw_former = net.computeGradients(data, s, seq, beta)
+                        net.updateWeights(Dw_former)
+                #########################################################################################
 
         loss_tot += loss
         targets_temp = targets.data.max(1, keepdim=True)[1]
@@ -112,13 +133,11 @@ def train(net, train_loader, epoch, learning_rule):
     return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
 
 
-def evaluate(net, test_loader):
-
+def evaluate(net, test_loader, learning_rule=None):
     net.eval()
     loss_tot_test = 0
     correct_test = 0
     with torch.no_grad():
-        # s = net.initHidden(data.size(0))
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
@@ -126,7 +145,8 @@ def evaluate(net, test_loader):
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns):
                     s[i] = s[i].to(net.device)
-
+                if learning_rule == 'stdp':
+                    s[net.ns] = data
             s = net.forward(data, s, method = 'nograd')
 
             loss_tot_test += (1/2)*((s[0]-targets)**2).sum()

@@ -164,6 +164,11 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='reset weights for each batch')
+parser.add_argument(
+    '--trace-decay',
+    type=float,
+    default=0.5,
+    help='decay factor for traces')
 
 args = parser.parse_args()
 
@@ -245,6 +250,9 @@ if __name__ == '__main__':
     elif (args.discrete) & (args.learning_rule == 'ep'):
         net = EPdisc(args)
 
+    elif args.learning_rule == 'stdp':
+        net = SNN(args)
+
     #
     # if args.action == 'plotcurves':
     #
@@ -312,7 +320,7 @@ if __name__ == '__main__':
             error_train_tab.append(error_train)
 
 
-            error_test = evaluate(net, test_loader)
+            error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}
