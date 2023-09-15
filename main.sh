@@ -5,7 +5,7 @@
 # nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.005 0.05 0.2 --epochs 50 --T 100 --Kmax 20 --beta 0.5
 
 # # CEP
-#nohup python -u main.py --action 'train' --discrete --size_tab 10 512 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep > results1.out &
+# nohup python -u main.py --action 'train' --discrete --size_tab 10 512 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep > results1.out &
 #
 # # CEP
 # nohup python -u main.py --action 'train' --discrete --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epochs 150 --T 100 --Kmax 20 --beta 0.5 --cep >> no_bias1.out &
@@ -22,7 +22,6 @@
 
 # Experiments! 1 layer - compare different symmetric rules
 
-# nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --update_rule cep > old_rule.out &
 
 # Experiment comparing different symmetric rules
 
@@ -31,14 +30,23 @@
 
 
 # Things from before that should work...
-nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 100 --T 40 --Kmax 15 --beta 0.2 --cep --update-rule skew-sym2 > test1.out &
-nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.5 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > test2.out &
+nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --cep --update-rule cep > test1.out &
+nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --cep --update-rule skew-sym1 > test2.out &
+nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --cep --update-rule skew-sym2 > test3.out &
+nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --cep --update-rule cep-alt > test4.out &
+
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.5 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > test5.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.5 --dt 0.5 --cep --learning-rule stdp --update-rule  asym1 > test6.out &
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.5 --dt 0.5 --cep --learning-rule stdp --update-rule  skew1 > test7.out &
+
+nohup python -u main.py --action train --no-clamp --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --dt 1.0 --no-rhop --plain-data --cep --update-rule cep > test8.out &
+nohup python -u main.py --action train --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --discrete --cep --update-rule cep > test9.out &
 
 
 # Discrete
 for beta in {0.1,0.2,0.5,0.8,1.0}
   do
-    nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --cep --update-rule skew-sym1 > oldver_beta_"$((10*beta))".out &
+    nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --cep --update-rule skew-sym1 > oldver_beta_"$((10*beta))".out &
   done
 
 #nohup python -u main.py --action train --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt 0.5 --cep --update-rule skew-sym1 > skewsym3.out &
@@ -112,13 +120,25 @@ done
 # nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp11.out &
 # nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta 0.5 --dt 0.2 --cep --learning-rule stdp --update-rule  stdp > stdp12.out &
 
+# STDP
 for beta in {0.1,0.2,0.5,0.8,1.0}
 do
   for dt in {0.1,0.2,0.5,1.0}
   do
-    nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule  stdp_beta="$((10*beta))"_dt="$dt".out &
+    nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0025 0.005 --epochs 30 --T 50 --Kmax 25 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule stdp > stdp_beta="$((10*beta))"_dt="$dt".out &
   done
 done
+
+# Asym
+for beta in {0.1,0.2,0.5,0.8,1.0}
+do
+  for dt in {0.1,0.2,0.5,1.0}
+  do
+    nohup python -u main.py --action 'train' --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --learning-rule 'vf' --update-rule 'asym2' --cep > asym_beta="$((10*beta))"_dt="$dt".out &
+  done
+done
+
+
 
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 512 512 784 --lr_tab 0.0002 0.002 0.01 --epochs 30 --T 100 --Kmax 50 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp13.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 512 512 784 --lr_tab 0.0025 0.0025 0.005 --epochs 30 --T 100 --Kmax 50 --beta 1.0 --dt 0.1 --cep --learning-rule stdp --update-rule  stdp > stdp14.out &
@@ -145,6 +165,7 @@ done
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.8 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > skewsym3.out &
 #nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 1.0 --dt 0.5 --cep --learning-rule stdp --update-rule  skewsym > skewsym4.out &
 
+# Kmax
 for Kmax in {15,20,25,30,35,40}
   do
     nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 512 512 784 --lr_tab 0.0002 0.002 0.01 --epochs 30 --T 100 --Kmax $Kmax --beta 1.0 --dt 0.5 --cep --learning-rule stdp --update-rule  stdp > stdp_kmax_"$Kmax".out &
@@ -184,7 +205,7 @@ for Kmax in {15,20,25,30,35,40}
 # nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 120 --Kmax 15 --beta 0.2 --dt 0.2 --cep --no-reset > cont6.out &
 # nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 120 --Kmax 45 --beta 0.2 --dt 0.2 --cep --no-reset > cont7.out &
 
-
+# Kmax
 for kmax in {15,20,25,30,35,40}
 do
 nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 80 --Kmax $kmax --beta 0.2 --dt 0.2 --cep > cont_kmax_"$kmax".out &
@@ -205,7 +226,7 @@ done
 #nohup python -u main.py --action 'train' --no-clamp --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 15 --T 40 --Kmax 15 --beta 0.2 --dt 0.2 --cep --device-label 3 > cont3.out &
 
 # Experiments! 2 layer
-#nohup python -u main.py --action 'train' --no-clamp --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --dt 1.0 --no-rhop --plain-data --cep --update-rule cep > cont.out &
+# nohup python -u main.py --action 'train' --no-clamp --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --dt 1.0 --no-rhop --plain-data --cep --update-rule cep > cont.out &
 #nohup python -u main.py --action 'train' --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --discrete --cep --update-rule cep > disc.out &
 
 
