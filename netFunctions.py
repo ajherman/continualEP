@@ -22,9 +22,15 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
-        for i in range(net.ns+1):
-            s[i] = s[i].to(net.device)
-            trace[i] = trace[i].to(net.device)
+
+        if learning_rule == 'stdp':
+            for i in range(net.ns+1):
+                s[i] = s[i].to(net.device)
+                trace[i] = trace[i].to(net.device)
+        else:
+            for i in range(net.ns):
+                s[i] = s[i].to(net.device)
+                trace[i] = trace[i].to(net.device)
 
         if learning_rule == 'ep':
             with torch.no_grad():
