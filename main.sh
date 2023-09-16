@@ -68,21 +68,21 @@ for update_rule in {skewsym,asym,cepalt}
     done
   done
 
-# Slow
-for update_rule in {skewsym,asym,cepalt}
-  do
-    i=0
-    for beta in {0.2,0.5,1.0}
-    do
-      for dt in {0.2,0.5,1.0}
-      do
-        echo rule = $update_rule , beta = $beta , dt = $dt >> nonspike_slow_"$i".out
-        echo "" >> nonspike_slow_"$i".out
-        nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 80 --Kmax 30 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule  skewsym >> slow_"$update_rule"_"$i".out &
-        i=$((i+1))
-      done
-    done
-  done
+# # Slow
+# for update_rule in {skewsym,asym,cepalt}
+#   do
+#     i=0
+#     for beta in {0.2,0.5,1.0}
+#     do
+#       for dt in {0.2,0.5,1.0}
+#       do
+#         echo rule = $update_rule , beta = $beta , dt = $dt >> nonspike_slow_"$i".out
+#         echo "" >> nonspike_slow_"$i".out
+#         nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 80 --Kmax 30 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule  skewsym >> slow_"$update_rule"_"$i".out &
+#         i=$((i+1))
+#       done
+#     done
+#   done
 
 # # STDP
 # i=0
