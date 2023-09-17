@@ -288,11 +288,11 @@ if __name__ == '__main__':
 
     if args.action == 'train':
 
-        #create path
-        BASE_PATH, name = createPath(args)
-
-        #save hyperparameters
-        createHyperparameterfile(BASE_PATH, name, args)
+        # #create path
+        # BASE_PATH, name = createPath(args)
+        #
+        # #save hyperparameters
+        # createHyperparameterfile(BASE_PATH, name, args)
 
 
         #compute initial angle between EP update and BPTT gradient
@@ -328,6 +328,6 @@ if __name__ == '__main__':
             if args.angle_grad:
                 results_dict.update(results_dict_angle)
 
-            outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-            pickle.dump(results_dict, outfile)
-            outfile.close()
+            # outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
+            # pickle.dump(results_dict, outfile)
+            # outfile.close()
