@@ -188,7 +188,7 @@ class SNN(nn.Module):
                 if return_deltas:
                     delta = torch.sqrt(torch.reduce_mean(dsdt**2))
                     deltas.append(delta.detach().cpu().numpy())
-            return s
+            return s, deltas
         else:
             Dw = self.initGrad()
             for t in range(Kmax):
