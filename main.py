@@ -257,9 +257,6 @@ if __name__ == '__main__':
     elif args.learning_rule == 'stdp':
         net = SNN(args)
 
-    with open(args.directory, 'a', newline='') as f:
-        writer = csv.writer(f)
-        # writer.writerow(fields)
 
     #
     # if args.action == 'plotcurves':
@@ -302,6 +299,10 @@ if __name__ == '__main__':
         # #save hyperparameters
         # createHyperparameterfile(BASE_PATH, name, args)
 
+        # Create csv file
+        csv_path = args.directory+"/results.csv"
+        csv_file = open(csv_path,'a',newline='')
+        csv_writer = csv.write(csvf)
 
         #compute initial angle between EP update and BPTT gradient
         if args.angle_grad:
@@ -334,6 +335,8 @@ if __name__ == '__main__':
 
             if args.angle_grad:
                 results_dict.update(results_dict_angle)
+
+            csv_writer.writerow([error_train, error_test])
 
             # outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
             # pickle.dump(results_dict, outfile)
