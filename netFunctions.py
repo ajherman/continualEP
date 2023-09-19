@@ -108,8 +108,15 @@ def train(net, train_loader, epoch, learning_rule):
                 else:
                     beta = net.beta
 
-                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, method = 'nograd')
+                s, Dw, deltas = net.forward(data, s, trace=trace, target = targets, beta = beta, return_deltas = True, method = 'nograd')
                 #***********************************************************************************************#
+
+                # Plots deltas to visualize convergence
+                ##########################
+                fig, ax = plt.subplots()
+                ax.plot(np.arange(net.T),deltas)
+                fig.savefig("deltas.png")
+                ###########################
 
                 if not net.cep:
                     if not net.former:

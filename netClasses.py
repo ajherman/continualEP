@@ -173,7 +173,7 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, plot_deltas=False,**kwargs):
+    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, return_deltas=False,**kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
@@ -185,7 +185,7 @@ class SNN(nn.Module):
             deltas = []
             for t in range(T):
                 s,dsdt = self.stepper(data, s)
-                if plot_deltas:
+                if return_deltas:
                     delta = torch.sqrt(torch.reduce_mean(dsdt**2))
                     deltas.append(delta.detach().cpu().numpy())
             return s
@@ -203,11 +203,10 @@ class SNN(nn.Module):
                                 Dw[ind_type][ind] += dw_temp_layer
 
             # Plot plot deltas
-            if plot_deltas:
-                fig, ax = plt.subplots()
-                ax.plot(np.arange(T),deltas)
-                fig.savefig("deltas.png")
-            return s, Dw
+            if return_deltas:
+                return s, DW, deltas
+            else:
+                return s, Dw
 
 
     def initHidden(self, batch_size):
