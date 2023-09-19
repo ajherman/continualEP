@@ -95,7 +95,7 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s[net.ns] = data
-                s,deltas = net.forward(data, s)
+                s,deltas = net.forward(data, s, return_deltas=True)
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
                 #*******************************************VF-EQPROP ******************************************#
@@ -109,7 +109,7 @@ def train(net, train_loader, epoch, learning_rule):
                 else:
                     beta = net.beta
 
-                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, return_deltas = True, method = 'nograd')
+                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, method = 'nograd')
                 #***********************************************************************************************#
 
                 # Plots deltas to visualize convergence

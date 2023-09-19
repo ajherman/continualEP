@@ -43,16 +43,14 @@
 #nohup python -u main.py --action train --size_tab 10 512 512 784 --lr_tab 0.00018 0.0018 0.01 --epoch 150 --T 100 --Kmax 20 --beta 0.5 --discrete --cep --update-rule cep > test9.out &
 
 # Discrete
-i=0
-for beta in {0.1,0.2,0.5,0.8,1.0}
-   do
-     echo beta = $beta >> disc_"$i".out
-     echo "" >> disc_"$i".out
-     nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --cep --update-rule skew-sym1 >> disc_"$i".out &
-     i=$((i+1))
-   done
-
-<<<<<<< HEAD
+#i=0
+#for beta in {0.1,0.2,0.5,0.8,1.0}
+#   do
+#     echo beta = $beta >> disc_"$i".out
+#     echo "" >> disc_"$i".out
+#     nohup python -u main.py --action train --discrete --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --cep --update-rule skew-sym1 >> disc_"$i".out &
+#     i=$((i+1))
+#   done
 # # Fast
 # for update_rule in {cepalt}
 #   do
@@ -72,7 +70,7 @@ for beta in {0.1,0.2,0.5,0.8,1.0}
 beta=0.2
 dt=0.5
 update_rule="skewsym"
-nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> fast_"$update_rule".out &
+nohup python -u main.py --directory skewsym --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> fast_"$update_rule".out &
 
 ## Fast
 #for update_rule in {skewsym,asym,cepalt}

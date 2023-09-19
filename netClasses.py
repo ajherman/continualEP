@@ -186,9 +186,12 @@ class SNN(nn.Module):
             for t in range(T):
                 s,dsdt = self.stepper(data, s)
                 if return_deltas:
-                    delta = torch.sqrt(torch.reduce_mean(dsdt**2))
-                    deltas.append(delta.detach().cpu().numpy())
-            return s, deltas
+                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+                    deltas.append(delta)
+            if return_deltas:
+                return s, deltas
+            else: 
+                return s
         else:
             Dw = self.initGrad()
             for t in range(Kmax):
@@ -204,7 +207,7 @@ class SNN(nn.Module):
 
             # Plot plot deltas
             if return_deltas:
-                return s, DW, deltas
+                return s, Dw, deltas
             else:
                 return s, Dw
 
