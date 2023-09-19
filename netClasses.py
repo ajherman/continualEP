@@ -169,11 +169,11 @@ class SNN(nn.Module):
                     self.updateWeights(dw)
             return s,dw
         else:
-            return s
+            return s,dsdt
         #**************************************************************#
 
 
-    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, plot_deltas=False,**kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
@@ -182,8 +182,12 @@ class SNN(nn.Module):
             K = Kmax
 
         if beta == 0:
+            deltas = []
             for t in range(T):
-                s = self.stepper(data, s)
+                s,dsdt = self.stepper(data, s)
+                if plot_deltas:
+                    delta = torch.sqrt(torch.reduce_mean(dsdt**2))
+                    deltas.append(delta.detach().cpu().numpy())
             return s
         else:
             Dw = self.initGrad()
@@ -198,6 +202,11 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
+            # Plot plot deltas
+            if plot_deltas:
+                fig, ax = plt.subplots()
+                ax.plot(np.arange(T),deltas)
+                fig.savefig("deltas.png")
             return s, Dw
 
 
