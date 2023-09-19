@@ -52,21 +52,27 @@
 #     i=$((i+1))
 #   done
 
-# Fast
-for update_rule in {skewsym,asym,cepalt}
-  do
-    i=0
-    for beta in {0.2,0.5,1.0}
-    do
-      for dt in {0.2,0.5,1.0}
-      do
-        echo rule = $update_rule , beta = $beta , dt = $dt >> nonspike_fast_"$i".out
-        echo "" >> nonspike_fast_"$i".out
-        nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> fast_"$update_rule"_"$i".out &
-        i=$((i+1))
-      done
-    done
-  done
+# # Fast
+# for update_rule in {cepalt}
+#   do
+#     i=0
+#     for beta in {0.2,0.5,1.0}
+#     do
+#       for dt in {0.2,0.5,1.0}
+#       do
+#         echo rule = $update_rule , beta = $beta , dt = $dt >> nonspike_fast_"$i".out
+#         echo "" >> nonspike_fast_"$i".out
+#         nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> fast_"$update_rule"_"$i".out &
+#         nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> fast_"$update_rule"_"$i".out &
+#         i=$((i+1))
+#       done
+#     done
+#   done
+beta=0.2
+dt=0.5
+update_rule="skewsym"
+nohup python -u main.py --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> fast_"$update_rule".out &
+
 
 # # Slow
 # for update_rule in {skewsym,asym,cepalt}
