@@ -10,6 +10,7 @@ import os, sys
 import datetime
 from shutil import copyfile
 import copy
+import csv
 
 def train(net, train_loader, epoch, learning_rule):
 

@@ -169,6 +169,10 @@ parser.add_argument(
     type=float,
     default=0.5,
     help='decay factor for traces')
+parser.add_argument(
+    '--directory',
+    type=str,
+    help='select learning rate')
 
 args = parser.parse_args()
 
@@ -253,6 +257,10 @@ if __name__ == '__main__':
     elif args.learning_rule == 'stdp':
         net = SNN(args)
 
+    with open(args.directory, 'a', newline='') as f:
+        writer = csv.writer(f)
+        # writer.writerow(fields)
+
     #
     # if args.action == 'plotcurves':
     #
@@ -318,7 +326,6 @@ if __name__ == '__main__':
         for epoch in range(1, args.epochs + 1):
             error_train = train(net, train_loader, epoch, args.learning_rule)
             error_train_tab.append(error_train)
-
 
             error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
