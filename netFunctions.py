@@ -103,12 +103,12 @@ def train(net, train_loader, epoch, learning_rule):
                 for i in range(len(s)): seq.append(s[i].clone())
 
                 #******************************************FORMER C-VF******************************************#
-                if net.randbeta > 0:
-                    signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-                    beta = signbeta*net.beta
-                else:
-                    beta = net.beta
-
+                # if net.randbeta > 0:
+                #     signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
+                #     beta = signbeta*net.beta
+                # else:
+                #     beta = net.beta
+                beta = net.beta
                 s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
                 #***********************************************************************************************#
 
@@ -163,10 +163,11 @@ def evaluate(net, test_loader, learning_rule=None):
                 if learning_rule == 'stdp':
                     s[net.ns] = data
             s = net.forward(data, s, method = 'nograd')
-
+            print(s[0])
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
+            print(pred)
             targets_temp = targets.data.max(1, keepdim = True)[1]
             correct_test += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
 
