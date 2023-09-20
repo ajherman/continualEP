@@ -120,7 +120,7 @@ parser.add_argument(
 parser.add_argument(
     '--device-label',
     type=int,
-    default=0,
+    default=-1,
     help='selects cuda device (default 0, -1 to select )')
 parser.add_argument(
     '--debug-cep',
