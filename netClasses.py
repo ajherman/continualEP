@@ -124,8 +124,8 @@ class SNN(nn.Module):
         trace_decay = self.trace_decay
         # Spikes
 
-        spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
-        # spike = [rho(si) for si in s] # Get Poisson spikes
+        # spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
+        spike = [rho(si) for si in s] # Get Poisson spikes
 
         # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
