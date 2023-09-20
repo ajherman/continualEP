@@ -28,6 +28,7 @@ class SNN(nn.Module):
         self.plain_data = args.plain_data
         self.update_rule = args.update_rule
         self.trace_decay = args.trace_decay
+        self.directory = args.directory
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
 
@@ -190,7 +191,7 @@ class SNN(nn.Module):
                     deltas.append(delta)
             if return_deltas:
                 return s, deltas
-            else: 
+            else:
                 return s
         else:
             Dw = self.initGrad()

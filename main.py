@@ -172,6 +172,7 @@ parser.add_argument(
 parser.add_argument(
     '--directory',
     type=str,
+    default='output'
     help='select learning rate')
 
 args = parser.parse_args()
@@ -264,7 +265,7 @@ if __name__ == '__main__':
     #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
     #
     #     if net.cuda:
-    #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
+    #         example_data, example_targets = example_data.to(device), example_targets.to(net.device)
     #
     #     x = example_data
     #     target = example_targets

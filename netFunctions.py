@@ -114,9 +114,10 @@ def train(net, train_loader, epoch, learning_rule):
 
                 # Plots deltas to visualize convergence
                 ##########################
-                fig, ax = plt.subplots()
-                ax.plot(np.arange(net.T),deltas)
-                fig.savefig("deltas.png")
+                if batch_idx%500==0:
+                    fig, ax = plt.subplots()
+                    ax.plot(np.arange(net.T),deltas)
+                    fig.savefig(net.directory+'/deltas_'+str(batch_idx)'.png')
                 ###########################
 
                 if not net.cep:
@@ -145,7 +146,6 @@ def train(net, train_loader, epoch, learning_rule):
        ))
 
     return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
-
 
 def evaluate(net, test_loader, learning_rule=None):
     net.eval()
