@@ -252,7 +252,8 @@ if __name__ == '__main__':
 
 
     if args.load:
-        net = pickle.load(pkl_path)
+        with open(pkl_path,'rb') as pkl_file:
+            net = pickle.load(pkl_file)
     else:
         if  (not args.discrete) & (args.learning_rule == 'vf') :
             net = VFcont(args)
