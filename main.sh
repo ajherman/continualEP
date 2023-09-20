@@ -68,20 +68,23 @@
 #     done
 #   done
 
-beta=0.2
-dt=0.1
-update_rule="cepalt"
-directory='cepalt_dt=03'
-mkdir -p $directory
-nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> log_03.out &
+#beta=0.2
+#dt=0.1
+#update_rule="cepalt"
+#directory='cepalt_dt=03'
+#mkdir -p $directory
+#nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> log_03.out &
 
-beta=0.2
-dt=1.0
-update_rule="cepalt"
-directory='cepalt_dt=07'
-mkdir -p $directory
-nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> log_07.out
-
+i=0
+for dt in {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
+	do
+	beta=0.2
+	update_rule="cepalt"
+	directory=cepalt_"$i"
+	mkdir -p $directory
+	nohup python -u main.py --directory $directory --load True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt $dt --cep --learning-rule stdp --update-rule cepalt >> log_"$i".out &
+	i=$((i+1))
+	done
 
 # beta=0.2
 # dt=0.5
