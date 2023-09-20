@@ -179,6 +179,12 @@ parser.add_argument(
     type=bool,
     default=False,
     help='if set, loads network from directory')
+parser.add_argument(
+    '--spiking',
+    type=bool,
+    default=True,
+    help='if true, uses spikes for dynamics')
+
 
 args = parser.parse_args()
 

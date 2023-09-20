@@ -30,6 +30,7 @@ class SNN(nn.Module):
         self.trace_decay = args.trace_decay
         self.directory = args.directory
         self.current_epoch = 1
+        self.spiking = args.spiking
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
 
@@ -122,10 +123,12 @@ class SNN(nn.Module):
     def stepper(self, data, s, trace=None, target = None, beta = 0, return_derivatives = False):
         dsdt = []
         trace_decay = self.trace_decay
-        # Spikes
 
-        # spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
-        spike = [rho(si) for si in s] # Get Poisson spikes
+        # Spikes
+        if self.spiking:
+            spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
+        else:
+            spike = [rho(si) for si in s] # Get Poisson spikes
 
         # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
