@@ -342,10 +342,8 @@ if __name__ == '__main__':
             if args.angle_grad:
                 results_dict.update(results_dict_angle)
 
-            with open('csv_path','a+',newline='') as csv_file:
-                csv_write = csv.write(csv_file)
+            with open(csv_path,'a+',newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([error_train, error_test])
+            
 
-            # outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-            # pickle.dump(results_dict, outfile)
-            # outfile.close()
