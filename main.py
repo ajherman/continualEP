@@ -172,7 +172,7 @@ parser.add_argument(
 parser.add_argument(
     '--directory',
     type=str,
-    default='output'
+    default='output',
     help='select learning rate')
 
 args = parser.parse_args()
@@ -306,9 +306,9 @@ if __name__ == '__main__':
         # csv_writer = csv.write(csvf)
         fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
         with open('csv_path','w+',newline='') as csv_file:
-            csv_writer = csv.write(csv_file)
+            csv_writer = csv.writer(csv_file)
             csv_writer.writerow(fieldnames)
-            csv_writer.writerow(args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax)
+            csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax])
 
         # #compute initial angle between EP update and BPTT gradient
         # if args.angle_grad:
@@ -342,10 +342,8 @@ if __name__ == '__main__':
             if args.angle_grad:
                 results_dict.update(results_dict_angle)
 
-            with open('csv_path','a+',newline='') as csv_file:
-                csv_write = csv.write(csv_file)
+            with open(csv_path,'a+',newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([error_train, error_test])
+            
 
-            # outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-            # pickle.dump(results_dict, outfile)
-            # outfile.close()
