@@ -174,6 +174,11 @@ parser.add_argument(
     type=str,
     default='output',
     help='select learning rate')
+parser.add_argument(
+    '--load',
+    type=bool,
+    default=False,
+    help='if set, loads network from directory')
 
 args = parser.parse_args()
 
@@ -243,20 +248,26 @@ if __name__ == '__main__':
     input_size = 28
 
     #Build the net
-    if  (not args.discrete) & (args.learning_rule == 'vf') :
-        net = VFcont(args)
+    pkl_path = args.directory+'/net'
 
-    if (not args.discrete) & (args.learning_rule == 'ep') :
-        net = EPcont(args)
 
-    elif (args.discrete) & (args.learning_rule == 'vf'):
-        net = VFdisc(args)
+    if args.load:
+        net = pkl.load(pkl_path)
+    else:
+        if  (not args.discrete) & (args.learning_rule == 'vf') :
+            net = VFcont(args)
 
-    elif (args.discrete) & (args.learning_rule == 'ep'):
-        net = EPdisc(args)
+        if (not args.discrete) & (args.learning_rule == 'ep') :
+            net = EPcont(args)
 
-    elif args.learning_rule == 'stdp':
-        net = SNN(args)
+        elif (args.discrete) & (args.learning_rule == 'vf'):
+            net = VFdisc(args)
+
+        elif (args.discrete) & (args.learning_rule == 'ep'):
+            net = EPdisc(args)
+
+        elif args.learning_rule == 'stdp':
+            net = SNN(args)
 
 
     #
@@ -300,6 +311,8 @@ if __name__ == '__main__':
         # #save hyperparameters
         # createHyperparameterfile(BASE_PATH, name, args)
 
+        # Create pickle path
+
         # Create csv file
         csv_path = args.directory+"/results.csv"
         # csv_file = open(csv_path,'a',newline='')
@@ -330,9 +343,16 @@ if __name__ == '__main__':
 
         start_time = datetime.datetime.now()
 
-        for epoch in range(1, args.epochs + 1):
+        for epoch in range(net.current_epoch, args.epochs + 1):
+            net.current_epoch = epoch
             error_train = train(net, train_loader, epoch, args.learning_rule)
             error_train_tab.append(error_train)
+
+            # Save Network
+            pkl_path = args.directory+'/net'
+            with open(pkl_path,'wb') as pkl_file:
+                pickle.dump(net,pkl_file)
+
 
             error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
@@ -345,5 +365,3 @@ if __name__ == '__main__':
             with open(csv_path,'a+',newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([error_train, error_test])
-            
-

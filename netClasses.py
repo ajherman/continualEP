@@ -29,6 +29,7 @@ class SNN(nn.Module):
         self.update_rule = args.update_rule
         self.trace_decay = args.trace_decay
         self.directory = args.directory
+        self.current_epoch = 1
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
 
