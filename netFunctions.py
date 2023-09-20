@@ -109,7 +109,7 @@ def train(net, train_loader, epoch, learning_rule):
                 else:
                     beta = net.beta
 
-                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, method = 'nograd')
+                s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
                 #***********************************************************************************************#
 
                 # Plots deltas to visualize convergence
@@ -157,13 +157,14 @@ def evaluate(net, test_loader, learning_rule=None):
                 s = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
-                for i in range(net.ns):
+                for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
                 if learning_rule == 'stdp':
                     s[net.ns] = data
             s = net.forward(data, s, method = 'nograd')
 
-            loss_tot_test += (1/2)*((s[0]-targets)**2).sum()
+            loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+            loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
             targets_temp = targets.data.max(1, keepdim = True)[1]
             correct_test += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()

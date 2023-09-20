@@ -310,18 +310,18 @@ if __name__ == '__main__':
             csv_writer.writerow(fieldnames)
             csv_writer.writerow(args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax)
 
-        #compute initial angle between EP update and BPTT gradient
-        if args.angle_grad:
-            batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-            if net.cuda:
-                example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
-            x = example_data
-            target = example_targets
-            nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-            nT = compute_nT(net, x, target)
-            theta_T = compute_angleGrad(nS, dS, nT, dT)
-            results_dict_angle = {'theta_T': theta_T}
-            print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
+        # #compute initial angle between EP update and BPTT gradient
+        # if args.angle_grad:
+        #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
+        #     if net.cuda:
+        #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
+        #     x = example_data
+        #     target = example_targets
+        #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
+        #     nT = compute_nT(net, x, target)
+        #     theta_T = compute_angleGrad(nS, dS, nT, dT)
+        #     results_dict_angle = {'theta_T': theta_T}
+        #     print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
 
 
         #train with EP
