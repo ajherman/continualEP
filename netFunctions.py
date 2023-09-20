@@ -160,8 +160,8 @@ def evaluate(net, test_loader, learning_rule=None):
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
-                if learning_rule == 'stdp':
-                    s[net.ns] = data
+            if learning_rule == 'stdp':
+                s[net.ns] = data
             s = net.forward(data, s, method = 'nograd')
             print(s[0])
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
