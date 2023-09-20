@@ -69,18 +69,18 @@
 #   done
 
 beta=0.2
-dt=0.5
-update_rule="cepalt"
-directory='cepalt_dt=05'
-mkdir $directory
-nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> '$directory'/log.out &
+dt=0.1
+update_rule="skewsym"
+directory='skewsym_dt=01'
+mkdir -p $directory
+nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> skewsym_01.out &
 
 beta=0.2
-dt=0.2
-update_rule="cepalt"
-directory='cepalt_dt=02'
-mkdir $directory
-nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> '$directory'/log.out
+dt=1.0
+update_rule="skewsym"
+directory='skewsym_dt=1'
+mkdir -p $directory
+nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> skewsym_10.out
 
 
 # beta=0.2
