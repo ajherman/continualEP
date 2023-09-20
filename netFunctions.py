@@ -151,6 +151,7 @@ def evaluate(net, test_loader, learning_rule=None):
     net.eval()
     loss_tot_test = 0
     correct_test = 0
+    criterion = nn.MSELoss(reduction = 'sum')
     with torch.no_grad():
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
