@@ -26,7 +26,7 @@ def csv2array(directory):
     return train_error, test_error
 
 
-fig, ax = plt.subplots(2,5,figsize=(22,10))
+fig, ax = plt.subplots(2,5,figsize=(25,10))
 # fig.tight_layout()
 labels=['spiking','nonspiking']
 dt = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
@@ -39,13 +39,15 @@ for i in range(10):
     ax[i//5,i%5].plot(nonspiking_test_error)
     ax[i//5,i%5].set_xlabel('Epoch')
     ax[i//5,i%5].set_ylabel('Test error rate (%)')
+    ax[i//5,i%5].set_xlim([0,30])
+    ax[i//5,i%5].set_ylim([0,20])
     ax[i//5,i%5].set_title('dt = '+str(dt[i]))
-fig.suptitle(r"Comparison of spiking and non-spiking dynamics ($\beta = 0.2,N_1=40,N_2=15$)",fontsize=20)
+fig.suptitle(r"Test error for spiking and non-spiking dynamics ($\beta = 0.2,N_1=40,N_2=15$)",fontsize=20)
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
 
-fig, ax = plt.subplots(2,5,figsize=(22,10))
+fig, ax = plt.subplots(2,5,figsize=(25,10))
 # fig.tight_layout()
 labels=['spiking','nonspiking']
 N2 = [3*i for i in range(1,11)]
@@ -58,8 +60,10 @@ for i in range(10):
     ax[i//5,i%5].plot(nonspiking_test_error)
     ax[i//5,i%5].set_xlabel('Epoch')
     ax[i//5,i%5].set_ylabel('Test error rate (%)')
+    ax[i//5,i%5].set_xlim([0,30])
+    ax[i//5,i%5].set_ylim([0,20])
     ax[i//5,i%5].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*N2[i])))))
-fig.suptitle(r"Comparison of spiking and non-spiking dynamics ($\beta = 0.2$)",fontsize=20)
+fig.suptitle(r"Test error for spiking and nonspiking dynamics ($\beta = 0.2$)",fontsize=20)
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_error_b.png')#,bbox_inches="tight")
 
