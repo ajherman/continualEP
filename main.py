@@ -62,7 +62,7 @@ parser.add_argument(
 parser.add_argument(
     '--dt',
     type=float,
-    default=0.2,
+    default=None,
     metavar='DT',
     help='time discretization (default: 0.2)')
 parser.add_argument(
@@ -188,6 +188,10 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+# New this should create consistency as we change the number of steps
+if args.dt==None:
+    args.dt = 1-(2**(-20/args.T))
+    print("dt = ",args.dt)
 
 if not not args.seed:
     torch.manual_seed(args.seed[0])

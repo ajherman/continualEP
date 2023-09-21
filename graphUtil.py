@@ -26,7 +26,7 @@ def csv2array(directory):
     return train_error, test_error
 
 
-fig, ax = plt.subplots(2,5,figsize=(10,4))
+fig, ax = plt.subplots(2,5,figsize=(12,5))
 labels=['spiking','nonspiking']
 
 for i in range(10):
@@ -36,5 +36,7 @@ for i in range(10):
     nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
     ax[i//5,i%5].plot(spiking_test_error)
     ax[i//5,i%5].plot(nonspiking_test_error)
+    ax[i//5,i%5].set_title('plot '+str(i))
+fig.suptitle("Comparison of spiking and non-spiking dynamics")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_error.png',bbox_inches="tight")
