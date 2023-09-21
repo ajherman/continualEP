@@ -184,6 +184,11 @@ parser.add_argument(
     type=bool,
     default=True,
     help='if true, uses spikes for dynamics')
+parser.add_argument(
+    '--spike-height',
+    type=float,
+    default=1.0,
+    help='sets height of a spike')
 
 
 args = parser.parse_args()
@@ -354,16 +359,15 @@ if __name__ == '__main__':
 
         start_time = datetime.datetime.now()
 
-        for epoch in range(net.current_epoch, args.epochs + 1):
-            net.current_epoch = epoch
+        for epoch in range(net.current_epoch, args.epochs):
             error_train = train(net, train_loader, epoch, args.learning_rule)
             error_train_tab.append(error_train)
 
-            # Save Network
+            # As soon as training is finished, save network and increment epoch
             pkl_path = args.directory+'/net'
             with open(pkl_path,'wb') as pkl_file:
                 pickle.dump(net,pkl_file)
-
+            net.current_epoch += 1
 
             error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
