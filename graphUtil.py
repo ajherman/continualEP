@@ -44,6 +44,27 @@ fig.suptitle(r"Comparison of spiking and non-spiking dynamics ($\beta = 0.2,N_1=
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
+
+fig, ax = plt.subplots(2,5,figsize=(22,10))
+# fig.tight_layout()
+labels=['spiking','nonspiking']
+N2 = [3*i for i in range(1,11)]
+for i in range(10):
+    spiking_dir = 'cepalt_spiking_b_'+str(i)
+    nonspiking_dir = 'cepalt_nonspiking_b_'+str(i)
+    spiking_train_error, spiking_test_error = csv2array(spiking_dir)
+    nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
+    ax[i//5,i%5].plot(spiking_test_error)
+    ax[i//5,i%5].plot(nonspiking_test_error)
+    ax[i//5,i%5].set_xlabel('Epoch')
+    ax[i//5,i%5].set_ylabel('Test error rate (%)')
+    ax[i//5,i%5].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*N2[i])))))
+fig.suptitle(r"Comparison of spiking and non-spiking dynamics ($\beta = 0.2$)",fontsize=20)
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('cepalt_error_b.png')#,bbox_inches="tight")
+
+
+
 #
 # fig, ax = plt.subplots(2,5,figsize=(12,5))
 # labels=['spiking','nonspiking','stdp']
