@@ -285,73 +285,15 @@ if __name__ == '__main__':
         elif args.learning_rule == 'stdp':
             net = SNN(args)
 
-
-    #
-    # if args.action == 'plotcurves':
-    #
-    #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-    #
-    #     if net.cuda:
-    #         example_data, example_targets = example_data.to(device), example_targets.to(net.device)
-    #
-    #     x = example_data
-    #     target = example_targets
-    #
-    #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-    #     plot_S(nS, dS)
-    #     plt.show()
-    #     nT = compute_nT(net, x, target)
-    #
-    #     plot_T(nT, dT, args)
-    #     plt.show()
-    #
-    #     #create path
-    #     BASE_PATH, name = createPath(args)
-    #
-    #     #save hyperparameters
-    #     createHyperparameterfile(BASE_PATH, name, args)
-    #
-    #     results_dict = {'nS' : nS, 'dS' : dS, 'nT': nT, 'dT': dT, 'args': args}
-    #
-    #     #outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-    #     #pickle.dump(results_dict, outfile)
-    #     #outfile.close()
-    #
-    #
-
     if args.action == 'train':
-
-        # #create path
-        # BASE_PATH, name = createPath(args)
-        #
-        # #save hyperparameters
-        # createHyperparameterfile(BASE_PATH, name, args)
-
-        # Create pickle path
 
         # Create csv file
         csv_path = args.directory+"/results.csv"
-        # csv_file = open(csv_path,'a',newline='')
-        # csv_writer = csv.write(csvf)
         fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
         with open('csv_path','w+',newline='') as csv_file:
             csv_writer = csv.writer(csv_file)
             csv_writer.writerow(fieldnames)
             csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax])
-
-        # #compute initial angle between EP update and BPTT gradient
-        # if args.angle_grad:
-        #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-        #     if net.cuda:
-        #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
-        #     x = example_data
-        #     target = example_targets
-        #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-        #     nT = compute_nT(net, x, target)
-        #     theta_T = compute_angleGrad(nS, dS, nT, dT)
-        #     results_dict_angle = {'theta_T': theta_T}
-        #     print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
-
 
         #train with EP
         error_train_tab = []
@@ -372,9 +314,6 @@ if __name__ == '__main__':
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}
-
-            # if args.angle_grad:
-                # results_dict.update(results_dict_angle)
 
             with open(csv_path,'a+',newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)

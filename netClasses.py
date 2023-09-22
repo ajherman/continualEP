@@ -83,28 +83,22 @@ class SNN(nn.Module):
         else:
             spike = [rho(si) for si in s] # Get Poisson spikes
 
-        # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
-        #data_spike = rho(data)
-
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
                 # trace[i] = trace_decay*(trace[i] + spike[i])
                 trace[i] = trace_decay*trace[i] + spike[i]
-#
-            # trace[self.ns] = trace_decay*trace[self.ns] + data_spike
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
         if np.abs(beta) > 0:
-            # dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spike[0]...
             dsdt[0] = dsdt[0] + beta*(target-spike[0]) #was spike[0]... # CHANGED
 
         # Other layers
         for i in range(1, self.ns - 1):
             dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i - 1](spike[i-1]))
-        # Post-input layer
 
+        # Post-input layer
         dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
 
         s_old = []

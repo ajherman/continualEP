@@ -102,13 +102,7 @@ def train(net, train_loader, epoch, learning_rule):
                 seq = []
                 for i in range(len(s)): seq.append(s[i].clone())
 
-                #******************************************FORMER C-VF******************************************#
-                # if net.randbeta > 0:
-                #     signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-                #     beta = signbeta*net.beta
-                # else:
-                #     beta = net.beta
-                beta = net.beta
+                beta = net.betacuda
                 s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
                 #***********************************************************************************************#
 
