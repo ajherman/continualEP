@@ -97,7 +97,10 @@ for beta in {1.0,0.5,0.2,0.1}
 				stdp_3_directory=stdp_3_"$i"
 		 		mkdir -p $spiking_directory
 		 		mkdir -p $nonspiking_directory
-		 		mkdir -p $stdp_directory
+		 		mkdir -p $stdp_0_directory
+		 		mkdir -p $stdp_1_directory
+		 		mkdir -p $stdp_2_directory
+		 		mkdir -p $stdp_3_directory
 		 		nohup python -u main.py --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --dt 0.3 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_spiking_log_b_"$i".out &
 				nohup python -u main.py --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --dt 0.3 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_nonspiking_log_b_"$i".out &
 				nohup python -u main.py --directory $stdp_0_directory --spiking True --action train --trace-decay 0.9  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --dt 0.3 --beta $beta --cep --learning-rule stdp --update-rule stdp >> stdp_log_0_"$i".out &
