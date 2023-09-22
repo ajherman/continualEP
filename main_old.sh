@@ -119,10 +119,10 @@ for Kmax in {5,10,15,20,25,30,35,40}
  		mkdir -p $spiking_directory
  		mkdir -p $nonspiking_directory
  		mkdir -p $stdp_directory
- 		nohup python -u main.py --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_spiking_log_"$i".out &
- 		nohup python -u main.py --directory $stdp_directory --spiking True --action train --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> stdp_log_"$i".out &
+ 		nohup python -u main.py --load True --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_spiking_log_"$i".out &
+ 		nohup python -u main.py --load True --directory $stdp_directory --spiking True --action train --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> stdp_log_"$i".out &
  		# nohup python -u main.py --directory $stdp_directory --spiking True --action train --trace-decay 0.38197  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> stdp_log_"$i".out &
- 		nohup python -u main.py --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_nonspiking_log_"$i".out &
+ 		nohup python -u main.py --load True --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_nonspiking_log_"$i".out &
  		i=$((i+1))
  	done
 
