@@ -94,8 +94,8 @@ fig.savefig('skew_error.png',bbox_inches="tight")
 
 fig, ax = plt.subplots(2,4,figsize=(20,10))
 labels=['spiking','nonspiking','stdp: trace decay = 0.9','stdp: trace decay = 0.7','stdp: trace decay = 0.5','stdp: trace decay = 0.4']
-
-for i in range(8):
+beta=[0.9,0.7,0.5,0.4]
+for i in range(1):
     spiking_dir = 'skewsym_spiking_b_'+str(i)
     nonspiking_dir = 'skewsym_nonspiking_b_'+str(i)
     stdp_0_dir = 'stdp_0_'+str(i)
