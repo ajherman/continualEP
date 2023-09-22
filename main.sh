@@ -4,6 +4,7 @@
 #SBATCH--time 10:00:00
 #SBATCH -N 4
 #SBATCH -p shared-gpu
+module load miniconda3
 source activate /vast/home/ajherman/miniconda3/envs/pytorch
 # First plot (Fixed N, variable dt)
 # i=0
