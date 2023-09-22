@@ -359,7 +359,8 @@ if __name__ == '__main__':
 
         start_time = datetime.datetime.now()
 
-        for epoch in range(net.current_epoch, args.epochs):
+        # for epoch in range(net.current_epoch, args.epochs):
+        while net.current_epoch<args.epochs:
             error_train = train(net, train_loader, epoch, args.learning_rule)
             error_train_tab.append(error_train)
 

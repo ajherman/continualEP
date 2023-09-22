@@ -116,8 +116,30 @@ for i in range(1):
     ax[i//4,i%4].plot(stdp_3_test_error)
     ax[i//4,i%4].set_xlabel('Epoch')
     ax[i//4,i%4].set_ylabel('Test error rate (%)')
-    ax[i//4,i%4].set_xlim([0,30])
+    ax[i//4,i%4].set_xlim([0,20])
     ax[i//4,i%4].set_title(r'$\beta=$'+str(beta[i]))
 fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,dt=0.3$)")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('decay_compare.png',bbox_inches="tight")
+
+
+fig, ax = plt.subplots(3,4,figsize=(25,10))
+# fig.tight_layout()
+labels=['cepalt','skewsym']
+for idx1,beta in enumerate([1.0,0.5,0.2,0.1]):
+    for idx2,Kmax in enumerate([5,10,15]):
+        i = idx1*3+idx2
+        cepalt_dir = 'cepalt_'+str(i)
+        skewsym_dir = 'skewsym_'+str(i)
+        ceptalt_train_error, cepalt_test_error = csv2array(cepalt_dir)
+        skewsym_train_error,skewsym_test_error = csv2array(skewsym_dir)
+        ax[idx1,idx2].plot(cepalt_test_error)
+        ax[idx1,idx2].plot(skewsym_test_error)
+        ax[idx1,idx2].set_xlabel('Epoch')
+        ax[idx1,idx2].set_ylabel('Test error rate (%)')
+        ax[idx1,idx2].set_xlim([0,20])
+        ax[idx1,idx2].set_ylim([0,20])
+        ax[idx1,idx2].set_title(r'$N_1=$'+str(3*Kmax)+', $N_2=$'+str(Kmax)+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*Kmax))))+', $\beta='+str(beta))
+fig.suptitle(r"CEP vs skewsym for nonspiking dynamics",fontsize=20)
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('cepalt_vs_skewsym.png')#,bbox_inches="tight")

@@ -84,8 +84,8 @@
 #  	done
 
 # Plot comparing different decay rates
-i=0
-for beta in {1.0,0.5,0.2,0.1}
+i=1
+for beta in {0.5,0.2,0.1}
 	do
 		for trace_decay in {0.9,0.7,0.5}
 			do
@@ -107,6 +107,21 @@ for beta in {1.0,0.5,0.2,0.1}
 			done
 			i=$((i+1))
 		done
+
+# Plot comparing skewsym and cepalt
+j=0
+for beta in {1.0,0.5,0.2,0.1}
+	do
+	for Kmax in {5,10,15}
+	do
+		T=$((3*Kmax))
+		cepalt_dir = cepalt_"$j"
+		skewsym_dir = skewsym_"$j"
+		nohup python -u main.py --directory $cepalt_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 20 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> cepalt_"$j".out &
+		nohup python -u main.py --directory $skewsym_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 20 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_"$j".out &
+		j=$((j+1))
+	done
+done
 
 # i=0
 # for Kmax in {5,10,15}
