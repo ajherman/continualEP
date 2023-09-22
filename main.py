@@ -62,7 +62,7 @@ parser.add_argument(
 parser.add_argument(
     '--dt',
     type=float,
-    default=0.2,
+    default=None,
     metavar='DT',
     help='time discretization (default: 0.2)')
 parser.add_argument(
@@ -169,9 +169,34 @@ parser.add_argument(
     type=float,
     default=0.5,
     help='decay factor for traces')
+parser.add_argument(
+    '--directory',
+    type=str,
+    default='output',
+    help='select learning rate')
+parser.add_argument(
+    '--load',
+    type=bool,
+    default=False,
+    help='if set, loads network from directory')
+parser.add_argument(
+    '--spiking',
+    type=bool,
+    default=True,
+    help='if true, uses spikes for dynamics')
+parser.add_argument(
+    '--spike-height',
+    type=float,
+    default=1.0,
+    help='sets height of a spike')
+
 
 args = parser.parse_args()
 
+# New this should create consistency as we change the number of steps
+if args.dt==None:
+    args.dt = 1-(2**(-20/args.T))
+    print("dt = ",args.dt)
 
 if not not args.seed:
     torch.manual_seed(args.seed[0])
@@ -238,20 +263,28 @@ if __name__ == '__main__':
     input_size = 28
 
     #Build the net
-    if  (not args.discrete) & (args.learning_rule == 'vf') :
-        net = VFcont(args)
+    pkl_path = args.directory+'/net'
 
-    if (not args.discrete) & (args.learning_rule == 'ep') :
-        net = EPcont(args)
 
-    elif (args.discrete) & (args.learning_rule == 'vf'):
-        net = VFdisc(args)
+    if args.load:
+        with open(pkl_path,'rb') as pkl_file:
+            net = pickle.load(pkl_file)
+    else:
+        if  (not args.discrete) & (args.learning_rule == 'vf') :
+            net = VFcont(args)
 
-    elif (args.discrete) & (args.learning_rule == 'ep'):
-        net = EPdisc(args)
+        if (not args.discrete) & (args.learning_rule == 'ep') :
+            net = EPcont(args)
 
-    elif args.learning_rule == 'stdp':
-        net = SNN(args)
+        elif (args.discrete) & (args.learning_rule == 'vf'):
+            net = VFdisc(args)
+
+        elif (args.discrete) & (args.learning_rule == 'ep'):
+            net = EPdisc(args)
+
+        elif args.learning_rule == 'stdp':
+            net = SNN(args)
+
 
     #
     # if args.action == 'plotcurves':
@@ -259,7 +292,7 @@ if __name__ == '__main__':
     #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
     #
     #     if net.cuda:
-    #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
+    #         example_data, example_targets = example_data.to(device), example_targets.to(net.device)
     #
     #     x = example_data
     #     target = example_targets
@@ -288,25 +321,36 @@ if __name__ == '__main__':
 
     if args.action == 'train':
 
-        #create path
-        BASE_PATH, name = createPath(args)
+        # #create path
+        # BASE_PATH, name = createPath(args)
+        #
+        # #save hyperparameters
+        # createHyperparameterfile(BASE_PATH, name, args)
 
-        #save hyperparameters
-        createHyperparameterfile(BASE_PATH, name, args)
+        # Create pickle path
 
+        # Create csv file
+        csv_path = args.directory+"/results.csv"
+        # csv_file = open(csv_path,'a',newline='')
+        # csv_writer = csv.write(csvf)
+        fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
+        with open('csv_path','w+',newline='') as csv_file:
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerow(fieldnames)
+            csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax])
 
-        #compute initial angle between EP update and BPTT gradient
-        if args.angle_grad:
-            batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-            if net.cuda:
-                example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
-            x = example_data
-            target = example_targets
-            nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-            nT = compute_nT(net, x, target)
-            theta_T = compute_angleGrad(nS, dS, nT, dT)
-            results_dict_angle = {'theta_T': theta_T}
-            print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
+        # #compute initial angle between EP update and BPTT gradient
+        # if args.angle_grad:
+        #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
+        #     if net.cuda:
+        #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
+        #     x = example_data
+        #     target = example_targets
+        #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
+        #     nT = compute_nT(net, x, target)
+        #     theta_T = compute_angleGrad(nS, dS, nT, dT)
+        #     results_dict_angle = {'theta_T': theta_T}
+        #     print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
 
 
         #train with EP
@@ -315,19 +359,25 @@ if __name__ == '__main__':
 
         start_time = datetime.datetime.now()
 
-        for epoch in range(1, args.epochs + 1):
+        for epoch in range(net.current_epoch, args.epochs):
             error_train = train(net, train_loader, epoch, args.learning_rule)
             error_train_tab.append(error_train)
 
+            # As soon as training is finished, save network and increment epoch
+            pkl_path = args.directory+'/net'
+            with open(pkl_path,'wb') as pkl_file:
+                pickle.dump(net,pkl_file)
 
             error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}
 
-            if args.angle_grad:
-                results_dict.update(results_dict_angle)
+            # if args.angle_grad:
+                # results_dict.update(results_dict_angle)
 
-            outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-            pickle.dump(results_dict, outfile)
-            outfile.close()
+            with open(csv_path,'a+',newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerow([error_train, error_test])
+
+            net.current_epoch += 1

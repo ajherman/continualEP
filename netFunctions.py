@@ -10,6 +10,7 @@ import os, sys
 import datetime
 from shutil import copyfile
 import copy
+import csv
 
 def train(net, train_loader, epoch, learning_rule):
 
@@ -22,9 +23,15 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
-        for i in range(net.ns+1):
-            s[i] = s[i].to(net.device)
-            trace[i] = trace[i].to(net.device)
+
+        if learning_rule == 'stdp':
+            for i in range(net.ns+1):
+                s[i] = s[i].to(net.device)
+                trace[i] = trace[i].to(net.device)
+        else:
+            for i in range(net.ns):
+                s[i] = s[i].to(net.device)
+                trace[i] = trace[i].to(net.device)
 
         if learning_rule == 'ep':
             with torch.no_grad():
@@ -88,7 +95,7 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s[net.ns] = data
-                s = net.forward(data, s)
+                s,deltas = net.forward(data, s, return_deltas=True)
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
                 #*******************************************VF-EQPROP ******************************************#
@@ -96,14 +103,22 @@ def train(net, train_loader, epoch, learning_rule):
                 for i in range(len(s)): seq.append(s[i].clone())
 
                 #******************************************FORMER C-VF******************************************#
-                if net.randbeta > 0:
-                    signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-                    beta = signbeta*net.beta
-                else:
-                    beta = net.beta
-
-                s, Dw = net.forward(data, s, trace=trace, target = targets, beta = beta, method = 'nograd')
+                # if net.randbeta > 0:
+                #     signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
+                #     beta = signbeta*net.beta
+                # else:
+                #     beta = net.beta
+                beta = net.beta
+                s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
                 #***********************************************************************************************#
+
+                # Plots deltas to visualize convergence
+                ##########################
+                if batch_idx%500==0:
+                    fig, ax = plt.subplots()
+                    ax.plot(np.arange(net.T),deltas)
+                    fig.savefig(net.directory+'/deltas_'+str(batch_idx)+'.png')
+                ###########################
 
                 if not net.cep:
                     if not net.former:
@@ -132,24 +147,24 @@ def train(net, train_loader, epoch, learning_rule):
 
     return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
 
-
 def evaluate(net, test_loader, learning_rule=None):
     net.eval()
     loss_tot_test = 0
     correct_test = 0
+    criterion = nn.MSELoss(reduction = 'sum')
     with torch.no_grad():
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
-                for i in range(net.ns):
+                for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
-                if learning_rule == 'stdp':
-                    s[net.ns] = data
+            if learning_rule == 'stdp':
+                s[net.ns] = data
             s = net.forward(data, s, method = 'nograd')
-
-            loss_tot_test += (1/2)*((s[0]-targets)**2).sum()
+            loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+            loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
             targets_temp = targets.data.max(1, keepdim = True)[1]
             correct_test += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()

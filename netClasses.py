@@ -28,6 +28,10 @@ class SNN(nn.Module):
         self.plain_data = args.plain_data
         self.update_rule = args.update_rule
         self.trace_decay = args.trace_decay
+        self.directory = args.directory
+        self.current_epoch = 0
+        self.spiking = args.spiking
+        self.spike_height = args.spike_height
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
 
@@ -72,10 +76,12 @@ class SNN(nn.Module):
     def stepper(self, data, s, trace=None, target = None, beta = 0, return_derivatives = False):
         dsdt = []
         trace_decay = self.trace_decay
-        # Spikes
 
-        spike = [(torch.rand(si.size(),device=self.device)<rho(si)).float() for si in s] # Get Poisson spikes
-        # spike = [rho(si) for si in s] # Get Poisson spikes
+        # Spikes
+        if self.spiking:
+            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<rho(si)/self.spike_height).float() for si in s] # Get Poisson spikes
+        else:
+            spike = [rho(si) for si in s] # Get Poisson spikes
 
         # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
@@ -83,8 +89,8 @@ class SNN(nn.Module):
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
-                trace[i] = trace_decay*(trace[i] + spike[i]) # CHANGED
-                # trace[i] = trace_decay*trace[i] + spike[i]
+                # trace[i] = trace_decay*(trace[i] + spike[i])
+                trace[i] = trace_decay*trace[i] + spike[i]
 #
             # trace[self.ns] = trace_decay*trace[self.ns] + data_spike
 
@@ -99,10 +105,7 @@ class SNN(nn.Module):
             dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i - 1](spike[i-1]))
         # Post-input layer
 
-        if self.plain_data:
-            dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
-        else:
-            dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
+        dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
 
         s_old = []
         for ind, s_temp in enumerate(s):
@@ -124,11 +127,11 @@ class SNN(nn.Module):
                     self.updateWeights(dw)
             return s,dw
         else:
-            return s
+            return s,dsdt
         #**************************************************************#
 
 
-    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
+    def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, return_deltas=False,**kwargs):
         T = self.T
         Kmax = self.Kmax
         if len(kwargs) > 0:
@@ -137,9 +140,16 @@ class SNN(nn.Module):
             K = Kmax
 
         if beta == 0:
+            deltas = []
             for t in range(T):
-                s = self.stepper(data, s)
-            return s
+                s,dsdt = self.stepper(data, s)
+                if return_deltas:
+                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+                    deltas.append(delta)
+            if return_deltas:
+                return s, deltas
+            else:
+                return s
         else:
             Dw = self.initGrad()
             for t in range(Kmax):
@@ -153,7 +163,11 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
-            return s, Dw
+            # Plot plot deltas
+            if return_deltas:
+                return s, Dw, deltas
+            else:
+                return s, Dw
 
 
     def initHidden(self, batch_size):
@@ -183,25 +197,40 @@ class SNN(nn.Module):
         # print("===")
         # print(len(gradw))
         for i in range(self.ns - 1):
-            if self.update_rule == 'asym1':
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
-            elif self.update_rule == 'asym2':
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(s[i + 1])))
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(s[i])))
-            elif self.update_rule == 'skew1':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
-            elif self.update_rule == 'skew2':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), s[i]) -  torch.mm(torch.transpose(s[i+1],0,1),s[i]-seq[i]) ))
+            # rate0, rate1 = rho(seq[i]), rho(s[i])
+            # if self.update_rule == 'asym1':
+            #     gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
+            #     gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
+            if self.update_rule == 'asym':
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[i + 1]) - rho(seq[i + 1]), 0, 1), rho(s[i])))
+            # elif self.update_rule == 'skew1':
+            #     gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), seq[i + 1]) -  torch.mm(torch.transpose(seq[i],0,1),s[i+1]-seq[i+1]) ))
+            #     gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1] - seq[i+1], 0, 1), seq[i]) -  torch.mm(torch.transpose(seq[i+1],0,1),s[i]-seq[i]) ))
+            elif self.update_rule == 'skew':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i+1]) - rho(seq[i+1]), 0, 1), rho(s[i])) -  torch.mm(torch.transpose(rho(s[i+1]),0,1),rho(s[i])-rho(seq[i])) ))
             elif self.update_rule == 'skewsym':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i] - seq[i], 0, 1), s[i + 1]) -  torch.mm(torch.transpose(s[i],0,1),s[i+1]-seq[i+1]) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(s[i+1], 0, 1), s[i] - seq[i]) -  torch.mm(torch.transpose(s[i+1]-seq[i+1],0,1),s[i]) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i+1]), 0, 1), rho(s[i]) - rho(seq[i])) -  torch.mm(torch.transpose(rho(s[i+1])-rho(seq[i+1]),0,1),rho(s[i])) ))
             elif self.update_rule == 'stdp':
-                # dW_xh = (tf.transpose(x.trace1())@h.spike() + tf.transpose(x.spike())@h.trace2())/batch_size
-                gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
-                gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+                # gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                # gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+
+                # VER 1
+                gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+
+                # # VER 2
+                # gradw.append((-(1-self.trace_decay)**2/(self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                # gradw.append((-(1-self.trace_decay)**2/(self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+
+            elif self.update_rule == 'cep':
+                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
+                gradw.append(None)
+            elif self.update_rule == 'cepalt':
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) +  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i+1]), 0, 1), rho(s[i]) - rho(seq[i])) +  torch.mm(torch.transpose(rho(s[i+1])-rho(seq[i+1]),0,1),rho(s[i])) ))
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
@@ -209,10 +238,7 @@ class SNN(nn.Module):
         if self.update_rule == 'stdp':
             gradw.append( (1/(beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), spike[-1]) ))
         else:
-            if self.plain_data:
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), s[-1]))
-            else:
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), rho(s[-1])))
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), s[-1]))
 
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
