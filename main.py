@@ -367,16 +367,17 @@ if __name__ == '__main__':
             pkl_path = args.directory+'/net'
             with open(pkl_path,'wb') as pkl_file:
                 pickle.dump(net,pkl_file)
-            net.current_epoch += 1
 
             error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}
 
-            if args.angle_grad:
-                results_dict.update(results_dict_angle)
+            # if args.angle_grad:
+                # results_dict.update(results_dict_angle)
 
             with open(csv_path,'a+',newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([error_train, error_test])
+
+            net.current_epoch += 1
