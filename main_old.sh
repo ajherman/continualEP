@@ -122,8 +122,8 @@ for beta in {1.0,0.5,0.2}
 		skewsym_dir=skewsym_"$j"
 		mkdir -p $cepalt_dir
 		mkdir -p $skewsym_dir
-		nohup python -u main.py --directory $cepalt_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 20 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> cepalt_"$j".out &
-		nohup python -u main.py --directory $skewsym_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 20 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_"$j".out &
+		nohup python -u main.py --directory $cepalt_dir --load True --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 20 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> cepalt_"$j".out &
+		nohup python -u main.py --directory $skewsym_dir --load True --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 20 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_"$j".out &
 		j=$((j+1))
 	done
 done
