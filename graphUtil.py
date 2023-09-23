@@ -169,7 +169,7 @@ for idx1,beta in enumerate([1.0,0.5,0.2]):
         ax[idx1,idx2].set_ylabel('Test error rate (%)')
         ax[idx1,idx2].set_xlim([0,20])
         ax[idx1,idx2].set_ylim([0,20])
-        ax[idx1,idx2].set_title(r'$\beta = $' +str(beta)+'$N_1=$'+str(3*Kmax)+', $N_2=$'+str(Kmax)+', $dt = $'+'{:.2f}'.format(1-(2**(-20/(3*Kmax)))) )
+        ax[idx1,idx2].set_title(r'$\beta = $' +str(beta)+', $N_1=$'+str(3*Kmax)+', $N_2=$'+str(Kmax)+', $dt = $'+'{:.2f}'.format(1-(2**(-20/(3*Kmax)))) )
 fig.suptitle(r"CEP vs skewsym for nonspiking dynamics",fontsize=20)
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_vs_skewsym.png')#,bbox_inches="tight")
