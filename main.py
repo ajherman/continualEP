@@ -167,7 +167,7 @@ parser.add_argument(
 parser.add_argument(
     '--trace-decay',
     type=float,
-    default=0.5,
+    default=None,
     help='decay factor for traces')
 parser.add_argument(
     '--directory',
@@ -213,7 +213,7 @@ args = parser.parse_args()
 # New this should create consistency as we change the number of steps
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
-    args.dt = 1-np.exp(-args.step/args.tau_dymamic)
+    args.dt = 1-np.exp(-args.step/args.tau_dynamic)
     print("dt = ",args.dt)
 
 if args.trace_decay==None:
