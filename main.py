@@ -190,13 +190,35 @@ parser.add_argument(
     default=1.0,
     help='sets height of a spike')
 
+# Whatever unit step is in will be the same for tau-dynamic and tau-trace.
+parser.add_argument(
+    '--step',
+    type=float,
+    default=0.3,
+    help='time step size')
+parser.add_argument(
+    '--tau-dynamic',
+    type=float,
+    default=0.8411,
+    help='time constant for dynamics')
+parser.add_argument(
+    '--tau-trace',
+    type=float,
+    default=0.4328,
+    help='decay factor for traces')
+
 
 args = parser.parse_args()
 
 # New this should create consistency as we change the number of steps
 if args.dt==None:
-    args.dt = 1-(2**(-20/args.T))
+    # args.dt = 1-(2**(-20/args.T))
+    args.dt = 1-np.exp(-args.step/args.tau_dymamic)
     print("dt = ",args.dt)
+
+if args.trace_decay==None:
+    args.trace_decay=np.exp(-args.step/args.tau_trace)
+    print("trace decay = ",args.trace_decay)
 
 if not not args.seed:
     torch.manual_seed(args.seed[0])
