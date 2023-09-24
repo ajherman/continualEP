@@ -43,8 +43,8 @@ for Kmax in {5,10,15,20,25,30}
 		nonspiking_dir=cepalt_nonspiking_"$i"
 		mkdir -p $spiking_dir
 		mkdir -p $nonspiking_dir
-		nohup python -u main.py --directory $spiking_dir --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$spiking_dir".out &
-		nohup python -u main.py --directory $nonspiking_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$nonspiking_dir".out &
+		nohup python -u main.py --load True --directory $spiking_dir --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$spiking_dir".out &
+		nohup python -u main.py --load True --directory $nonspiking_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$nonspiking_dir".out &
 		i=$((i+1))
 	done
 #
