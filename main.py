@@ -190,14 +190,12 @@ parser.add_argument(
     help='select learning rate')
 parser.add_argument(
     '--load',
-    type=bool,
-    default=False,
+    action='store_true',
     help='if set, loads network from directory')
 parser.add_argument(
     '--spiking',
-    type=bool,
-    default=True,
-    help='if true, uses spikes for dynamics')
+    action='store_true',
+    help='if set, uses spikes for dynamics')
 parser.add_argument(
     '--spike-height',
     type=float,
