@@ -4,7 +4,7 @@ import torchvision.transforms as transforms
 import torch.optim as optim
 import pickle
 import datetime
-
+import random
 from netClasses import *
 from netFunctions import *
 from plotFunctions import *
