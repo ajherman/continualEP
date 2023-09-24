@@ -33,36 +33,20 @@
 #mkdir -p $directory
 #nohup python -u main.py --directory $directory --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta $beta --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> log_03.out &
 
-# First plot (Fixed N, variable dt)
- #i=0
- #for dt in {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
-# 	do
-# 		beta=0.2
-# 		update_rule="cepalt"
-# 		spiking_directory=cepalt_spiking_"$i"
-# 		nonspiking_directory=cepalt_nonspiking_"$i"
-# 		mkdir -p $spiking_directory
-# 		mkdir -p $nonspiking_directory
-# 		nohup python -u main.py --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> spiking_log_"$i".out &
-# 		nohup python -u main.py --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> nonspiking_log_"$i".out &
-# 		i=$((i+1))
-# 	done
-
-# # Second plot (Variable N, compensating dt)
-# i=0
-# for Kmax in {3,6,9,12,15,18,21,24,27,30}
-# 	do
-# 		T=$((3*Kmax))
-# 		beta=0.2
-# 		update_rule="cepalt"
-# 		spiking_directory=cepalt_spiking_b_"$i"
-# 		nonspiking_directory=cepalt_nonspiking_b_"$i"
-# 		mkdir -p $spiking_directory
-# 		mkdir -p $nonspiking_directory
-# 		nohup python -u main.py --load True --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> spiking_log_b_"$i".out &
-# 		nohup python -u main.py --load True --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> nonspiking_log_b_"$i".out &
-# 		i=$((i+1))
-# 	done
+# Compare spiking and nonspiking (Variable N, compensating step)
+i=0
+for Kmax in {3,6,9,12,15,18}
+	do
+		T=$((3*Kmax))
+		update_rule="cepalt"
+		spiking_dir=cepalt_spiking_"$i"
+		# nonspiking_dir=cepalt_nonspiking_"$i"
+		mkdir -p $spiking_dir
+		# mkdir -p $nonspiking_dir
+		nohup python -u main.py --load True --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$spiking_dir".out &
+		# nohup python -u main.py --load True --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$nonspiking_dir".out &
+		i=$((i+1))
+	done
 #
 # # Plot comparing three types
 # i=0
@@ -124,16 +108,16 @@
 # 	done
 # done
 
-# Test discretization scheme
-j=0
-for Kmax in {3,6,9,12,15}
-do
-	T=$((3*Kmax))
-	directory=disc_test_"$j"
-	mkdir -p $directory
-	nohup python -u main.py --directory $directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 25 --T $T --Kmax $Kmax --beta 0.5 --cep --learning-rule stdp --update-rule skewsym >> "$directory".out &
-	j=$((j+1))
-done
+# # Test discretization scheme
+# j=0
+# for Kmax in {3,6,9,12,15}
+# do
+# 	T=$((3*Kmax))
+# 	directory=disc_test_"$j"
+# 	mkdir -p $directory
+# 	nohup python -u main.py --directory $directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 25 --T $T --Kmax $Kmax --beta 0.5 --cep --learning-rule stdp --update-rule skewsym >> "$directory".out &
+# 	j=$((j+1))
+# done
 
 
 # i=0

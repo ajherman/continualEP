@@ -25,44 +25,60 @@ def csv2array(directory):
         train_error,test_error = error[:,0],error[:,1]
     return train_error, test_error
 
+#
+# fig, ax = plt.subplots(2,5,figsize=(25,10))
+# # fig.tight_layout()
+# labels=['spiking','nonspiking']
+# dt = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+# for i in range(10):
+#     spiking_dir = 'cepalt_spiking_'+str(i)
+#     nonspiking_dir = 'cepalt_nonspiking_'+str(i)
+#     spiking_train_error, spiking_test_error = csv2array(spiking_dir)
+#     nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
+#     ax[i//5,i%5].plot(spiking_test_error)
+#     ax[i//5,i%5].plot(nonspiking_test_error)
+#     ax[i//5,i%5].set_xlabel('Epoch')
+#     ax[i//5,i%5].set_ylabel('Test error rate (%)')
+#     ax[i//5,i%5].set_xlim([0,30])
+#     ax[i//5,i%5].set_ylim([0,20])
+#     ax[i//5,i%5].set_title('dt = '+str(dt[i]))
+# fig.suptitle(r"Test error for spiking and non-spiking dynamics ($\beta = 0.2,N_1=40,N_2=15$)",fontsize=20)
+# fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+# fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
-fig, ax = plt.subplots(2,5,figsize=(25,10))
+
+fig, ax = plt.subplots(figsize=(20,10))
+N1=[3*Kmax for Kmax in [3,6,9,12,15,18]]
+labels=[r'N_1='+str(N1[i]) for i in range(5)]
+disc_test_dir = ["cepalt_nonspiking_"+str(i) for i in range(5)]
+error = [csv2array(disc_test_dir[i]) for i in range(5)]
+for i in range(5):
+    ax.plot(error[i][1])
+ax.set_xlabel('Epoch')
+ax.set_ylabel('Test error rate (%)')
+ax.set_xlim([0,20])
+# ax.set_title()
+fig.suptitle(r"Discretization schemes")
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('discretization.png',bbox_inches="tight")
+
+
+fig, ax = plt.subplots(2,3,figsize=(20,10))
 # fig.tight_layout()
 labels=['spiking','nonspiking']
-dt = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
-for i in range(10):
+N2 = [3*i for i in range(1,7)]
+for i in range(6):
     spiking_dir = 'cepalt_spiking_'+str(i)
     nonspiking_dir = 'cepalt_nonspiking_'+str(i)
     spiking_train_error, spiking_test_error = csv2array(spiking_dir)
     nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
-    ax[i//5,i%5].plot(spiking_test_error)
-    ax[i//5,i%5].plot(nonspiking_test_error)
-    ax[i//5,i%5].set_xlabel('Epoch')
-    ax[i//5,i%5].set_ylabel('Test error rate (%)')
-    ax[i//5,i%5].set_xlim([0,30])
-    ax[i//5,i%5].set_ylim([0,20])
-    ax[i//5,i%5].set_title('dt = '+str(dt[i]))
-fig.suptitle(r"Test error for spiking and non-spiking dynamics ($\beta = 0.2,N_1=40,N_2=15$)",fontsize=20)
-fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-fig.savefig('cepalt_error.png')#,bbox_inches="tight")
-
-
-fig, ax = plt.subplots(2,5,figsize=(25,10))
-# fig.tight_layout()
-labels=['spiking','nonspiking']
-N2 = [3*i for i in range(1,11)]
-for i in range(10):
-    spiking_dir = 'cepalt_spiking_b_'+str(i)
-    nonspiking_dir = 'cepalt_nonspiking_b_'+str(i)
-    spiking_train_error, spiking_test_error = csv2array(spiking_dir)
-    nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
-    ax[i//5,i%5].plot(spiking_test_error)
-    ax[i//5,i%5].plot(nonspiking_test_error)
-    ax[i//5,i%5].set_xlabel('Epoch')
-    ax[i//5,i%5].set_ylabel('Test error rate (%)')
-    ax[i//5,i%5].set_xlim([0,30])
-    ax[i//5,i%5].set_ylim([0,20])
-    ax[i//5,i%5].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*N2[i])))))
+    ax[i//3,i%3].plot(spiking_test_error)
+    ax[i//3,i%3].plot(nonspiking_test_error)
+    ax[i//3,i%3].set_xlabel('Epoch')
+    ax[i//3,i%3].set_ylabel('Test error rate (%)')
+    ax[i//3,i%3].set_xlim([0,30])
+    ax[i//3,i%3].set_ylim([0,20])
+    ax[i//3,i%3].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*N2[i])))))
 fig.suptitle(r"Test error for spiking and nonspiking dynamics ($\beta = 0.2$)",fontsize=20)
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_error_b.png')#,bbox_inches="tight")
@@ -173,3 +189,19 @@ for idx1,beta in enumerate([1.0,0.5,0.2]):
 fig.suptitle(r"CEP vs skewsym for nonspiking dynamics",fontsize=20)
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('cepalt_vs_skewsym.png')#,bbox_inches="tight")
+
+
+fig, ax = plt.subplots(figsize=(20,10))
+N1=[3*Kmax for Kmax in [3,6,9,12,15]]
+labels=[r'N_1='+str(N1[i]) for i in range(5)]
+disc_test_dir = ["disc_test_"+str(i) for i in range(5)]
+error = [csv2array(disc_test_dir[i]) for i in range(5)]
+for i in range(5):
+    ax.plot(error[i][1])
+ax.set_xlabel('Epoch')
+ax.set_ylabel('Test error rate (%)')
+ax.set_xlim([0,20])
+# ax.set_title()
+fig.suptitle(r"Discretization schemes")
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('discretization.png',bbox_inches="tight")

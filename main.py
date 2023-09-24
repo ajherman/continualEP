@@ -194,7 +194,7 @@ parser.add_argument(
 parser.add_argument(
     '--step',
     type=float,
-    default=None, # Old default = 0.3
+    default=None
     help='time step size')
 parser.add_argument(
     '--tau-dynamic',
@@ -206,13 +206,18 @@ parser.add_argument(
     type=float,
     default=0.4328,
     help='decay factor for traces')
+parser.add_argument(
+    '--max_fr',
+    type=float,
+    default=3.333,
+    help='maximum activity / firing rate')
 
 
 args = parser.parse_args()
 
 # New this should create consistency as we change the number of steps
 if args.step==None:
-    args.step=3.5/args.Kmax
+    args.step=4.5/args.Kmax
 
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
