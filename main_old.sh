@@ -131,7 +131,7 @@ do
 	T=$((3*Kmax))
 	directory=disc_test_"$j"
 	mkdir -p $directory
-	nohup python -u main.py --directory $directory --load True --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 25 --T $T --Kmax $Kmax --beta 0.5 --cep --learning-rule stdp --update-rule skewsym >> "$directory".out &
+	nohup python -u main.py --directory $directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 25 --T $T --Kmax $Kmax --beta 0.5 --cep --learning-rule stdp --update-rule skewsym >> "$directory".out &
 	j=$((j+1))
 done
 
