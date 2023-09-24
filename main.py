@@ -209,7 +209,7 @@ parser.add_argument(
 parser.add_argument(
     '--max_fr',
     type=float,
-    default=1#,3.333,
+    default=1,#3.333,
     help='maximum activity / firing rate')
 
 
