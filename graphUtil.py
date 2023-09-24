@@ -99,7 +99,7 @@ for i in range(6):
     ax[i//3,i%3].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-np.exp(-5.357/N2[i])))
 fig.suptitle(r"Test error for spiking and nonspiking dynamics ($\beta = 0.2$)",fontsize=20)
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-fig.savefig('cepalt_error_b.png')#,bbox_inches="tight")
+fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
 
 
