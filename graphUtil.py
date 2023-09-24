@@ -18,10 +18,10 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-def csv2array(directory):
+def csv2array(directory,skiplines=2):
     with open(directory+'/results.csv','r',newline='') as csv_file:
         csv_reader = csv.reader(csv_file)
-        error = np.array(list(csv_reader)).astype('float')
+        error = np.array(list(csv_reader)[skiplines:]).astype('float')
         train_error,test_error = error[:,0],error[:,1]
     return train_error, test_error
 
@@ -94,7 +94,7 @@ for i in range(6):
     ax[i//3,i%3].plot(nonspiking_test_error)
     ax[i//3,i%3].set_xlabel('Epoch')
     ax[i//3,i%3].set_ylabel('Test error rate (%)')
-    ax[i//3,i%3].set_xlim([0,30])
+    ax[i//3,i%3].set_xlim([0,50])
     ax[i//3,i%3].set_ylim([0,20])
     ax[i//3,i%3].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-np.exp(-5.357/N2[i])))
 fig.suptitle(r"Test error for spiking and nonspiking dynamics ($\beta = 0.2$)",fontsize=20)
