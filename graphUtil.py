@@ -125,7 +125,7 @@ fig.savefig('skew_error.png',bbox_inches="tight")
 fig, ax = plt.subplots(figsize=(20,10))
 labels=['spiking','nonspiking','stdp: trace decay = 0.9','stdp: trace decay = 0.7','stdp: trace decay = 0.5','stdp: trace decay = 0.4']
 beta=[0.9,0.7,0.5,0.4]
-i=0
+i=1
 spiking_dir = 'skewsym_spiking_b_'+str(i)
 nonspiking_dir = 'skewsym_nonspiking_b_'+str(i)
 stdp_0_dir = 'stdp_0_'+str(i)
@@ -148,7 +148,7 @@ ax.set_xlabel('Epoch')
 ax.set_ylabel('Test error rate (%)')
 ax.set_xlim([0,20])
 # ax.set_title()
-fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,dt=0.3,\beta=0.9$)")
+fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,dt=0.3,\beta=$"+str(beta[i])+")")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('decay_compare.png',bbox_inches="tight")
 

@@ -194,7 +194,7 @@ parser.add_argument(
 parser.add_argument(
     '--step',
     type=float,
-    default=0.3,
+    default=None, # Old default = 0.3
     help='time step size')
 parser.add_argument(
     '--tau-dynamic',
@@ -211,6 +211,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 # New this should create consistency as we change the number of steps
+if args.step==None:
+    args.step=3.5/args.Kmax
+
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
     args.dt = 1-np.exp(-args.step/args.tau_dynamic)
