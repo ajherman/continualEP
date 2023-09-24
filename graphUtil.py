@@ -18,11 +18,19 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-def csv2array(directory,skiplines=2):
+def csv2array(directory,skiplines=0):
     with open(directory+'/results.csv','r',newline='') as csv_file:
         csv_reader = csv.reader(csv_file)
         error = np.array(list(csv_reader)[skiplines:]).astype('float')
-        train_error,test_error = error[:,0],error[:,1]
+        # for row in csv_reader:
+        #     print(', '.join(row))
+        # print(list(csv_reader))
+        # print(error)
+        # print(directory)
+        try:
+            train_error,test_error = error[:,0],error[:,1]
+        except:
+            return [],[]
     return train_error, test_error
 
 
@@ -51,7 +59,7 @@ fig, ax = plt.subplots(figsize=(20,10))
 N1=[3*Kmax for Kmax in [3,6,9,12,15,18]]
 labels=[r'N_1='+str(N1[i]) for i in range(6)]
 disc_test_dir = ["cepalt_nonspiking_"+str(i) for i in range(6)]
-error = [csv2array(disc_test_dir[i]) for i in range(6)]
+error = [csv2array(disc_test_dir[i],skiplines=2) for i in range(6)]
 for i in range(6):
     ax.plot(error[i][1])
 ax.set_xlabel('Epoch')
@@ -68,7 +76,7 @@ fig, ax = plt.subplots(figsize=(20,10))
 N1=[3*Kmax for Kmax in [3,6,9,12,15,18]]
 labels=[r'N_1='+str(N1[i]) for i in range(6)]
 disc_test_dir = ["cepalt_spiking_"+str(i) for i in range(6)]
-error = [csv2array(disc_test_dir[i]) for i in range(6)]
+error = [csv2array(disc_test_dir[i],skiplines=2) for i in range(6)]
 for i in range(6):
     ax.plot(error[i][1])
 ax.set_xlabel('Epoch')
@@ -88,8 +96,8 @@ N2 = [3*i for i in range(1,7)]
 for i in range(6):
     spiking_dir = 'cepalt_spiking_'+str(i)
     nonspiking_dir = 'cepalt_nonspiking_'+str(i)
-    spiking_train_error, spiking_test_error = csv2array(spiking_dir)
-    nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
+    spiking_train_error, spiking_test_error = csv2array(spiking_dir,skiplines=2)
+    nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir,skiplines=2)
     ax[i//3,i%3].plot(spiking_test_error)
     ax[i//3,i%3].plot(nonspiking_test_error)
     ax[i//3,i%3].set_xlabel('Epoch')
