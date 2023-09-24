@@ -365,7 +365,7 @@ if __name__ == '__main__':
         # csv_file = open(csv_path,'a',newline='')
         # csv_writer = csv.write(csvf)
         fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
-        with open('csv_path','w+',newline='') as csv_file:
+        with open(csv_path,'w',newline='') as csv_file:
             csv_writer = csv.writer(csv_file)
             if not args.load:
                 csv_writer.writerow(fieldnames)
