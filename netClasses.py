@@ -15,8 +15,7 @@ class SNN(nn.Module):
         super(SNN, self).__init__()
         self.T = args.T
         self.Kmax = args.Kmax
-        # self.dt = args.dt
-        self.dynamic_decay = args.dynamic_decay
+        self.dt = args.dt
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
         self.ns = len(args.size_tab) - 1
@@ -33,6 +32,7 @@ class SNN(nn.Module):
         self.current_epoch = 0
         self.spiking = args.spiking
         self.spike_height = args.spike_height
+        self.step = args.step
         self.max_fr = args.max_fr
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
@@ -367,8 +367,7 @@ class VFcont(nn.Module):
         super(VFcont, self).__init__()
         self.T = args.T
         self.Kmax = args.Kmax
-        # self.dt = args.dt
-        self.dynamic_decay = args.dynamic_decay
+        self.dt = args.dt
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
         self.ns = len(args.size_tab) - 1
@@ -967,8 +966,7 @@ class EPcont(nn.Module):
 
         self.T = args.T
         self.Kmax = args.Kmax
-        # self.dt = args.dt
-        self.dynamic_decay = args.dynamic_decay
+        self.dt = args.dt
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
         self.ns = len(args.size_tab) - 1
