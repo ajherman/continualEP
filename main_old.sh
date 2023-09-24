@@ -47,25 +47,27 @@ for Kmax in {5,10,15,20,25,30}
 		nohup python -u main.py --directory $nonspiking_dir --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$nonspiking_dir".out &
 		i=$((i+1))
 	done
-#
-# # Plot comparing three types
-# i=0
-# for Kmax in {5,10,15,20,25,30,35,40}
-#  	do
-#  		T=$((3*Kmax))
-#  		beta=0.2
-#  		spiking_directory=skewsym_spiking_"$i"
-#  		nonspiking_directory=skewsym_nonspiking_"$i"
-#  		stdp_directory=stdp_"$i"
-#  		mkdir -p $spiking_directory
-#  		mkdir -p $nonspiking_directory
-#  		mkdir -p $stdp_directory
-#  		nohup python -u main.py --directory $spiking_directory --load True --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_spiking_log_"$i".out &
-#  		nohup python -u main.py --directory $stdp_directory --load True --spiking True --action train --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> stdp_log_"$i".out &
-#  		# nohup python -u main.py --directory $stdp_directory --spiking True --action train --trace-decay 0.38197  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> stdp_log_"$i".out &
-#  		nohup python -u main.py --directory $nonspiking_directory --load True --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> skewsym_nonspiking_log_"$i".out &
-#  		i=$((i+1))
-#  	done
+
+# Plot comparing three types
+i=0
+for batch_size in {1,10,20,40}
+ 	do
+ 		beta=0.5
+ 		spiking_dir=skewsym_spiking_"$i"
+ 		nonspiking_dir=skewsym_nonspiking_"$i"
+ 		stdp_slow_dir=stdp_slow_"$i"
+		stdp_med_dir=stdp_med_"$i"
+		stdp_fast_dir=stdp_fast_"$i"
+ 		mkdir -p $spiking_dir
+ 		mkdir -p $nonspiking_dir
+ 		mkdir -p $stdp_dir
+ 		nohup python -u main.py --directory $spiking_dir --spiking True --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$spiking_dir".out &
+ 		nohup python -u main.py --directory $nonspiking_dir --spiking False --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$nonspiking_dir".out &
+		nohup python -u main.py --directory $stdp_slow_dir --spiking True --action train --batch-size $batch_size --tau-trace 2.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_slow_dir".out &
+		nohup python -u main.py --directory $stdp_med_dir --spiking True --action train --batch-size $batch_size --trace-decay 1.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_med_dir".out &
+		nohup python -u main.py --directory $stdp_fast_dir --spiking True --action train --batch-size $batch_size --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_fast_dir".out &
+ 		i=$((i+1))
+ 	done
 
 # # Plot comparing different decay rates
 # i=1

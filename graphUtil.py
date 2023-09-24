@@ -111,58 +111,55 @@ fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
 
 
-
-fig, ax = plt.subplots(2,4,figsize=(20,10))
-labels=['spiking','nonspiking','stdp']
-N2 = [3*i for i in range(1,11)]
-for i in range(8):
-    spiking_dir = 'skewsym_spiking_'+str(i)
-    nonspiking_dir = 'skewsym_nonspiking_'+str(i)
-    stdp_dir = 'stdp_'+str(i)
-    spiking_train_error, spiking_test_error = csv2array(spiking_dir)
-    nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
-    stdp_train_error,stdp_test_error = csv2array(stdp_dir)
-    ax[i//4,i%4].plot(spiking_test_error)
-    ax[i//4,i%4].plot(nonspiking_test_error)
-    ax[i//4,i%4].plot(stdp_test_error)
-    ax[i//4,i%4].set_xlabel('Epoch')
-    ax[i//4,i%4].set_ylabel('Test error rate (%)')
-    ax[i//4,i%4].set_xlim([0,30])
-    ax[i//4,i%4].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*N2[i])))))
-fig.suptitle("Comparison of three approximately equivalent dynamics")
-fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-fig.savefig('skew_error.png',bbox_inches="tight")
-
-
-# fig, ax = plt.subplots(2,2,figsize=(20,10))
-# labels=['spiking','nonspiking','stdp: trace decay = 0.9','stdp: trace decay = 0.7','stdp: trace decay = 0.5','stdp: trace decay = 0.4']
-# beta=[0.9,0.7,0.5,0.4]
-# for i in range(1):
-#     spiking_dir = 'skewsym_spiking_b_'+str(i)
-#     nonspiking_dir = 'skewsym_nonspiking_b_'+str(i)
-#     stdp_0_dir = 'stdp_0_'+str(i)
-#     stdp_1_dir = 'stdp_1_'+str(i)
-#     stdp_2_dir = 'stdp_2_'+str(i)
-#     stdp_3_dir = 'stdp_3_'+str(i)
+#
+# fig, ax = plt.subplots(2,4,figsize=(20,10))
+# labels=['spiking','nonspiking','stdp']
+# N2 = [3*i for i in range(1,11)]
+# for i in range(8):
+#     spiking_dir = 'skewsym_spiking_'+str(i)
+#     nonspiking_dir = 'skewsym_nonspiking_'+str(i)
+#     stdp_dir = 'stdp_'+str(i)
 #     spiking_train_error, spiking_test_error = csv2array(spiking_dir)
 #     nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
-#     stdp_0_train_error,stdp_0_test_error = csv2array(stdp_0_dir)
-#     stdp_1_train_error,stdp_1_test_error = csv2array(stdp_1_dir)
-#     stdp_2_train_error,stdp_2_test_error = csv2array(stdp_2_dir)
-#     stdp_3_train_error,stdp_3_test_error = csv2array(stdp_3_dir)
+#     stdp_train_error,stdp_test_error = csv2array(stdp_dir)
 #     ax[i//4,i%4].plot(spiking_test_error)
 #     ax[i//4,i%4].plot(nonspiking_test_error)
-#     ax[i//4,i%4].plot(stdp_0_test_error)
-#     ax[i//4,i%4].plot(stdp_1_test_error)
-#     ax[i//4,i%4].plot(stdp_2_test_error)
-#     ax[i//4,i%4].plot(stdp_3_test_error)
+#     ax[i//4,i%4].plot(stdp_test_error)
 #     ax[i//4,i%4].set_xlabel('Epoch')
 #     ax[i//4,i%4].set_ylabel('Test error rate (%)')
-#     ax[i//4,i%4].set_xlim([0,20])
-#     ax[i//4,i%4].set_title(r'$\beta=$'+str(beta[i]))
-# fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,dt=0.3$)")
+#     ax[i//4,i%4].set_xlim([0,30])
+#     ax[i//4,i%4].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-(2**(-20/(3*N2[i])))))
+# fig.suptitle("Comparison of three approximately equivalent dynamics")
 # fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-# fig.savefig('decay_compare.png',bbox_inches="tight")
+# fig.savefig('skew_error.png',bbox_inches="tight")
+
+
+fig, ax = plt.subplots(2,2,figsize=(20,10))
+labels=['spiking','nonspiking',r'stdp: \tau=2.5',r'stdp: \tau=1.5 ','stdp: \tau=0.5','stdp: trace decay = 0.4']
+batch_size=[1,10,20,40]
+for i in range(1):
+    spiking_dir = 'skewsym_spiking_b_'+str(i)
+    nonspiking_dir = 'skewsym_nonspiking_b_'+str(i)
+    stdp_slow_dir = 'stdp_slow_'+str(i)
+    stdp_med_dir = 'stdp_med_'+str(i)
+    stdp_fast_dir = 'stdp_fast_'+str(i)
+    spiking_train_error, spiking_test_error = csv2array(spiking_dir,skiplines=2)
+    nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir,skiplines=2)
+    stdp_slow_train_error,stdp_slow_test_error = csv2array(stdp_slow_dir,skiplines=2)
+    stdp_med_train_error,stdp_med_test_error = csv2array(stdp_med_dir,skiplines=2)
+    stdp_fast_train_error,stdp_fast_test_error = csv2array(stdp_fast_dir,skiplines=2)
+    ax[i//2,i%2].plot(spiking_test_error)
+    ax[i//2,i%2].plot(nonspiking_test_error)
+    ax[i//2,i%2].plot(stdp_slow_test_error)
+    ax[i//2,i%2].plot(stdp_med_test_error)
+    ax[i//2,i%2].plot(stdp_fast_test_error)
+    ax[i//2,i%2].set_xlabel('Epoch')
+    ax[i//2,i%2].set_ylabel('Test error rate (%)')
+    ax[i//2,i%2].set_xlim([0,20])
+    ax[i//2,i%2].set_title('batch size = '+str(batch_size[i]))
+fig.suptitle(r"Comparison of trace decay rates")
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('kernel_width_compare.png',bbox_inches="tight")
 
 fig, ax = plt.subplots(figsize=(20,10))
 labels=['spiking','nonspiking','stdp: trace decay = 0.9','stdp: trace decay = 0.7','stdp: trace decay = 0.5','stdp: trace decay = 0.4']
