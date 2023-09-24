@@ -362,15 +362,14 @@ if __name__ == '__main__':
 
         # Create csv file
         csv_path = args.directory+"/results.csv"
-        # csv_file = open(csv_path,'a',newline='')
-        # csv_writer = csv.write(csvf)
-        fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
-        with open(csv_path,'w',newline='') as csv_file:
-            csv_writer = csv.writer(csv_file)
-            if not args.load:
+        if not args.load:
+            # csv_file = open(csv_path,'a',newline='')
+            # csv_writer = csv.write(csvf)
+            fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
+            with open(csv_path,'w',newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
                 csv_writer.writerow(fieldnames)
                 csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax])
-
         # #compute initial angle between EP update and BPTT gradient
         # if args.angle_grad:
         #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
