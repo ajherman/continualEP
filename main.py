@@ -219,7 +219,7 @@ parser.add_argument(
     default=1.44,
     help='decay factor for traces')
 parser.add_argument(
-    '--max_fr',
+    '--max-fr',
     type=float,
     default=None, #1.0
     help='maximum activity / firing rate')

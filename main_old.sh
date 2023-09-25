@@ -44,7 +44,7 @@ for Kmax in {3,6,9,12,15,18}
 		mkdir -p $spiking_dir
 		mkdir -p $nonspiking_dir
 		nohup python -u main.py --load --directory $spiking_dir --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$spiking_dir".out &
-		nohup python -u main.py --load --directory $nonspiking_dir --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$nonspiking_dir".out &
+		nohup python -u main.py --directory $nonspiking_dir --max-fr 1.0 --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta 0.2 --cep --learning-rule stdp --update-rule $update_rule >> "$nonspiking_dir".out &
 		i=$((i+1))
 	done
 
