@@ -1,0 +1,498 @@
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Train Epoch: 1 [2000/60000 (3%)]	Loss: 0.428239
+Train Epoch: 1 [4000/60000 (7%)]	Loss: 0.390688
+Train Epoch: 1 [6000/60000 (10%)]	Loss: 0.361657
+Train Epoch: 1 [8000/60000 (13%)]	Loss: 0.360459
+Train Epoch: 1 [10000/60000 (17%)]	Loss: 0.277017
+Train Epoch: 1 [12000/60000 (20%)]	Loss: 0.259900
+Train Epoch: 1 [14000/60000 (23%)]	Loss: 0.242299
+Train Epoch: 1 [16000/60000 (27%)]	Loss: 0.263275
+Train Epoch: 1 [18000/60000 (30%)]	Loss: 0.238074
+Train Epoch: 1 [20000/60000 (33%)]	Loss: 0.200447
+Train Epoch: 1 [22000/60000 (37%)]	Loss: 0.237936
+Train Epoch: 1 [24000/60000 (40%)]	Loss: 0.215496
+Train Epoch: 1 [26000/60000 (43%)]	Loss: 0.299363
+Train Epoch: 1 [28000/60000 (47%)]	Loss: 0.210230
+Train Epoch: 1 [30000/60000 (50%)]	Loss: 0.189878
+Train Epoch: 1 [32000/60000 (53%)]	Loss: 0.184418
+Train Epoch: 1 [34000/60000 (57%)]	Loss: 0.198132
+Train Epoch: 1 [36000/60000 (60%)]	Loss: 0.216274
+Train Epoch: 1 [38000/60000 (63%)]	Loss: 0.168412
+Train Epoch: 1 [40000/60000 (67%)]	Loss: 0.213175
+Train Epoch: 1 [42000/60000 (70%)]	Loss: 0.166330
+Train Epoch: 1 [44000/60000 (73%)]	Loss: 0.139130
+Train Epoch: 1 [46000/60000 (77%)]	Loss: 0.195098
+Train Epoch: 1 [48000/60000 (80%)]	Loss: 0.198564
+Train Epoch: 1 [50000/60000 (83%)]	Loss: 0.145861
+Train Epoch: 1 [52000/60000 (87%)]	Loss: 0.126255
+Train Epoch: 1 [54000/60000 (90%)]	Loss: 0.152136
+Train Epoch: 1 [56000/60000 (93%)]	Loss: 0.178841
+Train Epoch: 1 [58000/60000 (97%)]	Loss: 0.173275
+Train Epoch: 1 [60000/60000 (100%)]	Loss: 0.174495
+
+Average Training loss: 0.0116, Training Error Rate: 21.24% (12743/60000)
+
+
+Average Test loss: 0.1493, Test Error Rate: 10.72% (1072/10000)
+
+Train Epoch: 2 [2000/60000 (3%)]	Loss: 0.245076
+Train Epoch: 2 [4000/60000 (7%)]	Loss: 0.130831
+Train Epoch: 2 [6000/60000 (10%)]	Loss: 0.130529
+Train Epoch: 2 [8000/60000 (13%)]	Loss: 0.069719
+Train Epoch: 2 [10000/60000 (17%)]	Loss: 0.132015
+Train Epoch: 2 [12000/60000 (20%)]	Loss: 0.188843
+Train Epoch: 2 [14000/60000 (23%)]	Loss: 0.141121
+Train Epoch: 2 [16000/60000 (27%)]	Loss: 0.133887
+Train Epoch: 2 [18000/60000 (30%)]	Loss: 0.167670
+Train Epoch: 2 [20000/60000 (33%)]	Loss: 0.125074
+Train Epoch: 2 [22000/60000 (37%)]	Loss: 0.141258
+Train Epoch: 2 [24000/60000 (40%)]	Loss: 0.084186
+Train Epoch: 2 [26000/60000 (43%)]	Loss: 0.112570
+Train Epoch: 2 [28000/60000 (47%)]	Loss: 0.082403
+Train Epoch: 2 [30000/60000 (50%)]	Loss: 0.101767
+Train Epoch: 2 [32000/60000 (53%)]	Loss: 0.163514
+Train Epoch: 2 [34000/60000 (57%)]	Loss: 0.175695
+Train Epoch: 2 [36000/60000 (60%)]	Loss: 0.175128
+Train Epoch: 2 [38000/60000 (63%)]	Loss: 0.151744
+Train Epoch: 2 [40000/60000 (67%)]	Loss: 0.171884
+Train Epoch: 2 [42000/60000 (70%)]	Loss: 0.126411
+Train Epoch: 2 [44000/60000 (73%)]	Loss: 0.176836
+Train Epoch: 2 [46000/60000 (77%)]	Loss: 0.141599
+Train Epoch: 2 [48000/60000 (80%)]	Loss: 0.082592
+Train Epoch: 2 [50000/60000 (83%)]	Loss: 0.105817
+Train Epoch: 2 [52000/60000 (87%)]	Loss: 0.155409
+Train Epoch: 2 [54000/60000 (90%)]	Loss: 0.120756
+Train Epoch: 2 [56000/60000 (93%)]	Loss: 0.066450
+Train Epoch: 2 [58000/60000 (97%)]	Loss: 0.060007
+Train Epoch: 2 [60000/60000 (100%)]	Loss: 0.115287
+
+Average Training loss: 0.0062, Training Error Rate: 9.94% (5961/60000)
+
+
+Average Test loss: 0.1028, Test Error Rate: 8.73% (873/10000)
+
+Train Epoch: 3 [2000/60000 (3%)]	Loss: 0.058471
+Train Epoch: 3 [4000/60000 (7%)]	Loss: 0.103482
+Train Epoch: 3 [6000/60000 (10%)]	Loss: 0.117479
+Train Epoch: 3 [8000/60000 (13%)]	Loss: 0.062978
+Train Epoch: 3 [10000/60000 (17%)]	Loss: 0.085185
+Train Epoch: 3 [12000/60000 (20%)]	Loss: 0.100756
+Train Epoch: 3 [14000/60000 (23%)]	Loss: 0.082218
+Train Epoch: 3 [16000/60000 (27%)]	Loss: 0.106355
+Train Epoch: 3 [18000/60000 (30%)]	Loss: 0.085218
+Train Epoch: 3 [20000/60000 (33%)]	Loss: 0.136433
+Train Epoch: 3 [22000/60000 (37%)]	Loss: 0.060169
+Train Epoch: 3 [24000/60000 (40%)]	Loss: 0.094496
+Train Epoch: 3 [26000/60000 (43%)]	Loss: 0.044771
+Train Epoch: 3 [28000/60000 (47%)]	Loss: 0.143757
+Train Epoch: 3 [30000/60000 (50%)]	Loss: 0.119786
+Train Epoch: 3 [32000/60000 (53%)]	Loss: 0.062997
+Train Epoch: 3 [34000/60000 (57%)]	Loss: 0.079105
+Train Epoch: 3 [36000/60000 (60%)]	Loss: 0.090535
+Train Epoch: 3 [38000/60000 (63%)]	Loss: 0.154238
+Train Epoch: 3 [40000/60000 (67%)]	Loss: 0.061700
+Train Epoch: 3 [42000/60000 (70%)]	Loss: 0.084398
+Train Epoch: 3 [44000/60000 (73%)]	Loss: 0.060711
+Train Epoch: 3 [46000/60000 (77%)]	Loss: 0.080216
+Train Epoch: 3 [48000/60000 (80%)]	Loss: 0.100157
+Train Epoch: 3 [50000/60000 (83%)]	Loss: 0.081947
+Train Epoch: 3 [52000/60000 (87%)]	Loss: 0.043078
+Train Epoch: 3 [54000/60000 (90%)]	Loss: 0.111062
+Train Epoch: 3 [56000/60000 (93%)]	Loss: 0.081143
+Train Epoch: 3 [58000/60000 (97%)]	Loss: 0.146000
+Train Epoch: 3 [60000/60000 (100%)]	Loss: 0.060526
+
+Average Training loss: 0.0045, Training Error Rate: 8.24% (4945/60000)
+
+
+Average Test loss: 0.0819, Test Error Rate: 7.92% (792/10000)
+
+Train Epoch: 4 [2000/60000 (3%)]	Loss: 0.032938
+Train Epoch: 4 [4000/60000 (7%)]	Loss: 0.074687
+Train Epoch: 4 [6000/60000 (10%)]	Loss: 0.100721
+Train Epoch: 4 [8000/60000 (13%)]	Loss: 0.026523
+Train Epoch: 4 [10000/60000 (17%)]	Loss: 0.088840
+Train Epoch: 4 [12000/60000 (20%)]	Loss: 0.103113
+Train Epoch: 4 [14000/60000 (23%)]	Loss: 0.022266
+Train Epoch: 4 [16000/60000 (27%)]	Loss: 0.055631
+Train Epoch: 4 [18000/60000 (30%)]	Loss: 0.060613
+Train Epoch: 4 [20000/60000 (33%)]	Loss: 0.026089
+Train Epoch: 4 [22000/60000 (37%)]	Loss: 0.065006
+Train Epoch: 4 [24000/60000 (40%)]	Loss: 0.035956
+Train Epoch: 4 [26000/60000 (43%)]	Loss: 0.033718
+TraiTrain Epoch: 4 [28000/60000 (47%)]	Loss: 0.030TraiTrain Epoch: 4 [30000/60000 (50%)]	Loss: 0.182TraiTrain Epoch: 4 [32000/60000 (53%)]	Loss: 0.133TraiTrain Epoch: 4 [34000/60000 (57%)]	Loss: 0.079TraiTrain Epoch: 4 [36000/60000 (60%)]	Loss: 0.074TraiTrain Epoch: 4 [38000/60000 (63%)]	Loss: 0.161TraiTrain Epoch: 4 [40000/60000 (67%)]	Loss: 0.105TraiTrain Epoch: 4 [42000/60000 (70%)]	Loss: 0.072TraiTrain Epoch: 4 [44000/60000 (73%)]	Loss: 0.096TraiTrain Epoch: 4 [46000/60000 (77%)]	Loss: 0.168TraiTrain Epoch: 4 [48000/60000 (80%)]	Loss: 0.032TraiTrain Epoch: 4 [50000/60000 (83%)]	Loss: 0.083TraiTrain Epoch: 4 [52000/60000 (87%)]	Loss: 0.051TraiTrain Epoch: 4 [54000/60000 (90%)]	Loss: 0.062TraiTrain Epoch: 4 [56000/60000 (93%)]	Loss: 0.064TraiTrain Epoch: 4 [58000/60000 (97%)]	Loss: 0.350801
+Train Epoch: 4 [60000/60000 (100%)]	Loss: 0.177581
+
+Average Training loss: 0.0045, Training Error Rate: 8.83% (5299/60000)
+
+
+Average Test loss: 0.0847, Test Error Rate: 8.01% (801/10000)
+
+Train Epoch: 5 [2000/60000 (3%)]	Loss: 0.053928
+Train Epoch: 5 [4000/60000 (7%)]	Loss: 0.150480
+Train Epoch: 5 [6000/60000 (10%)]	Loss: 0.052066
+Train Epoch: 5 [8000/60000 (13%)]	Loss: 0.068762
+Train Epoch: 5 [10000/60000 (17%)]	Loss: 0.067080
+Train Epoch: 5 [12000/60000 (20%)]	Loss: 0.147202
+Train Epoch: 5 [14000/60000 (23%)]	Loss: 0.075317
+Train Epoch: 5 [16000/60000 (27%)]	Loss: 0.099817
+Train Epoch: 5 [18000/60000 (30%)]	Loss: 0.081646
+Train Epoch: 5 [20000/60000 (33%)]	Loss: 0.025742
+Train Epoch: 5 [22000/60000 (37%)]	Loss: 0.140331
+Train Epoch: 5 [24000/60000 (40%)]	Loss: 0.221661
+Train Epoch: 5 [26000/60000 (43%)]	Loss: 0.097950
+Train Epoch: 5 [28000/60000 (47%)]	Loss: 0.038616
+Train Epoch: 5 [30000/60000 (50%)]	Loss: 0.109435
+Train Epoch: 5 [32000/60000 (53%)]	Loss: 0.063789
+Train Epoch: 5 [34000/60000 (57%)]	Loss: 0.096305
+Train Epoch: 5 [36000/60000 (60%)]	Loss: 0.098595
+Train Epoch: 5 [38000/60000 (63%)]	Loss: 0.054767
+Train Epoch: 5 [40000/60000 (67%)]	Loss: 0.112628
+Train Epoch: 5 [42000/60000 (70%)]	Loss: 0.080099
+Train Epoch: 5 [44000/60000 (73%)]	Loss: 0.069618
+Train Epoch: 5 [46000/60000 (77%)]	Loss: 0.061467
+Train Epoch: 5 [48000/60000 (80%)]	Loss: 0.073267
+Train Epoch: 5 [50000/60000 (83%)]	Loss: 0.038929
+Train Epoch: 5 [52000/60000 (87%)]	Loss: 0.074794
+Train Epoch: 5 [54000/60000 (90%)]	Loss: 0.072344
+Train Epoch: 5 [56000/60000 (93%)]	Loss: 0.054327
+Train Epoch: 5 [58000/60000 (97%)]	Loss: 0.086002
+Train Epoch: 5 [60000/60000 (100%)]	Loss: 0.102520
+
+Average Training loss: 0.0039, Training Error Rate: 7.93% (4759/60000)
+
+
+Average Test loss: 0.0724, Test Error Rate: 7.37% (737/10000)
+
+Train Epoch: 6 [2000/60000 (3%)]	Loss: 0.056226
+Train Epoch: 6 [4000/60000 (7%)]	Loss: 0.043686
+Train Epoch: 6 [6000/60000 (10%)]	Loss: 0.057154
+Train Epoch: 6 [8000/60000 (13%)]	Loss: 0.066376
+Train Epoch: 6 [10000/60000 (17%)]	Loss: 0.073734
+Train Epoch: 6 [12000/60000 (20%)]	Loss: 0.110974
+Train Epoch: 6 [14000/60000 (23%)]	Loss: 0.107122
+Train Epoch: 6 [16000/60000 (27%)]	Loss: 0.079466
+Train Epoch: 6 [18000/60000 (30%)]	Loss: 0.086667
+Train Epoch: 6 [20000/60000 (33%)]	Loss: 0.077016
+Train Epoch: 6 [22000/60000 (37%)]	Loss: 0.060948
+Train Epoch: 6 [24000/60000 (40%)]	Loss: 0.067712
+Train Epoch: 6 [26000/60000 (43%)]	Loss: 0.033958
+Train Epoch: 6 [28000/60000 (47%)]	Loss: 0.046439
+Train Epoch: 6 [30000/60000 (50%)]	Loss: 0.061360
+Train Epoch: 6 [32000/60000 (53%)]	Loss: 0.124091
+Train Epoch: 6 [34000/60000 (57%)]	Loss: 0.016153
+Train Epoch: 6 [36000/60000 (60%)]	Loss: 0.062461
+Train Epoch: 6 [38000/60000 (63%)]	Loss: 0.127003
+Train Epoch: 6 [40000/60000 (67%)]	Loss: 0.122162
+Train Epoch: 6 [42000/60000 (70%)]	Loss: 0.094078
+Train Epoch: 6 [44000/60000 (73%)]	Loss: 0.029837
+Train Epoch: 6 [46000/60000 (77%)]	Loss: 0.053432
+Train Epoch: 6 [48000/60000 (80%)]	Loss: 0.105120
+Train Epoch: 6 [50000/60000 (83%)]	Loss: 0.086855
+Train Epoch: 6 [52000/60000 (87%)]	Loss: 0.085074
+Train Epoch: 6 [54000/60000 (90%)]	Loss: 0.053547
+Train Epoch: 6 [56000/60000 (93%)]	Loss: 0.022352
+Train Epoch: 6 [58000/60000 (97%)]	Loss: 0.060823
+Train Epoch: 6 [60000/60000 (100%)]	Loss: 0.053597
+
+Average Training loss: 0.0036, Training Error Rate: 7.43% (4458/60000)
+
+
+Average Test loss: 0.0655, Test Error Rate: 6.95% (695/10000)
+
+Train Epoch: 7 [2000/60000 (3%)]	Loss: 0.033102
+Train Epoch: 7 [4000/60000 (7%)]	Loss: 0.018886
+Train Epoch: 7 [6000/60000 (10%)]	Loss: 0.061335
+Train Epoch: 7 [8000/60000 (13%)]	Loss: 0.056165
+Train Epoch: 7 [10000/60000 (17%)]	Loss: 0.051906
+Train Epoch: 7 [12000/60000 (20%)]	Loss: 0.060519
+Train Epoch: 7 [14000/60000 (23%)]	Loss: 0.073433
+Train Epoch: 7 [16000/60000 (27%)]	Loss: 0.055920
+Train Epoch: 7 [18000/60000 (30%)]	Loss: 0.032106
+Train Epoch: 7 [20000/60000 (33%)]	Loss: 0.078468
+Train Epoch: 7 [22000/60000 (37%)]	Loss: 0.013567
+Train Epoch: 7 [24000/60000 (40%)]	Loss: 0.016450
+Train Epoch: 7 [26000/60000 (43%)]	Loss: 0.057158
+Train Epoch: 7 [28000/60000 (47%)]	Loss: 0.018573
+Train Epoch: 7 [30000/60000 (50%)]	Loss: 0.072965
+Train Epoch: 7 [32000/60000 (53%)]	Loss: 0.034383
+Train Epoch: 7 [34000/60000 (57%)]	Loss: 0.130504
+Train Epoch: 7 [36000/60000 (60%)]	Loss: 0.060697
+Train Epoch: 7 [38000/60000 (63%)]	Loss: 0.030716
+Train Epoch: 7 [40000/60000 (67%)]	Loss: 0.047368
+Train Epoch: 7 [42000/60000 (70%)]	Loss: 0.083981
+Train Epoch: 7 [44000/60000 (73%)]	Loss: 0.056043
+Train Epoch: 7 [46000/60000 (77%)]	Loss: 0.039229
+Train Epoch: 7 [48000/60000 (80%)]	Loss: 0.027110
+Train Epoch: 7 [50000/60000 (83%)]	Loss: 0.058351
+Train Epoch: 7 [52000/60000 (87%)]	Loss: 0.202917
+Train Epoch: 7 [54000/60000 (90%)]	Loss: 0.089080
+Train Epoch: 7 [56000/60000 (93%)]	Loss: 0.021281
+Train Epoch: 7 [58000/60000 (97%)]	Loss: 0.046049
+Train Epoch: 7 [60000/60000 (100%)]	Loss: 0.090397
+
+Average Training loss: 0.0033, Training Error Rate: 7.00% (4202/60000)
+
+
+Average Test loss: 0.0626, Test Error Rate: 6.56% (656/10000)
+
+Train Epoch: 8 [2000/60000 (3%)]	Loss: 0.062440
+Train Epoch: 8 [4000/60000 (7%)]	Loss: 0.060400
+Train Epoch: 8 [6000/60000 (10%)]	Loss: 0.041518
+Train Epoch: 8 [8000/60000 (13%)]	Loss: 0.049026
+Train Epoch: 8 [10000/60000 (17%)]	Loss: 0.071424
+Train Epoch: 8 [12000/60000 (20%)]	Loss: 0.054593
+Train Epoch: 8 [14000/60000 (23%)]	Loss: 0.020573
+Train Epoch: 8 [16000/60000 (27%)]	Loss: 0.024851
+Train Epoch: 8 [18000/60000 (30%)]	Loss: 0.032107
+Train Epoch: 8 [20000/60000 (33%)]	Loss: 0.063677
+Train Epoch: 8 [22000/60000 (37%)]	Loss: 0.022244
+Train Epoch: 8 [24000/60000 (40%)]	Loss: 0.071303
+Train Epoch: 8 [26000/60000 (43%)]	Loss: 0.130048
+Train Epoch: 8 [28000/60000 (47%)]	Loss: 0.102806
+Train Epoch: 8 [30000/60000 (50%)]	Loss: 0.038918
+Train Epoch: 8 [32000/60000 (53%)]	Loss: 0.057221
+Train Epoch: 8 [34000/60000 (57%)]	Loss: 0.035161
+Train Epoch: 8 [36000/60000 (60%)]	Loss: 0.036100
+Train Epoch: 8 [38000/60000 (63%)]	Loss: 0.027857
+Train Epoch: 8 [40000/60000 (67%)]	Loss: 0.039439
+Train Epoch: 8 [42000/60000 (70%)]	Loss: 0.080326
+Train Epoch: 8 [44000/60000 (73%)]	Loss: 0.067276
+Train Epoch: 8 [46000/60000 (77%)]	Loss: 0.042509
+Train Epoch: 8 [48000/60000 (80%)]	Loss: 0.130556
+Train Epoch: 8 [50000/60000 (83%)]	Loss: 0.034991
+Train Epoch: 8 [52000/60000 (87%)]	Loss: 0.125020
+Train Epoch: 8 [54000/60000 (90%)]	Loss: 0.095784
+Train Epoch: 8 [56000/60000 (93%)]	Loss: 0.029081
+Train Epoch: 8 [58000/60000 (97%)]	Loss: 0.044842
+Train Epoch: 8 [60000/60000 (100%)]	Loss: 0.154372
+
+Average Training loss: 0.0031, Training Error Rate: 6.50% (3902/60000)
+
+
+Average Test loss: 0.0634, Test Error Rate: 6.51% (651/10000)
+
+Train Epoch: 9 [2000/60000 (3%)]	Loss: 0.040983
+Train Epoch: 9 [4000/60000 (7%)]	Loss: 0.036919
+Train Epoch: 9 [6000/60000 (10%)]	Loss: 0.030976
+Train Epoch: 9 [8000/60000 (13%)]	Loss: 0.024482
+Train Epoch: 9 [10000/60000 (17%)]	Loss: 0.065827
+Train Epoch: 9 [12000/60000 (20%)]	Loss: 0.020545
+Train Epoch: 9 [14000/60000 (23%)]	Loss: 0.054863
+Train Epoch: 9 [16000/60000 (27%)]	Loss: 0.106675
+Train Epoch: 9 [18000/60000 (30%)]	Loss: 0.017292
+Train Epoch: 9 [20000/60000 (33%)]	Loss: 0.087767
+Train Epoch: 9 [22000/60000 (37%)]	Loss: 0.086595
+Train Epoch: 9 [24000/60000 (40%)]	Loss: 0.021474
+Train Epoch: 9 [26000/60000 (43%)]	Loss: 0.067106
+Train Epoch: 9 [28000/60000 (47%)]	Loss: 0.042707
+Train Epoch: 9 [30000/60000 (50%)]	Loss: 0.090321
+Train Epoch: 9 [32000/60000 (53%)]	Loss: 0.025374
+Train Epoch: 9 [34000/60000 (57%)]	Loss: 0.072242
+Train Epoch: 9 [36000/60000 (60%)]	Loss: 0.031053
+Train Epoch: 9 [38000/60000 (63%)]	Loss: 0.018901
+Train Epoch: 9 [40000/60000 (67%)]	Loss: 0.070202
+Train Epoch: 9 [42000/60000 (70%)]	Loss: 0.021874
+Train Epoch: 9 [44000/60000 (73%)]	Loss: 0.042666
+Train Epoch: 9 [46000/60000 (77%)]	Loss: 0.052691
+Train Epoch: 9 [48000/60000 (80%)]	Loss: 0.161462
+Train Epoch: 9 [50000/60000 (83%)]	Loss: 0.041077
+Train Epoch: 9 [52000/60000 (87%)]	Loss: 0.031894
+Train Epoch: 9 [54000/60000 (90%)]	Loss: 0.047540
+Train Epoch: 9 [56000/60000 (93%)]	Loss: 0.090573
+Train Epoch: 9 [58000/60000 (97%)]	Loss: 0.055085
+Train Epoch: 9 [60000/60000 (100%)]	Loss: 0.012737
+
+Average Training loss: 0.0029, Training Error Rate: 6.23% (3737/60000)
+
+
+Average Test loss: 0.0555, Test Error Rate: 6.26% (626/10000)
+
+Train Epoch: 10 [2000/60000 (3%)]	Loss: 0.041359
+Train Epoch: 10 [4000/60000 (7%)]	Loss: 0.038893
+Train Epoch: 10 [6000/60000 (10%)]	Loss: 0.029809
+Train Epoch: 10 [8000/60000 (13%)]	Loss: 0.049028
+Train Epoch: 10 [10000/60000 (17%)]	Loss: 0.016595
+Train Epoch: 10 [12000/60000 (20%)]	Loss: 0.098742
+Train Epoch: 10 [14000/60000 (23%)]	Loss: 0.058928
+Train Epoch: 10 [16000/60000 (27%)]	Loss: 0.031064
+Train Epoch: 10 [18000/60000 (30%)]	Loss: 0.061462
+Train Epoch: 10 [20000/60000 (33%)]	Loss: 0.059148
+Train Epoch: 10 [22000/60000 (37%)]	Loss: 0.036143
+Train Epoch: 10 [24000/60000 (40%)]	Loss: 0.034616
+Train Epoch: 10 [26000/60000 (43%)]	Loss: 0.036750
+Train Epoch: 10 [28000/60000 (47%)]	Loss: 0.070891
+Train Epoch: 10 [30000/60000 (50%)]	Loss: 0.033635
+Train Epoch: 10 [32000/60000 (53%)]	Loss: 0.047022
+Train Epoch: 10 [34000/60000 (57%)]	Loss: 0.082150
+Train Epoch: 10 [36000/60000 (60%)]	Loss: 0.096284
+Train Epoch: 10 [38000/60000 (63%)]	Loss: 0.041751
+Train Epoch: 10 [40000/60000 (67%)]	Loss: 0.200577
+Train Epoch: 10 [42000/60000 (70%)]	Loss: 0.061474
+Train Epoch: 10 [44000/60000 (73%)]	Loss: 0.048268
+Train Epoch: 10 [46000/60000 (77%)]	Loss: 0.062499
+Train Epoch: 10 [48000/60000 (80%)]	Loss: 0.044755
+Train Epoch: 10 [50000/60000 (83%)]	Loss: 0.019835
+Train Epoch: 10 [52000/60000 (87%)]	Loss: 0.079396
+Train Epoch: 10 [54000/60000 (90%)]	Loss: 0.089071
+Train Epoch: 10 [56000/60000 (93%)]	Loss: 0.062285
+Train Epoch: 10 [58000/60000 (97%)]	Loss: 0.070198
+Train Epoch: 10 [60000/60000 (100%)]	Loss: 0.019461
+
+Average Training loss: 0.0028, Training Error Rate: 5.88% (3528/60000)
+
+
+Average Test loss: 0.0526, Test Error Rate: 5.76% (576/10000)
+
+Train Epoch: 11 [2000/60000 (3%)]	Loss: 0.046821
+Train Epoch: 11 [4000/60000 (7%)]	Loss: 0.046028
+Train Epoch: 11 [6000/60000 (10%)]	Loss: 0.097676
+Train Epoch: 11 [8000/60000 (13%)]	Loss: 0.068087
+Train Epoch: 11 [10000/60000 (17%)]	Loss: 0.081624
+Train Epoch: 11 [12000/60000 (20%)]	Loss: 0.019851
+Train Epoch: 11 [14000/60000 (23%)]	Loss: 0.014838
+Train Epoch: 11 [16000/60000 (27%)]	Loss: 0.021067
+Train Epoch: 11 [18000/60000 (30%)]	Loss: 0.073800
+Train Epoch: 11 [20000/60000 (33%)]	Loss: 0.015773
+Train Epoch: 11 [22000/60000 (37%)]	Loss: 0.093928
+Train Epoch: 11 [24000/60000 (40%)]	Loss: 0.114455
+Train Epoch: 11 [26000/60000 (43%)]	Loss: 0.055266
+Train Epoch: 11 [28000/60000 (47%)]	Loss: 0.078238
+Train Epoch: 11 [30000/60000 (50%)]	Loss: 0.058589
+Train Epoch: 11 [32000/60000 (53%)]	Loss: 0.012634
+Train Epoch: 11 [34000/60000 (57%)]	Loss: 0.029038
+Train Epoch: 11 [36000/60000 (60%)]	Loss: 0.046274
+Train Epoch: 11 [38000/60000 (63%)]	Loss: 0.147547
+Train Epoch: 11 [40000/60000 (67%)]	Loss: 0.009295
+Train Epoch: 11 [42000/60000 (70%)]	Loss: 0.042712
+Train Epoch: 11 [44000/60000 (73%)]	Loss: 0.011655
+Train Epoch: 11 [46000/60000 (77%)]	Loss: 0.050539
+Train Epoch: 11 [48000/60000 (80%)]	Loss: 0.152613
+Train Epoch: 11 [50000/60000 (83%)]	Loss: 0.036532
+Train Epoch: 11 [52000/60000 (87%)]	Loss: 0.044670
+Train Epoch: 11 [54000/60000 (90%)]	Loss: 0.084991
+Train Epoch: 11 [56000/60000 (93%)]	Loss: 0.018057
+Train Epoch: 11 [58000/60000 (97%)]	Loss: 0.018488
+Train Epoch: 11 [60000/60000 (100%)]	Loss: 0.027690
+
+Average Training loss: 0.0027, Training Error Rate: 5.67% (3399/60000)
+
+
+Average Test loss: 0.0513, Test Error Rate: 5.78% (578/10000)
+
+Train Epoch: 12 [2000/60000 (3%)]	Loss: 0.045425
+Train Epoch: 12 [4000/60000 (7%)]	Loss: 0.057277
+Train Epoch: 12 [6000/60000 (10%)]	Loss: 0.009806
+Train Epoch: 12 [8000/60000 (13%)]	Loss: 0.013040
+Train Epoch: 12 [10000/60000 (17%)]	Loss: 0.055496
+Train Epoch: 12 [12000/60000 (20%)]	Loss: 0.105497
+Train Epoch: 12 [14000/60000 (23%)]	Loss: 0.052246
+Train Epoch: 12 [16000/60000 (27%)]	Loss: 0.058251
+Train Epoch: 12 [18000/60000 (30%)]	Loss: 0.157790
+Train Epoch: 12 [20000/60000 (33%)]	Loss: 0.017827
+Train Epoch: 12 [22000/60000 (37%)]	Loss: 0.062529
+Train Epoch: 12 [24000/60000 (40%)]	Loss: 0.110342
+Train Epoch: 12 [26000/60000 (43%)]	Loss: 0.096510
+Train Epoch: 12 [28000/60000 (47%)]	Loss: 0.085735
+Train Epoch: 12 [30000/60000 (50%)]	Loss: 0.028958
+Train Epoch: 12 [32000/60000 (53%)]	Loss: 0.014948
+Train Epoch: 12 [34000/60000 (57%)]	Loss: 0.029577
+Train Epoch: 12 [36000/60000 (60%)]	Loss: 0.043701
+Train Epoch: 12 [38000/60000 (63%)]	Loss: 0.026604
+Train Epoch: 12 [40000/60000 (67%)]	Loss: 0.079412
+Train Epoch: 12 [42000/60000 (70%)]	Loss: 0.012441
+Train Epoch: 12 [44000/60000 (73%)]	Loss: 0.011513
+Train Epoch: 12 [46000/60000 (77%)]	Loss: 0.179758
+Train Epoch: 12 [48000/60000 (80%)]	Loss: 0.008526
+Train Epoch: 12 [50000/60000 (83%)]	Loss: 0.047806
+Train Epoch: 12 [52000/60000 (87%)]	Loss: 0.037092
+Train Epoch: 12 [54000/60000 (90%)]	Loss: 0.057984
+Train Epoch: 12 [56000/60000 (93%)]	Loss: 0.032286
+Train Epoch: 12 [58000/60000 (97%)]	Loss: 0.104390
+Train Epoch: 12 [60000/60000 (100%)]	Loss: 0.015717
+
+Average Training loss: 0.0025, Training Error Rate: 5.37% (3224/60000)
+
+
+Average Test loss: 0.0520, Test Error Rate: 5.62% (562/10000)
+
+Train Epoch: 13 [2000/60000 (3%)]	Loss: 0.032407
+Train Epoch: 13 [4000/60000 (7%)]	Loss: 0.088574
+Train Epoch: 13 [6000/60000 (10%)]	Loss: 0.107568
+Train Epoch: 13 [8000/60000 (13%)]	Loss: 0.019094
+Train Epoch: 13 [10000/60000 (17%)]	Loss: 0.019133
+Train Epoch: 13 [12000/60000 (20%)]	Loss: 0.066760
+Train Epoch: 13 [14000/60000 (23%)]	Loss: 0.023335
+Train Epoch: 13 [16000/60000 (27%)]	Loss: 0.057210
+Train Epoch: 13 [18000/60000 (30%)]	Loss: 0.041314
+Train Epoch: 13 [20000/60000 (33%)]	Loss: 0.034882
+Train Epoch: 13 [22000/60000 (37%)]	Loss: 0.049093
+Train Epoch: 13 [24000/60000 (40%)]	Loss: 0.076991
+Train Epoch: 13 [26000/60000 (43%)]	Loss: 0.025514
+Train Epoch: 13 [28000/60000 (47%)]	Loss: 0.079012
+Train Epoch: 13 [30000/60000 (50%)]	Loss: 0.008417
+Train Epoch: 13 [32000/60000 (53%)]	Loss: 0.067608
+Train Epoch: 13 [34000/60000 (57%)]	Loss: 0.057044
+Train Epoch: 13 [36000/60000 (60%)]	Loss: 0.067404
+Train Epoch: 13 [38000/60000 (63%)]	Loss: 0.052803
+Train Epoch: 13 [40000/60000 (67%)]	Loss: 0.056707
+Train Epoch: 13 [42000/60000 (70%)]	Loss: 0.062658
+Train Epoch: 13 [44000/60000 (73%)]	Loss: 0.018162
+Train Epoch: 13 [46000/60000 (77%)]	Loss: 0.073221
+Train Epoch: 13 [48000/60000 (80%)]	Loss: 0.010845
+Train Epoch: 13 [50000/60000 (83%)]	Loss: 0.135325
+Train Epoch: 13 [52000/60000 (87%)]	Loss: 0.076134
+Train Epoch: 13 [54000/60000 (90%)]	Loss: 0.027395
+Train Epoch: 13 [56000/60000 (93%)]	Loss: 0.085889
+Train Epoch: 13 [58000/60000 (97%)]	Loss: 0.008051
+Train Epoch: 13 [60000/60000 (100%)]	Loss: 0.058869
+
+Average Training loss: 0.0024, Training Error Rate: 5.20% (3119/60000)
+
+
+Average Test loss: 0.0486, Test Error Rate: 5.42% (542/10000)
+
+Train Epoch: 14 [2000/60000 (3%)]	Loss: 0.046766
+Train Epoch: 14 [4000/60000 (7%)]	Loss: 0.062706
+Train Epoch: 14 [6000/60000 (10%)]	Loss: 0.136297
+Train Epoch: 14 [8000/60000 (13%)]	Loss: 0.038775
+Train Epoch: 14 [10000/60000 (17%)]	Loss: 0.088354
+Train Epoch: 14 [12000/60000 (20%)]	Loss: 0.039193
+Train Epoch: 14 [14000/60000 (23%)]	Loss: 0.069033
+Train Epoch: 14 [16000/60000 (27%)]	Loss: 0.113954
+Train Epoch: 14 [18000/60000 (30%)]	Loss: 0.019605
+Train Epoch: 14 [20000/60000 (33%)]	Loss: 0.011807
+Train Epoch: 14 [22000/60000 (37%)]	Loss: 0.030377
+Train Epoch: 14 [24000/60000 (40%)]	Loss: 0.047564
+Train Epoch: 14 [26000/60000 (43%)]	Loss: 0.094044
+Train Epoch: 14 [28000/60000 (47%)]	Loss: 0.019851
+Train Epoch: 14 [30000/60000 (50%)]	Loss: 0.068854
+Train Epoch: 14 [32000/60000 (53%)]	Loss: 0.033089
+n Epoch: 14 [34000/60000 (57%)]	Loss: 0.094551
+Train Epoch: 14 [36000/60000 (60%)]	Loss: 0.038016
+Train Epoch: 14 [38000/60000 (63%)]	Loss: 0.057328
+Train Epoch: 14 [40000/60000 (67%)]	Loss: 0.038371
+Train Epoch: 14 [42000/60000 (70%)]	Loss: 0.036529
+Train Epoch: 14 [44000/60000 (73%)]	Loss: 0.009846
+Train Epoch: 14 [46000/60000 (77%)]	Loss: 0.067278
+Train Epoch: 14 [48000/60000 (80%)]	Loss: 0.042529
+Train Epoch: 14 [50000/60000 (83%)]	Loss: 0.073832
+Train Epoch: 14 [52000/60000 (87%)]	Loss: 0.053475
+Train Epoch: 14 [54000/60000 (90%)]	Loss: 0.088428
+Train Epoch: 14 [56000/60000 (93%)]	Loss: 0.011817
+Train Epoch: 14 [58000/60000 (97%)]	Loss: 0.081694
+Train Epoch: 14 [60000/60000 (100%)]	Loss: 0.010059
+
+Average Training loss: 0.0017, Training Error Rate: 3.41% (2044/60000)
+
+
+Average Test loss: 0.0363, Test Error Rate: 3.78% (378/10000)
+
+Train Epoch: 15 [2000/60000 (3%)]	Loss: 0.068156
+Train Epoch: 15 [4000/60000 (7%)]	Loss: 0.023451
+Train Epoch: 15 [6000/60000 (10%)]	Loss: 0.021165
+Train Epoch: 15 [8000/60000 (13%)]	Loss: 0.007953
+Train Epoch: 15 [10000/60000 (17%)]	Loss: 0.111430
+Train Epoch: 15 [12000/60000 (20%)]	Loss: 0.031544
+Train Epoch: 15 [14000/60000 (23%)]	Loss: 0.007041
