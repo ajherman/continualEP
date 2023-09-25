@@ -230,7 +230,7 @@ args = parser.parse_args()
 # New this should create consistency as we change the number of steps
 if args.step==None:
 #     # args.step=4.5/args.Kmax
-    args.step=12.8./args.Kmax
+    args.step=12.8/args.Kmax
 
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
