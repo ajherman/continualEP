@@ -415,11 +415,6 @@ if __name__ == '__main__':
             print("Net epoch ",net.current_epoch)
             error_train_tab.append(error_train)
 
-            # As soon as training is finished, save network and increment epoch
-            pkl_path = args.directory+'/net'
-            with open(pkl_path,'wb') as pkl_file:
-                pickle.dump(net,pkl_file)
-
             error_test = evaluate(net, test_loader,learning_rule=args.learning_rule)
             error_test_tab.append(error_test) ;
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
@@ -432,4 +427,8 @@ if __name__ == '__main__':
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([error_train, error_test])
 
+            #  Increment epoch and save network
             net.current_epoch += 1
+            pkl_path = args.directory+'/net'
+            with open(pkl_path,'wb') as pkl_file:
+                pickle.dump(net,pkl_file)
