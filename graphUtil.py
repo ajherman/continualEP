@@ -82,7 +82,7 @@ for i in range(6):
 ax.set_xlabel('Epoch')
 ax.set_ylabel('Test error rate (%)')
 ax.set_xlim([0,30])
-ax.set_ylim([0,60])
+ax.set_ylim([0,20])
 # ax.set_title()
 fig.suptitle(r"Spiking Discretization schemes")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
@@ -138,7 +138,7 @@ fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
 
 fig, ax = plt.subplots(2,2,figsize=(20,10))
-labels=['spiking','nonspiking',r'stdp: \tau=3.6',r'stdp: \tau=2.8 ',r'stdp: \tau=1.0']
+labels=['spiking','nonspiking',r'stdp: \tau=2',r'stdp: \tau=1.44 ',r'stdp: \tau=1.0']
 batch_size=[10,20,30,40]
 for i in [1,1,2,3]:
     spiking_dir = 'skewsym_spiking_'+str(i)
@@ -160,7 +160,7 @@ for i in [1,1,2,3]:
     ax[i//2,i%2].set_ylabel('Test error rate (%)')
     ax[i//2,i%2].set_xlim([0,20])
     ax[i//2,i%2].set_title('batch size = '+str(batch_size[i]))
-fig.suptitle(r"Comparison of trace decay rates")
+fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,\beta=0.9$)")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('kernel_width_compare.png',bbox_inches="tight")
 

@@ -52,7 +52,7 @@ for Kmax in {3,6,9,12,15,18}
 i=0
 for batch_size in {1,10,20,40}
  	do
- 		beta=0.2
+ 		beta=0.9
 		T=40
 		Kmax=15
  		spiking_dir=skewsym_spiking_"$i"
