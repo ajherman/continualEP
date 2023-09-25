@@ -6,22 +6,8 @@
 #SBATCH -p shared-gpu
 module load miniconda3
 source activate /vast/home/ajherman/miniconda3/envs/pytorch
-# First plot (Fixed N, variable dt)
-# i=0
-# for dt in {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
-# 	do
-# 		beta=0.2
-# 		update_rule="cepalt"
-# 		spiking_directory=cepalt_spiking_"$i"
-# 		nonspiking_directory=cepalt_nonspiking_"$i"
-# 		mkdir -p $spiking_directory
-# 		mkdir -p $nonspiking_directory
-# 		nohup python -u main.py --directory $spiking_directory --spiking True --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> spiking_log_"$i".out &
-# 		nohup python -u main.py --directory $nonspiking_directory --spiking False --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 15 --beta 0.2 --dt $dt --cep --learning-rule stdp --update-rule $update_rule >> nonspiking_log_"$i".out &
-# 		i=$((i+1))
-# 	done
 
-# Second plot (Variable N, compensating dt)
+# Plot 1 (Variable N, compensating dt)
 i=0
 for Kmax in {3,6,9,12}
 	do
