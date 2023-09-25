@@ -35,7 +35,7 @@
 
 # Compare spiking and nonspiking (Variable N, compensating step)
 i=0
-for Kmax in {5,10,15,20,25,30}
+for Kmax in {3,6,9,12,15,18}
 	do
 		T=$((3*Kmax))
 		update_rule="cepalt"
@@ -52,7 +52,9 @@ for Kmax in {5,10,15,20,25,30}
 i=0
 for batch_size in {1,10,20,40}
  	do
- 		beta=0.5
+ 		beta=0.2
+		T=40
+		Kmax=15
  		spiking_dir=skewsym_spiking_"$i"
  		nonspiking_dir=skewsym_nonspiking_"$i"
  		stdp_slow_dir=stdp_slow_"$i"
@@ -63,11 +65,11 @@ for batch_size in {1,10,20,40}
  		mkdir -p $stdp_slow_dir
 		mkdir -p $stdp_med_dir
 		mkdir -p $stdp_fast_dir
- 		nohup python -u main.py --directory $spiking_dir --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$spiking_dir".out &
- 		nohup python -u main.py --directory $nonspiking_dir --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$nonspiking_dir".out &
-		nohup python -u main.py --directory $stdp_slow_dir --spiking --action train --batch-size $batch_size --tau-trace 2.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_slow_dir".out &
-		nohup python -u main.py --directory $stdp_med_dir --spiking --action train --batch-size $batch_size --trace-decay 1.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_med_dir".out &
-		nohup python -u main.py --directory $stdp_fast_dir --spiking --action train --batch-size $batch_size --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_fast_dir".out &
+ 		nohup python -u main.py --directory $spiking_dir --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --step 1.0 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$spiking_dir".out &
+ 		nohup python -u main.py --directory $nonspiking_dir --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --step 1.0 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$nonspiking_dir".out &
+		nohup python -u main.py --directory $stdp_slow_dir --spiking --action train --batch-size $batch_size --tau-trace 3.6  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --step 1.0 --T $T  --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_slow_dir".out &
+		nohup python -u main.py --directory $stdp_med_dir --spiking --action train --batch-size $batch_size --tau-trace 2.8  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --step 1.0 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_med_dir".out &
+		nohup python -u main.py --directory $stdp_fast_dir --spiking --action train --batch-size $batch_size --tau-trace 2.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --step 1.0 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_fast_dir".out &
  		i=$((i+1))
  	done
 

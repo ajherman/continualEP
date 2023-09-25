@@ -211,26 +211,26 @@ parser.add_argument(
 parser.add_argument(
     '--tau-dynamic',
     type=float,
-    default=3,
+    default=2.8,
     help='time constant for dynamics')
 parser.add_argument(
     '--tau-trace',
     type=float,
-    default=1.5,
+    default=1.44,
     help='decay factor for traces')
 parser.add_argument(
     '--max_fr',
     type=float,
-    default=1.0,
+    default=None, #1.0
     help='maximum activity / firing rate')
 
 
 args = parser.parse_args()
 
 # New this should create consistency as we change the number of steps
-# if args.step==None:
+if args.step==None:
 #     # args.step=4.5/args.Kmax
-#     args.step=15./args.Kmax
+    args.step=12.8./args.Kmax
 
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
@@ -240,6 +240,9 @@ if args.dt==None:
 if args.trace_decay==None:
     args.trace_decay=np.exp(-args.step/args.tau_trace)
     print("trace decay = ",args.trace_decay)
+
+if args.max_fr==None:
+    args.max_fr = 1.0/args.step
 
 if not not args.seed:
     torch.manual_seed(args.seed[0])
