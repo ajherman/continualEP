@@ -60,12 +60,14 @@ for batch_size in {1,10,20,40}
 		stdp_fast_dir=stdp_fast_"$i"
  		mkdir -p $spiking_dir
  		mkdir -p $nonspiking_dir
- 		mkdir -p $stdp_dir
+ 		mkdir -p $stdp_slow_dir
+		mkdir -p $stdp_med_dir
+		mkdir -p $stdp_fast_dir
  		nohup python -u main.py --directory $spiking_dir --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$spiking_dir".out &
  		nohup python -u main.py --directory $nonspiking_dir --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule skewsym >> "$nonspiking_dir".out &
-		nohup python -u main.py --directory $stdp_slow_dir --spiking --action train --batch-size $batch_size --tau-trace 2.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_slow_dir".out &
-		nohup python -u main.py --directory $stdp_med_dir --spiking --action train --batch-size $batch_size --trace-decay 1.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_med_dir".out &
-		nohup python -u main.py --directory $stdp_fast_dir --spiking --action train --batch-size $batch_size --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_fast_dir".out &
+		nohup python -u main.py --directory $stdp_slow_dir --spiking --action train --batch-size $batch_size --tau-trace 2.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40  --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_slow_dir".out &
+		nohup python -u main.py --directory $stdp_med_dir --spiking --action train --batch-size $batch_size --trace-decay 1.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_med_dir".out &
+		nohup python -u main.py --directory $stdp_fast_dir --spiking --action train --batch-size $batch_size --trace-decay 0.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T 40 --Kmax 20 --beta $beta --cep --learning-rule stdp --update-rule stdp >> "$stdp_fast_dir".out &
  		i=$((i+1))
  	done
 
