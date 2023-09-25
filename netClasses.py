@@ -36,12 +36,10 @@ class SNN(nn.Module):
         self.max_fr = args.max_fr
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
-
             self.cuda = True
         else:
             device = torch.device("cpu")
             self.cuda = False
-
         self.device = device
         self.no_clamp = args.no_clamp
         self.beta = args.beta
@@ -131,7 +129,7 @@ class SNN(nn.Module):
         if self.spiking:
             spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<rho(si)*self.max_fr*self.step/self.spike_height).float() for si in s] # Get Poisson spikes
         else:
-            spike = [rho(si)*self.max_fr for si in s] # Get Poisson spikes
+            spike = [rho(si)*self.max_fr*self.step for si in s] # Get Poisson spikes
 
         # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
