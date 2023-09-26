@@ -932,3 +932,15 @@ Train Epoch: 22 [8000/60000 (13%)]	Loss: 0.002221
 Train Epoch: 22 [10000/60000 (17%)]	Loss: 0.111991
 Train Epoch: 22 [12000/60000 (20%)]	Loss: 0.114137
 slurmstepd: error: *** STEP 15482830.19 ON cn652 CANCELLED AT 2023-09-26T16:06:59 ***
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.14133889056733384
+trace decay =  0.7435670792059063
+Random seed set as 42
+dt =  0.14133889056733384
+trace decay =  0.7435670792059063
+Train Epoch: 22 [2000/60000 (3%)]	Loss: 0.029500
+Train Epoch: 22 [4000/60000 (7%)]	Loss: 0.001951
+Train Epoch: 22 [6000/60000 (10%)]	Loss: 0.034487
+slurmstepd: error: *** STEP 15483075.18 ON cn651 CANCELLED AT 2023-09-26T16:14:23 ***
