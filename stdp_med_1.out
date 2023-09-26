@@ -1467,3 +1467,59 @@ Traceback (most recent call last):
   File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 166, in validate_cuda_device
     raise RuntimeError('Attempting to deserialize object on a CUDA '
 RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.30032746262486976
+trace decay =  0.49935178859927626
+Random seed set as 42
+dt =  0.30032746262486976
+trace decay =  0.49935178859927626
+Train Epoch: 26 [10000/60000 (17%)]	Loss: 0.072896
+Train Epoch: 26 [20000/60000 (33%)]	Loss: 0.087674
+Train Epoch: 26 [30000/60000 (50%)]	Loss: 0.082850
+Train Epoch: 26 [40000/60000 (67%)]	Loss: 0.079362
+Train Epoch: 26 [50000/60000 (83%)]	Loss: 0.100522
+Train Epoch: 26 [60000/60000 (100%)]	Loss: 0.098633
+
+Average Training loss: 0.0010, Training Error Rate: 9.92% (5952/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 10.06% (1006/10000)
+
+Train Epoch: 27 [10000/60000 (17%)]	Loss: 0.105073
+Train Epoch: 27 [20000/60000 (33%)]	Loss: 0.138247
+Train Epoch: 27 [30000/60000 (50%)]	Loss: 0.134810
+Train Epoch: 27 [40000/60000 (67%)]	Loss: 0.067840
+Train Epoch: 27 [50000/60000 (83%)]	Loss: 0.131691
+Train Epoch: 27 [60000/60000 (100%)]	Loss: 0.086206
+
+Average Training loss: 0.0010, Training Error Rate: 9.90% (5939/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.94% (994/10000)
+
+Train Epoch: 28 [10000/60000 (17%)]	Loss: 0.107253
+Train Epoch: 28 [20000/60000 (33%)]	Loss: 0.104167
+Train Epoch: 28 [30000/60000 (50%)]	Loss: 0.092476
+Train Epoch: 28 [40000/60000 (67%)]	Loss: 0.068500
+Train Epoch: 28 [50000/60000 (83%)]	Loss: 0.072435
+Train Epoch: 28 [60000/60000 (100%)]	Loss: 0.103007
+
+Average Training loss: 0.0009, Training Error Rate: 9.68% (5810/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 10.04% (1004/10000)
+
+Train Epoch: 29 [10000/60000 (17%)]	Loss: 0.066333
+Train Epoch: 29 [20000/60000 (33%)]	Loss: 0.107872
+Train Epoch: 29 [30000/60000 (50%)]	Loss: 0.117261
+Train Epoch: 29 [40000/60000 (67%)]	Loss: 0.078446
+Train Epoch: 29 [50000/60000 (83%)]	Loss: 0.058324
+Train Epoch: 29 [60000/60000 (100%)]	Loss: 0.055273
+
+Average Training loss: 0.0009, Training Error Rate: 9.69% (5812/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.82% (982/10000)
+
