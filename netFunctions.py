@@ -118,6 +118,7 @@ def train(net, train_loader, epoch, learning_rule):
                     fig, ax = plt.subplots()
                     ax.plot(np.arange(net.T),deltas)
                     fig.savefig(net.directory+'/deltas_'+str(batch_idx)+'.png')
+                    plt.close()
                 ###########################
 
                 if not net.cep:

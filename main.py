@@ -206,7 +206,7 @@ parser.add_argument(
 parser.add_argument(
     '--step',
     type=float,
-    default=1.0,
+    default=None,#1.0
     help='time step size')
 parser.add_argument(
     '--tau-dynamic',
