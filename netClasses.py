@@ -150,7 +150,7 @@ class SNN(nn.Module):
 
         # Other layers
         for i in range(1, self.ns - 1):
-            dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i - 1](spike[i-1]))
+            dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
         # Post-input layer
 
         dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
