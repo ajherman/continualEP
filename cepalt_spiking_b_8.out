@@ -43,3 +43,20 @@ Traceback (most recent call last):
   File "/vast/home/ajherman/continualEP/main.py", line 2, in <module>
     import torchvision.datasets as datasets
 ModuleNotFoundError: No module named 'torchvision'
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+usage: main.py [-h] [--batch-size N] [--test-batch-size N] [--epochs N]
+               [--lr_tab LR [LR ...]] [--randbeta RANDBETA]
+               [--size_tab ST [ST ...]] [--discrete] [--dt DT] [--T T]
+               [--Kmax Kmax] [--beta BETA] [--activation-function ACTFUN]
+               [--no-clamp] [--learning-rule LR] [--cep] [--angle ANGLE]
+               [--action ACTION] [--device-label DEVICE_LABEL] [--debug-cep]
+               [--seed SEED [SEED ...]] [--angle-grad] [--use-bias]
+               [--no-rhop] [--update-rule UPDATE_RULE] [--no-reset]
+               [--plain-data] [--trace-decay TRACE_DECAY]
+               [--directory DIRECTORY] [--load] [--spiking]
+               [--spike-height SPIKE_HEIGHT] [--step STEP]
+               [--tau-dynamic TAU_DYNAMIC] [--tau-trace TAU_TRACE]
+               [--max-fr MAX_FR]
+main.py: error: unrecognized arguments: True
