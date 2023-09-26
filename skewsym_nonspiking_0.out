@@ -1204,3 +1204,38 @@ Traceback (most recent call last):
   File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1614, in __getattr__
     raise AttributeError("'{}' object has no attribute '{}'".format(
 AttributeError: 'SNN' object has no attribute 'max_fr'
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.30032746262486965
+trace decay =  0.4993517885992762
+Random seed set as 42
+dt =  0.30032746262486965
+trace decay =  0.4993517885992762
+Train Epoch: 0 [20000/60000 (33%)]	Loss: 0.410022
+Train Epoch: 0 [40000/60000 (67%)]	Loss: 0.364166
+Train Epoch: 0 [60000/60000 (100%)]	Loss: 0.335443
+
+Average Training loss: 0.0020, Training Error Rate: 53.73% (32241/60000)
+
+
+Average Test loss: 0.0003, Test Error Rate: 30.62% (3062/10000)
+
+Train Epoch: 1 [20000/60000 (33%)]	Loss: 0.300032
+Train Epoch: 1 [40000/60000 (67%)]	Loss: 0.282283
+Train Epoch: 1 [60000/60000 (100%)]	Loss: 0.254838
+
+Average Training loss: 0.0015, Training Error Rate: 25.89% (15537/60000)
+
+
+Average Test loss: 0.0003, Test Error Rate: 21.23% (2123/10000)
+
+Train Epoch: 2 [20000/60000 (33%)]	Loss: 0.233457
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.30032746262486965
+trace decay =  0.4993517885992762
+Random seed set as 42
+dt =  0.30032746262486965
+trace decay =  0.4993517885992762
