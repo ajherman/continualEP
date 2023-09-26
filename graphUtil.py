@@ -34,33 +34,14 @@ def csv2array(directory,skiplines=0):
     return train_error, test_error
 
 
-# fig, ax = plt.subplots(2,5,figsize=(25,10))
-# # fig.tight_layout()
-# labels=['spiking','nonspiking']
-# dt = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
-# for i in range(10):
-#     spiking_dir = 'cepalt_spiking_'+str(i)
-#     nonspiking_dir = 'cepalt_nonspiking_'+str(i)
-#     spiking_train_error, spiking_test_error = csv2array(spiking_dir)
-#     nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir)
-#     ax[i//5,i%5].plot(spiking_test_error)
-#     ax[i//5,i%5].plot(nonspiking_test_error)
-#     ax[i//5,i%5].set_xlabel('Epoch')
-#     ax[i//5,i%5].set_ylabel('Test error rate (%)')
-#     ax[i//5,i%5].set_xlim([0,30])
-#     ax[i//5,i%5].set_ylim([0,20])
-#     ax[i//5,i%5].set_title('dt = '+str(dt[i]))
-# fig.suptitle(r"Test error for spiking and non-spiking dynamics ($\beta = 0.2,N_1=40,N_2=15$)",fontsize=20)
-# fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-# fig.savefig('cepalt_error.png')#,bbox_inches="tight")
-
 # Plot various levels of discretization for nonspiking cepalt
+n_plots = 6
 fig, ax = plt.subplots(figsize=(20,10))
 N1=[3*Kmax for Kmax in [3,6,9,12,15,18]]
-labels=[r'N_1='+str(N1[i]) for i in range(6)]
-disc_test_dir = ["cepalt_nonspiking_"+str(i) for i in range(6)]
-error = [csv2array(disc_test_dir[i],skiplines=2) for i in range(6)]
-for i in range(6):
+labels=[r'N_1='+str(N1[i]) for i in range(n_plots)]
+disc_test_dir = ["cepalt_nonspiking_"+str(i) for i in range(n_plots)]
+error = [csv2array(disc_test_dir[i],skiplines=2) for i in range(n_plots)]
+for i in range(n_plots):
     ax.plot(error[i][1])
 ax.set_xlabel('Epoch')
 ax.set_ylabel('Test error rate (%)')
@@ -74,10 +55,10 @@ fig.savefig('nonspiking_discretization.png',bbox_inches="tight")
 # Plot various levels of discretization for nonspiking cepalt
 fig, ax = plt.subplots(figsize=(20,10))
 N1=[3*Kmax for Kmax in [3,6,9,12,15,18]]
-labels=[r'N_1='+str(N1[i]) for i in range(6)]
-disc_test_dir = ["cepalt_spiking_"+str(i) for i in range(6)]
-error = [csv2array(disc_test_dir[i],skiplines=2) for i in range(6)]
-for i in range(6):
+labels=[r'N_1='+str(N1[i]) for i in range(n_plots)]
+disc_test_dir = ["cepalt_spiking_"+str(i) for i in range(n_plots)]
+error = [csv2array(disc_test_dir[i],skiplines=2) for i in range(n_plots)]
+for i in range(n_plots):
     ax.plot(error[i][1])
 ax.set_xlabel('Epoch')
 ax.set_ylabel('Test error rate (%)')
@@ -89,11 +70,11 @@ fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.trans
 fig.savefig('spiking_discretization.png',bbox_inches="tight")
 
 # Spiking vs nonspiking cepalt for various levels of discretization
-fig, ax = plt.subplots(2,3,figsize=(20,10))
+fig, ax = plt.subplots(n_plots//3,3,figsize=(20,10))
 # fig.tight_layout()
 labels=['spiking','nonspiking']
-N2 = [3*i for i in range(1,7)]
-for i in range(6):
+N2 = [3*i for i in range(1,n_plots+1)]
+for i in range(n_plots):
     spiking_dir = 'cepalt_spiking_'+str(i)
     nonspiking_dir = 'cepalt_nonspiking_'+str(i)
     spiking_train_error, spiking_test_error = csv2array(spiking_dir,skiplines=2)
