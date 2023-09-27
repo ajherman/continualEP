@@ -70,9 +70,9 @@ fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.trans
 fig.savefig('spiking_discretization.png',bbox_inches="tight")
 
 
-n_plots=6
+n_plots=9
 # Spiking vs nonspiking cepalt for various levels of discretization
-fig, ax = plt.subplots(n_plots//3,3,figsize=(20,10))
+fig, ax = plt.subplots(n_plots//3,3,figsize=(20,20))
 # fig.tight_layout()
 labels=['spiking','nonspiking']
 N2 = [3*i for i in range(1,n_plots+1)]
@@ -85,7 +85,7 @@ for i in range(n_plots):
     ax[i//3,i%3].plot(nonspiking_test_error)
     ax[i//3,i%3].set_xlabel('Epoch')
     ax[i//3,i%3].set_ylabel('Test error rate (%)')
-    ax[i//3,i%3].set_xlim([0,50])
+    ax[i//3,i%3].set_xlim([0,30])
     ax[i//3,i%3].set_ylim([0,100])
     ax[i//3,i%3].set_title(r'$N_1=$'+str(3*N2[i])+', $N_2=$'+str(N2[i])+', dt = '+'{:.2f}'.format(1-np.exp(-5.357/N2[i])))
 fig.suptitle(r"Test error for spiking and nonspiking dynamics ($\beta = 0.2$)",fontsize=20)
@@ -152,7 +152,7 @@ for i in [0,1,2,3]:
     ax[i//2,i%2].set_ylabel('Test error rate (%)')
     ax[i//2,i%2].set_xlim([0,30])
     ax[i//2,i%2].set_title('batch size = '+str(batch_size[i]))
-fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,\beta=0.9$)")
+fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,\beta=1.0$)")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('compare_all.png',bbox_inches="tight")
 
