@@ -199,14 +199,14 @@ parser.add_argument(
 parser.add_argument(
     '--spike-height',
     type=float,
-    default=1.0,
+    default=None,
     help='sets height of a spike')
 
 # Whatever unit step is in will be the same for tau-dynamic and tau-trace.
 parser.add_argument(
     '--step',
     type=float,
-    default=None,#1.0
+    default=None,
     help='time step size')
 parser.add_argument(
     '--tau-dynamic',
@@ -221,7 +221,7 @@ parser.add_argument(
 parser.add_argument(
     '--max-fr',
     type=float,
-    default=None, #1.0
+    default=None,
     help='maximum activity / firing rate')
 
 
@@ -243,6 +243,9 @@ if args.trace_decay==None:
 
 if args.max_fr==None:
     args.max_fr = 1.0/args.step
+
+if args.spike_height==None:
+    args.spike_height = args.step*args.max_fr
 
 if not not args.seed:
     torch.manual_seed(args.seed[0])

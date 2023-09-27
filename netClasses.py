@@ -59,16 +59,16 @@ class SNN(nn.Module):
         for i in range(self.ns - 1):
             w[2*i + 1].weight.data = torch.transpose(w[2*i].weight.data.clone(), 0, 1)
 
-        #****************************TUNE INITIAL ANGLE****************************#
-        if args.angle > 0:
-            p_switch = 0.5*(1 - np.cos(np.pi*args.angle/180))
-            for i in range(self.ns - 1):
-                mask = 2*torch.bernoulli((1 - p_switch)*torch.ones_like(w[2*i + 1].weight.data)) - 1
-                w[2*i + 1].weight.data = w[2*i + 1].weight.data*mask
-                angle = (180/np.pi)*np.arccos((w[2*i + 1].weight.data*torch.transpose(w[2*i].weight.data, 0 ,1)).sum().item()/np.sqrt((w[2*i + 1].weight.data**2).sum().item()*(w[2*i].weight.data**2).sum().item()))
-                print('Angle between forward and backward weights: {:.2f} degrees'.format(angle))
-                del angle, mask
-        #**************************************************************************#
+        # #****************************TUNE INITIAL ANGLE****************************#
+        # if args.angle > 0:
+        #     p_switch = 0.5*(1 - np.cos(np.pi*args.angle/180))
+        #     for i in range(self.ns - 1):
+        #         mask = 2*torch.bernoulli((1 - p_switch)*torch.ones_like(w[2*i + 1].weight.data)) - 1
+        #         w[2*i + 1].weight.data = w[2*i + 1].weight.data*mask
+        #         angle = (180/np.pi)*np.arccos((w[2*i + 1].weight.data*torch.transpose(w[2*i].weight.data, 0 ,1)).sum().item()/np.sqrt((w[2*i + 1].weight.data**2).sum().item()*(w[2*i].weight.data**2).sum().item()))
+        #         print('Angle between forward and backward weights: {:.2f} degrees'.format(angle))
+        #         del angle, mask
+        # #**************************************************************************#
 
         self.w = w
         self = self.to(device)
@@ -274,7 +274,7 @@ class SNN(nn.Module):
                 # gradw.append((-(1-self.trace_decay)**2/(self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
 
             elif self.update_rule == 'cep':
-                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i + 1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i + 1]))))
+                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i+1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i+1]))))
                 gradw.append(None)
             elif self.update_rule == 'cepalt':
                 gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) +  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
@@ -286,7 +286,7 @@ class SNN(nn.Module):
         if self.update_rule == 'stdp':
             gradw.append( (1/(beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), spike[-1]) ))
         else:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-2] - seq[-2], 0, 1), s[-1]))
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-2]) - rho(seq[-2]), 0, 1), s[-1])) # Changed this by adding rho's 9/27/23
 
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
