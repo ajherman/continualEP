@@ -127,7 +127,7 @@ class SNN(nn.Module):
 
         # Spikes
         if self.spiking:
-            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<rho(si)*self.max_fr*self.step/self.spike_height).float() for si in s] # Get Poisson spikes
+            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.max_fr*self.step/self.spike_height)).float() for si in s] # Get Poisson spikes
         else:
             spike = [rho(si)*self.max_fr*self.step for si in s] # Get Poisson spikes
 
