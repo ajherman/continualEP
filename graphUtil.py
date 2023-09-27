@@ -122,11 +122,11 @@ labels=['spiking',r'spiking stdp: \tau=2',r'spiking stdp: \tau=1.44 ',r'spiking 
 batch_size=[25,50,100,200]
 for i in [0,1,2,3]:
 
-    spiking_dir = 'skewsym_spiking_'+str(i)
+    spiking_dir = 'spiking_skewsym_'+str(i)
     spiking_stdp_slow_dir = 'spiking_stdp_slow_'+str(i)
     spiking_stdp_med_dir = 'spiking_stdp_med_'+str(i)
     spiking_stdp_fast_dir = 'spiking_stdp_fast_'+str(i)
-    nonspiking_dir = 'skewsym_nonspiking_'+str(i)
+    nonspiking_dir = 'nonspiking_skewsym_'+str(i)
     nonspiking_stdp_slow_dir = 'nonspiking_stdp_slow_'+str(i)
     nonspiking_stdp_med_dir = 'nonspiking_stdp_med_'+str(i)
     nonspiking_stdp_fast_dir = 'nonspiking_stdp_fast_'+str(i)
@@ -134,7 +134,7 @@ for i in [0,1,2,3]:
     spiking_train_error, spiking_test_error = csv2array(spiking_dir,skiplines=2)
     spiking_stdp_slow_train_error,spiking_stdp_slow_test_error = csv2array(spiking_stdp_slow_dir,skiplines=2)
     spiking_stdp_med_train_error,spiking_stdp_med_test_error = csv2array(spiking_stdp_med_dir,skiplines=2)
-    spiking_stdp_fast_train_error,spiking_stdp_fast_test_error = csv2array(stdp_fast_dir,skiplines=2)
+    spiking_stdp_fast_train_error,spiking_stdp_fast_test_error = csv2array(spiking_stdp_fast_dir,skiplines=2)
     nonspiking_train_error,nonspiking_test_error = csv2array(nonspiking_dir,skiplines=2)
     nonspiking_stdp_slow_train_error,nonspiking_stdp_slow_test_error = csv2array(nonspiking_stdp_slow_dir,skiplines=2)
     nonspiking_stdp_med_train_error,nonspiking_stdp_med_test_error = csv2array(nonspiking_stdp_med_dir,skiplines=2)
@@ -154,15 +154,15 @@ for i in [0,1,2,3]:
     ax[i//2,i%2].set_title('batch size = '+str(batch_size[i]))
 fig.suptitle(r"Comparison of trace decay rates ($N_1=40,N_2=15,\beta=0.9$)")
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-fig.savefig('kernel_width_compare.png',bbox_inches="tight")
+fig.savefig('compare_all.png',bbox_inches="tight")
 
 
 fig, ax = plt.subplots(2,2,figsize=(20,10))
 labels=['spiking','nonspiking',r'stdp: \tau=2',r'stdp: \tau=1.44 ',r'stdp: \tau=1.0']
 batch_size=[200,100,20,40]
 for i in [0,1,2,3]:
-    spiking_dir = 'skewsym_spiking_'+str(i)
-    nonspiking_dir = 'skewsym_nonspiking_'+str(i)
+    spiking_dir = 'spiking_skewsym_'+str(i)
+    nonspiking_dir = 'nonspiking_skewsym_'+str(i)
     stdp_slow_dir = 'stdp_slow_'+str(i)
     stdp_med_dir = 'stdp_med_'+str(i)
     stdp_fast_dir = 'stdp_fast_'+str(i)
