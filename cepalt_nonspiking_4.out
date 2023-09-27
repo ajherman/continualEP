@@ -5811,3 +5811,37 @@ Average Training loss: 0.0156, Training Error Rate: 3.39% (2033/60000)
 
 Average Test loss: 0.0003, Test Error Rate: 4.15% (415/10000)
 
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.2627010991478629
+trace decay =  0.5528920012788026
+Random seed set as 42
+dt =  0.2627010991478629
+trace decay =  0.5528920012788026
+Train Epoch: 0 [2000/60000 (3%)]	Loss: 0.453181
+Train Epoch: 0 [4000/60000 (7%)]	Loss: 0.406861
+Train Epoch: 0 [6000/60000 (10%)]	Loss: 0.344692
+Train Epoch: 0 [8000/60000 (13%)]	Loss: 0.347311
+Train Epoch: 0 [10000/60000 (17%)]	Loss: 0.366096
+Train Epoch: 0 [12000/60000 (20%)]	Loss: 0.276131
+Train Epoch: 0 [14000/60000 (23%)]	Loss: 0.244062
+Train Epoch: 0 [16000/60000 (27%)]	Loss: 0.282682
+Train Epoch: 0 [18000/60000 (30%)]	Loss: 0.259955
+Train Epoch: 0 [20000/60000 (33%)]	Loss: 0.270450
+Train Epoch: 0 [22000/60000 (37%)]	Loss: 0.284377
+Train Epoch: 0 [24000/60000 (40%)]	Loss: 0.310577
+Train Epoch: 0 [26000/60000 (43%)]	Loss: 0.274551
+Train Epoch: 0 [28000/60000 (47%)]	Loss: 0.214282
+Train Epoch: 0 [30000/60000 (50%)]	Loss: 0.306470
+Train Epoch: 0 [32000/60000 (53%)]	Loss: 0.269355
+Train Epoch: 0 [34000/60000 (57%)]	Loss: 0.244994
+Train Epoch: 0 [36000/60000 (60%)]	Loss: 0.249218
+Train Epoch: 0 [38000/60000 (63%)]	Loss: 0.299338
+Train Epoch: 0 [40000/60000 (67%)]	Loss: 0.207610
+Train Epoch: 0 [42000/60000 (70%)]	Loss: 0.212218
+Train Epoch: 0 [44000/60000 (73%)]	Loss: 0.278073
+Train Epoch: 0 [46000/60000 (77%)]	Loss: 0.242505
+Train Epoch: 0 [48000/60000 (80%)]	Loss: 0.254335
+Train Epoch: 0 [50000/60000 (83%)]	Loss: 0.255631
+slurmstepd: error: *** STEP 15485020.8 ON cn650 CANCELLED AT 2023-09-27T16:47:16 ***

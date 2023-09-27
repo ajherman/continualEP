@@ -2160,3 +2160,32 @@ Train Epoch: 28 [12000/60000 (20%)]	Loss: 0.112284
 Train Epoch: 28 [14000/60000 (23%)]	Loss: 0.065550
 Train Epoch: 28 [16000/60000 (27%)]	Loss: 0.000412
 slurmstepd: error: *** STEP 15484404.15 ON cn651 CANCELLED AT 2023-09-27T15:50:48 DUE TO TIME LIMIT ***
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.17343456237576194
+trace decay =  0.6904785504771092
+Random seed set as 42
+dt =  0.17343456237576194
+trace decay =  0.6904785504771092
+Train Epoch: 0 [2000/60000 (3%)]	Loss: 0.410324
+Train Epoch: 0 [4000/60000 (7%)]	Loss: 0.359805
+Train Epoch: 0 [6000/60000 (10%)]	Loss: 0.313258
+Train Epoch: 0 [8000/60000 (13%)]	Loss: 0.282152
+Train Epoch: 0 [10000/60000 (17%)]	Loss: 0.327005
+Train Epoch: 0 [12000/60000 (20%)]	Loss: 0.209216
+Train Epoch: 0 [14000/60000 (23%)]	Loss: 0.175221
+Train Epoch: 0 [16000/60000 (27%)]	Loss: 0.196874
+Train Epoch: 0 [18000/60000 (30%)]	Loss: 0.164742
+Train Epoch: 0 [20000/60000 (33%)]	Loss: 0.222601
+Train Epoch: 0 [22000/60000 (37%)]	Loss: 0.237442
+Train Epoch: 0 [24000/60000 (40%)]	Loss: 0.255748
+Train Epoch: 0 [26000/60000 (43%)]	Loss: 0.224252
+Train Epoch: 0 [28000/60000 (47%)]	Loss: 0.166708
+Train Epoch: 0 [30000/60000 (50%)]	Loss: 0.271276
+Train Epoch: 0 [32000/60000 (53%)]	Loss: 0.182876
+Train Epoch: 0 [34000/60000 (57%)]	Loss: 0.163139
+Train Epoch: 0 [36000/60000 (60%)]	Loss: 0.155806
+Train Epoch: 0 [38000/60000 (63%)]	Loss: 0.243285
+Train Epoch: 0 [40000/60000 (67%)]	Loss: 0.150348
+slurmstepd: error: *** STEP 15485020.14 ON cn651 CANCELLED AT 2023-09-27T16:47:16 ***

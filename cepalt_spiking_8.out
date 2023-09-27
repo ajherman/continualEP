@@ -1961,3 +1961,30 @@ Train Epoch: 22 [52000/60000 (87%)]	Loss: 0.034985
 Train Epoch: 22 [54000/60000 (90%)]	Loss: 0.019418
 Train Epoch: 22 [56000/60000 (93%)]	Loss: 0.000546
 slurmstepd: error: *** STEP 15484404.16 ON cn651 CANCELLED AT 2023-09-27T15:50:48 DUE TO TIME LIMIT ***
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.15575468523317704
+trace decay =  0.7194860746862861
+Random seed set as 42
+dt =  0.15575468523317704
+trace decay =  0.7194860746862861
+Train Epoch: 0 [2000/60000 (3%)]	Loss: 0.399955
+Train Epoch: 0 [4000/60000 (7%)]	Loss: 0.332719
+Train Epoch: 0 [6000/60000 (10%)]	Loss: 0.291039
+Train Epoch: 0 [8000/60000 (13%)]	Loss: 0.284208
+Train Epoch: 0 [10000/60000 (17%)]	Loss: 0.297140
+Train Epoch: 0 [12000/60000 (20%)]	Loss: 0.203954
+Train Epoch: 0 [14000/60000 (23%)]	Loss: 0.201939
+Train Epoch: 0 [16000/60000 (27%)]	Loss: 0.191201
+Train Epoch: 0 [18000/60000 (30%)]	Loss: 0.143720
+Train Epoch: 0 [20000/60000 (33%)]	Loss: 0.178196
+Train Epoch: 0 [22000/60000 (37%)]	Loss: 0.179422
+Train Epoch: 0 [24000/60000 (40%)]	Loss: 0.252935
+Train Epoch: 0 [26000/60000 (43%)]	Loss: 0.198193
+Train Epoch: 0 [28000/60000 (47%)]	Loss: 0.128565
+Train Epoch: 0 [30000/60000 (50%)]	Loss: 0.212431
+Train Epoch: 0 [32000/60000 (53%)]	Loss: 0.147008
+Train Epoch: 0 [34000/60000 (57%)]	Loss: 0.118485
+Train Epoch: 0 [36000/60000 (60%)]	Loss: 0.134875
+slurmstepd: error: *** STEP 15485020.17 ON cn651 CANCELLED AT 2023-09-27T16:47:16 ***

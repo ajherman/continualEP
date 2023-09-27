@@ -5323,3 +5323,33 @@ Average Training loss: 0.0138, Training Error Rate: 2.78% (1669/60000)
 
 Average Test loss: 0.0003, Test Error Rate: 3.88% (388/10000)
 
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.22428357242607178
+trace decay =  0.6102862555505467
+Random seed set as 42
+dt =  0.22428357242607178
+trace decay =  0.6102862555505467
+Train Epoch: 0 [2000/60000 (3%)]	Loss: 0.434745
+Train Epoch: 0 [4000/60000 (7%)]	Loss: 0.361371
+Train Epoch: 0 [6000/60000 (10%)]	Loss: 0.319255
+Train Epoch: 0 [8000/60000 (13%)]	Loss: 0.319817
+Train Epoch: 0 [10000/60000 (17%)]	Loss: 0.335427
+Train Epoch: 0 [12000/60000 (20%)]	Loss: 0.248847
+Train Epoch: 0 [14000/60000 (23%)]	Loss: 0.216520
+Train Epoch: 0 [16000/60000 (27%)]	Loss: 0.245104
+Train Epoch: 0 [18000/60000 (30%)]	Loss: 0.223851
+Train Epoch: 0 [20000/60000 (33%)]	Loss: 0.233787
+Train Epoch: 0 [22000/60000 (37%)]	Loss: 0.247216
+Train Epoch: 0 [24000/60000 (40%)]	Loss: 0.283203
+Train Epoch: 0 [26000/60000 (43%)]	Loss: 0.240072
+Train Epoch: 0 [28000/60000 (47%)]	Loss: 0.181918
+Train Epoch: 0 [30000/60000 (50%)]	Loss: 0.277587
+Train Epoch: 0 [32000/60000 (53%)]	Loss: 0.229956
+Train Epoch: 0 [34000/60000 (57%)]	Loss: 0.201768
+Train Epoch: 0 [36000/60000 (60%)]	Loss: 0.208953
+Train Epoch: 0 [38000/60000 (63%)]	Loss: 0.265509
+Train Epoch: 0 [40000/60000 (67%)]	Loss: 0.167015
+Train Epoch: 0 [42000/60000 (70%)]	Loss: 0.172648
+slurmstepd: error: *** STEP 15485020.10 ON cn650 CANCELLED AT 2023-09-27T16:47:16 ***
