@@ -79,8 +79,8 @@ for batch_size in {25,50,100,200}
  		beta=1.0
 		T=40
 		Kmax=15
- 		skewsym_spiking_dir=skewsym_spiking_"$i"
- 		skewsym_nonspiking_dir=skewsym_nonspiking_"$i"
+ 		skewsym_spiking_dir=spiking_skewsym_"$i"
+ 		skewsym_nonspiking_dir=nonspiking_skewsym_"$i"
  		spiking_stdp_slow_dir=spiking_stdp_slow_"$i"
 		spiking_stdp_med_dir=spiking_stdp_med_"$i"
 		spiking_stdp_fast_dir=spiking_stdp_fast_"$i"
