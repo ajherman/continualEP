@@ -33,7 +33,6 @@ def csv2array(directory,skiplines=0):
             return [],[]
     return train_error, test_error
 
-
 # Plot various levels of discretization for nonspiking cepalt
 n_plots = 10
 fig, ax = plt.subplots(figsize=(20,10))
@@ -93,6 +92,22 @@ fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.trans
 fig.savefig('cepalt_error.png')#,bbox_inches="tight")
 
 
+# Cepalt vs skewsym
+
+fig, ax = plt.subplots(figsize=(20,10))
+labels=["spiking cepalt", "nonspiking cepalt", "spiking skewsym","nonspiking skewsym"]
+dirs = ["spiking_cepalt", "nonspiking_cepalt", "spiking_skewsym","nonspiking_skewsym"]
+error = [csv2array(dir,skiplines=2) for dir in dirs]
+for i in range(4):
+    ax.plot(error[i][1])
+ax.set_xlabel('Epoch')
+ax.set_ylabel('Test error rate (%)')
+ax.set_xlim([0,50])
+ax.set_ylim([0,100])
+# ax.set_title()
+fig.suptitle(r"Cepalt vs skewsym")
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('cepalt_vs_skewsym.png',bbox_inches="tight")
 
 #
 # fig, ax = plt.subplots(2,4,figsize=(20,10))
@@ -215,27 +230,29 @@ fig.savefig('kernel_width_compare.png',bbox_inches="tight")
 # fig.savefig('decay_compare.png',bbox_inches="tight")
 
 
-fig, ax = plt.subplots(3,3,figsize=(25,20))
-# fig.tight_layout()
-labels=['cepalt','skewsym']
-for idx1,beta in enumerate([1.0,0.5,0.2]):
-    for idx2,Kmax in enumerate([5,10,15]):
-        i = idx1*3+idx2
-        cepalt_dir = 'cepalt_'+str(i)
-        skewsym_dir = 'skewsym_'+str(i)
-        ceptalt_train_error, cepalt_test_error = csv2array(cepalt_dir)
-        skewsym_train_error,skewsym_test_error = csv2array(skewsym_dir)
-        ax[idx1,idx2].plot(cepalt_test_error)
-        ax[idx1,idx2].plot(skewsym_test_error)
-        ax[idx1,idx2].set_xlabel('Epoch')
-        ax[idx1,idx2].set_ylabel('Test error rate (%)')
-        ax[idx1,idx2].set_xlim([0,20])
-        ax[idx1,idx2].set_ylim([0,20])
-        ax[idx1,idx2].set_title(r'$\beta = $' +str(beta)+', $N_1=$'+str(3*Kmax)+', $N_2=$'+str(Kmax)+', $dt = $'+'{:.2f}'.format(1-(2**(-20/(3*Kmax)))) )
-fig.suptitle(r"CEP vs skewsym for nonspiking dynamics",fontsize=20)
-fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-fig.savefig('cepalt_vs_skewsym.png')#,bbox_inches="tight")
-
+# Old version; delete
+###########################################3
+# fig, ax = plt.subplots(3,3,figsize=(25,20))
+# # fig.tight_layout()
+# labels=['cepalt','skewsym']
+# for idx1,beta in enumerate([1.0,0.5,0.2]):
+#     for idx2,Kmax in enumerate([5,10,15]):
+#         i = idx1*3+idx2
+#         cepalt_dir = 'cepalt_'+str(i)
+#         skewsym_dir = 'skewsym_'+str(i)
+#         ceptalt_train_error, cepalt_test_error = csv2array(cepalt_dir)
+#         skewsym_train_error,skewsym_test_error = csv2array(skewsym_dir)
+#         ax[idx1,idx2].plot(cepalt_test_error)
+#         ax[idx1,idx2].plot(skewsym_test_error)
+#         ax[idx1,idx2].set_xlabel('Epoch')
+#         ax[idx1,idx2].set_ylabel('Test error rate (%)')
+#         ax[idx1,idx2].set_xlim([0,20])
+#         ax[idx1,idx2].set_ylim([0,20])
+#         ax[idx1,idx2].set_title(r'$\beta = $' +str(beta)+', $N_1=$'+str(3*Kmax)+', $N_2=$'+str(Kmax)+', $dt = $'+'{:.2f}'.format(1-(2**(-20/(3*Kmax)))) )
+# fig.suptitle(r"CEP vs skewsym for nonspiking dynamics",fontsize=20)
+# fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+# fig.savefig('cepalt_vs_skewsym.png')#,bbox_inches="tight")
+###################################################
 
 # fig, ax = plt.subplots(figsize=(20,10))
 # N1=[3*Kmax for Kmax in [3,6,9,12,15]]
