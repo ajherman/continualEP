@@ -145,7 +145,7 @@ parser.add_argument(
     '--seed',
     nargs = '+',
     type=int,
-    default=[],
+    default=42,
     metavar='SEED',
     help='seed (default: None')
 parser.add_argument(
@@ -229,8 +229,8 @@ args = parser.parse_args()
 
 # New this should create consistency as we change the number of steps
 if args.step==None:
-#     # args.step=4.5/args.Kmax
-    args.step=12.8/args.Kmax
+    # args.step=12.8/args.Kmax
+    args.step=12./args.Kmax
 
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
@@ -247,9 +247,9 @@ if args.max_fr==None:
 if args.spike_height==None:
     args.spike_height = args.step*args.max_fr
 
-if not not args.seed:
-    torch.manual_seed(args.seed[0])
-
+# if not not args.seed:
+#     torch.manual_seed(args.seed[0])
+set_seed(args.seed)
 
 batch_size = args.batch_size
 batch_size_test = args.test_batch_size

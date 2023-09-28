@@ -114,52 +114,103 @@
 # ######################################################################################################################################################
 
 
-# Spiking and nonspiking cepalt for various levels of discretization (fixed max_fr)
-#######################################################################################################################################################
-i=0
-for Kmax in {3,6,9,12}
-	do
-		T=$((3*Kmax))
-    max_fr=3.0
-		beta=0.2
-		update_rule="cepalt"
-		spiking_dir=cepalt_spiking_"$i"
-		nonspiking_dir=cepalt_nonspiking_"$i"
-		mkdir -p $spiking_dir
-		mkdir -p $nonspiking_dir
-		srun -N 1 -n 1 -c 6 -o "$spiking_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_dir --max-fr $max_fr --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
-		srun -N 1 -n 1 -c 6 -o "$nonspiking_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_dir --max-fr $max_fr --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule  &
-		i=$((i+1))
-	done
+# # Spiking and nonspiking cepalt for various levels of discretization (fixed max_fr)
+# #######################################################################################################################################################
+# i=0
+# for Kmax in {3,6,9,12}
+# 	do
+# 		T=$((3*Kmax))
+#     max_fr=3.0
+# 		beta=0.2
+# 		update_rule="cepalt"
+# 		spiking_dir=cepalt_spiking_"$i"
+# 		nonspiking_dir=cepalt_nonspiking_"$i"
+# 		mkdir -p $spiking_dir
+# 		mkdir -p $nonspiking_dir
+# 		srun -N 1 -n 1 -c 6 -o "$spiking_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_dir --max-fr $max_fr --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
+# 		srun -N 1 -n 1 -c 6 -o "$nonspiking_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_dir --max-fr $max_fr --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule  &
+# 		i=$((i+1))
+# 	done
+#
+# for Kmax in {15,18,21,24}
+# 	do
+# 		T=$((3*Kmax))
+# 		beta=0.2
+# 		update_rule="cepalt"
+# 		spiking_dir=cepalt_spiking_"$i"
+# 		nonspiking_dir=cepalt_nonspiking_"$i"
+# 		mkdir -p $spiking_dir
+# 		mkdir -p $nonspiking_dir
+# 		srun -N 1 -n 1 -c 9 -o "$spiking_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_dir --max-fr $max_fr --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
+# 		srun -N 1 -n 1 -c 9 -o "$nonspiking_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_dir --max-fr $max_fr --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule  &
+# 		i=$((i+1))
+# 	done
+#
+# for Kmax in {27,30,33,36}
+# 	do
+# 		T=$((3*Kmax))
+# 		beta=0.2
+# 		update_rule="cepalt"
+# 		spiking_dir=cepalt_spiking_"$i"
+# 		nonspiking_dir=cepalt_nonspiking_"$i"
+# 		mkdir -p $spiking_dir
+# 		mkdir -p $nonspiking_dir
+# 		srun -N 1 -n 1 -c 12 -o "$spiking_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_dir --max-fr $max_fr --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
+# 		srun -N 1 -n 1 -c 12 -o "$nonspiking_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_dir --max-fr $max_fr --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule  &
+# 		i=$((i+1))
+# 	done
+# ######################################################################################################################################################
 
-for Kmax in {15,18,21,24}
-	do
-		T=$((3*Kmax))
-		beta=0.2
-		update_rule="cepalt"
-		spiking_dir=cepalt_spiking_"$i"
-		nonspiking_dir=cepalt_nonspiking_"$i"
-		mkdir -p $spiking_dir
-		mkdir -p $nonspiking_dir
-		srun -N 1 -n 1 -c 9 -o "$spiking_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_dir --max-fr $max_fr --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
-		srun -N 1 -n 1 -c 9 -o "$nonspiking_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_dir --max-fr $max_fr --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule  &
-		i=$((i+1))
-	done
+# Universal
+#########################################################################################################################################
+beta=0.2
+epochs=100
+for max_fr in {3,5,10,20}
+  do
+  for Kmax in {5,15,25,38}
+    do
+    T=$((3*Kmax))
+    # Spiking networks
+    spiking_cepalt_dir=spiking_cepalt_maxfr="$max_fr"_kmax="$Kmax"
+    spiking_cepalt_dir=spiking_skewsym_maxfr="$max_fr"_kmax="$Kmax"
+    spiking_cepalt_dir=spiking_stdp_slow_maxfr="$max_fr"_kmax="$Kmax"
+    spiking_cepalt_dir=spiking_stdp_med_maxfr="$max_fr"_kmax="$Kmax"
+    spiking_cepalt_dir=spiking_stdp_fast_maxfr="$max_fr"_kmax="$Kmax"
+    mkdir -p $spiking_cepalt_dir
+    mkdir -p $spiking_skewsym_dir
+    mkdir -p $spiking_stdp_slow_dir
+    mkdir -p $spiking_stdp_med_dir
+    mkdir -p $spiking_stdp_fast_dir
+    srun -N 1 -n 1 -c 4 -o "$spiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_cepalt_dir --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+		srun -N 1 -n 1 -c 4 -o "$spiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_skewsym_dir --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+		srun -N 1 -n 1 -c 4 -o "$spiking_stdp_slow_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_stdp_slow_dir --spiking --action train --batch-size $batch_size --tau-trace 2.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T  --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
+		srun -N 1 -n 1 -c 4 -o "$spiking_stdp_med_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_stdp_med_dir --spiking --action train --batch-size $batch_size --tau-trace 1.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
+		srun -N 1 -n 1 -c 4 -o "$spiking_stdp_fast_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_stdp_fast_dir --spiking --action train --batch-size $batch_size --tau-trace 1.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
 
-for Kmax in {27,30,33,36}
-	do
-		T=$((3*Kmax))
-		beta=0.2
-		update_rule="cepalt"
-		spiking_dir=cepalt_spiking_"$i"
-		nonspiking_dir=cepalt_nonspiking_"$i"
-		mkdir -p $spiking_dir
-		mkdir -p $nonspiking_dir
-		srun -N 1 -n 1 -c 12 -o "$spiking_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_dir --max-fr $max_fr --spiking --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
-		srun -N 1 -n 1 -c 12 -o "$nonspiking_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_dir --max-fr $max_fr --action train --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs 30 --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule $update_rule  &
-		i=$((i+1))
-	done
-######################################################################################################################################################
+    #Nonspiking networks
+    nonspiking_cepalt_dir=nonspiking_cepalt_maxfr="$max_fr"_kmax="$Kmax"
+    nonspiking_cepalt_dir=nonspiking_skewsym_maxfr="$max_fr"_kmax="$Kmax"
+    nonspiking_cepalt_dir=nonspiking_stdp_slow_maxfr="$max_fr"_kmax="$Kmax"
+    nonspiking_cepalt_dir=nonspiking_stdp_med_maxfr="$max_fr"_kmax="$Kmax"
+    nonspiking_cepalt_dir=nonspiking_stdp_fast_maxfr="$max_fr"_kmax="$Kmax"
+    mkdir -p $nonspiking_cepalt_dir
+    mkdir -p $nonspiking_skewsym_dir
+    mkdir -p $nonspiking_stdp_slow_dir
+    mkdir -p $nonspiking_stdp_med_dir
+    mkdir -p $nonspiking_stdp_fast_dir
+    srun -N 1 -n 1 -c 4 -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_cepalt_dir --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+    srun -N 1 -n 1 -c 4 -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_skewsym_dir --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+		srun -N 1 -n 1 -c 4 -o "$nonspiking_stdp_slow_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_stdp_slow_dir --action train --batch-size $batch_size --tau-trace 2.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T  --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
+		srun -N 1 -n 1 -c 4 -o "$nonspiking_stdp_med_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_stdp_med_dir --action train --batch-size $batch_size --tau-trace 1.5  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
+		srun -N 1 -n 1 -c 4 -o "$nonspiking_stdp_fast_dir".out --open-mode=append ./main_wrapper.sh --directory $nonspiking_stdp_fast_dir --action train --batch-size $batch_size --tau-trace 1.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
+    done
+  done
+
+
+
+
+
+
 
 
 	# i=0
