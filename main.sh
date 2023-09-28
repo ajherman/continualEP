@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 8
+#SBATCH -N 10
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -164,10 +164,10 @@
 # Universal
 #########################################################################################################################################
 
-beta=0.2
-tau_dynamic=3
+beta=0.2 #0.2,0.5,0.9
+tau_dynamic=3 #2,3,4,5
 max_fr=3 #3,5,10,20
-
+batch_size=25 #25, 50,100,200
 for Kmax in {15,25}
 do
   ten_beta=$(echo 'scale=2; 10*beta' | bc)
@@ -175,11 +175,11 @@ do
   T=$((3*Kmax))
   cores=$((Kmax/3))
   # Spiking networks
-  spiking_cepalt_dir=spiking_cepalt_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  spiking_skewsym_dir=spiking_skewsym_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  spiking_stdp_slow_dir=spiking_stdp_slow_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  spiking_stdp_med_dir=spiking_stdp_med_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  spiking_stdp_fast_dir=spiking_stdp_fast_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
+  spiking_cepalt_dir=spiking_cepalt_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  spiking_skewsym_dir=spiking_skewsym_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  spiking_stdp_slow_dir=spiking_stdp_slow_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  spiking_stdp_med_dir=spiking_stdp_med_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  spiking_stdp_fast_dir=spiking_stdp_fast_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
   mkdir -p $spiking_cepalt_dir
   mkdir -p $spiking_skewsym_dir
   mkdir -p $spiking_stdp_slow_dir
@@ -192,11 +192,11 @@ do
 	srun -N 1 -n 1 -c $cores -o "$spiking_stdp_fast_dir".out --open-mode=append ./main_wrapper.sh --directory $spiking_stdp_fast_dir --tau-dynamic $tau_dynamic --spiking --action train --batch-size $batch_size --tau-trace 1.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T $T --Kmax $Kmax --beta $beta --cep --learning-rule stdp --update-rule stdp &
 
   #Nonspiking networks
-  nonspiking_cepalt_dir=nonspiking_cepalt_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  nonspiking_skewsym_dir=nonspiking_skewsym_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  nonspiking_stdp_slow_dir=nonspiking_stdp_slow_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  nonspiking_stdp_med_dir=nonspiking_stdp_med_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
-  nonspiking_stdp_fast_dir=nonspiking_stdp_fast_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"
+  nonspiking_cepalt_dir=nonspiking_cepalt_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  nonspiking_skewsym_dir=nonspiking_skewsym_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  nonspiking_stdp_slow_dir=nonspiking_stdp_slow_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  nonspiking_stdp_med_dir=nonspiking_stdp_med_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  nonspiking_stdp_fast_dir=nonspiking_stdp_fast_maxfr="$max_fr"_kmax="$Kmax"_tau="$tau_dynamic"_beta="$ten_beta"_batch="$batch_size"
   mkdir -p $nonspiking_cepalt_dir
   mkdir -p $nonspiking_skewsym_dir
   mkdir -p $nonspiking_stdp_slow_dir
