@@ -316,11 +316,10 @@ if __name__ == '__main__':
     pkl_path = args.directory+'/net'
 
 
-    if args.load and os.path.exists(pkl_file):
+    if args.load and os.path.exists(pkl_path):
         with open(pkl_path,'rb') as pkl_file:
             net = pickle.load(pkl_file)
     else:
-        assert(0)
         if  (not args.discrete) & (args.learning_rule == 'vf') :
             net = VFcont(args)
 

@@ -2961,3 +2961,108 @@ Train Epoch: 97 [20000/60000 (33%)]	Loss: 0.165833
 Train Epoch: 97 [22500/60000 (38%)]	Loss: 0.234463
 Train Epoch: 97 [25000/60000 (42%)]	Loss: 0.247711
 slurmstepd: error: *** STEP 15486696.2 ON cn650 CANCELLED AT 2023-09-28T19:50:23 ***
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.2340716616353513
+trace decay =  0.5866462195100318
+Random seed set as 42
+Random seed set as 42
+dt =  0.2340716616353513
+trace decay =  0.5866462195100318
+Random seed set as 42
+Traceback (most recent call last):
+  File "/vast/home/ajherman/continualEP/main.py", line 321, in <module>
+    net = pickle.load(pkl_file)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/storage.py", line 241, in _load_from_bytes
+    return torch.load(io.BytesIO(b))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 815, in load
+    return _legacy_load(opened_file, map_location, pickle_module, **pickle_load_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 1043, in _legacy_load
+    result = unpickler.load()
+             ^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 980, in persistent_load
+    wrap_storage=restore_location(obj, location),
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 217, in default_restore_location
+    result = fn(storage, location)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 182, in _cuda_deserialize
+    device = validate_cuda_device(location)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torch/serialization.py", line 166, in validate_cuda_device
+    raise RuntimeError('Attempting to deserialize object on a CUDA '
+RuntimeError: Attempting to deserialize object on a CUDA device but torch.cuda.is_available() is False. If you are running on a CPU-only machine, please use torch.load with map_location=torch.device('cpu') to map your storages to the CPU.
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.2340716616353513
+trace decay =  0.5866462195100318
+Random seed set as 42
+Random seed set as 42
+dt =  0.2340716616353513
+trace decay =  0.5866462195100318
+Random seed set as 42
+Train Epoch: 97 [2500/60000 (4%)]	Loss: 0.209037
+Train Epoch: 97 [5000/60000 (8%)]	Loss: 0.208908
+Train Epoch: 97 [7500/60000 (12%)]	Loss: 0.241632
+Train Epoch: 97 [10000/60000 (17%)]	Loss: 0.214819
+Train Epoch: 97 [12500/60000 (21%)]	Loss: 0.276302
+Train Epoch: 97 [15000/60000 (25%)]	Loss: 0.233271
+Train Epoch: 97 [17500/60000 (29%)]	Loss: 0.198241
+Train Epoch: 97 [20000/60000 (33%)]	Loss: 0.260905
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.2340716616353513
+trace decay =  0.5866462195100317
+Random seed set as 42
+Random seed set as 42
+dt =  0.2340716616353513
+trace decay =  0.5866462195100317
+Random seed set as 42
+Train Epoch: 97 [2500/60000 (4%)]	Loss: 0.213314
+Train Epoch: 97 [5000/60000 (8%)]	Loss: 0.268485
+Train Epoch: 97 [7500/60000 (12%)]	Loss: 0.271503
+Train Epoch: 97 [10000/60000 (17%)]	Loss: 0.164098
+Train Epoch: 97 [12500/60000 (21%)]	Loss: 0.265738
+Train Epoch: 97 [15000/60000 (25%)]	Loss: 0.252109
+Train Epoch: 97 [17500/60000 (29%)]	Loss: 0.194320
+Train Epoch: 97 [20000/60000 (33%)]	Loss: 0.234615
+Train Epoch: 97 [22500/60000 (38%)]	Loss: 0.136974
+Train Epoch: 97 [25000/60000 (42%)]	Loss: 0.173162
+Train Epoch: 97 [27500/60000 (46%)]	Loss: 0.308377
+Train Epoch: 97 [30000/60000 (50%)]	Loss: 0.184321
+Train Epoch: 97 [32500/60000 (54%)]	Loss: 0.191999
+Train Epoch: 97 [35000/60000 (58%)]	Loss: 0.220206
+Train Epoch: 97 [37500/60000 (62%)]	Loss: 0.384946
+Train Epoch: 97 [40000/60000 (67%)]	Loss: 0.204303
+Train Epoch: 97 [42500/60000 (71%)]	Loss: 0.220180
+Train Epoch: 97 [45000/60000 (75%)]	Loss: 0.208300
+Train Epoch: 97 [47500/60000 (79%)]	Loss: 0.158381
+Train Epoch: 97 [50000/60000 (83%)]	Loss: 0.142689
+Train Epoch: 97 [52500/60000 (88%)]	Loss: 0.272692
+Train Epoch: 97 [55000/60000 (92%)]	Loss: 0.257360
+Train Epoch: 97 [57500/60000 (96%)]	Loss: 0.166981
+Train Epoch: 97 [60000/60000 (100%)]	Loss: 0.239662
+
+Average Training loss: 0.0084, Training Error Rate: 26.55% (15932/60000)
+
+
+Average Test loss: 0.0002, Test Error Rate: 25.78% (2578/10000)
+
+Train Epoch: 98 [2500/60000 (4%)]	Loss: 0.167262
+Train Epoch: 98 [5000/60000 (8%)]	Loss: 0.155135
+Train Epoch: 98 [7500/60000 (12%)]	Loss: 0.122140
+Train Epoch: 98 [10000/60000 (17%)]	Loss: 0.220148
+Train Epoch: 98 [12500/60000 (21%)]	Loss: 0.166789
+Train Epoch: 98 [15000/60000 (25%)]	Loss: 0.210838
+Train Epoch: 98 [17500/60000 (29%)]	Loss: 0.208153
+Train Epoch: 98 [20000/60000 (33%)]	Loss: 0.316126
+Train Epoch: 98 [22500/60000 (38%)]	Loss: 0.189875
+Train Epoch: 98 [25000/60000 (42%)]	Loss: 0.136942
+Train Epoch: 98 [27500/60000 (46%)]	Loss: 0.169467
+slurmstepd: error: *** STEP 15486854.2 ON cn651 CANCELLED AT 2023-09-28T20:06:42 ***
