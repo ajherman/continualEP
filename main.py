@@ -8,6 +8,7 @@ import random
 from netClasses import *
 from netFunctions import *
 from plotFunctions import *
+import os
 
 def set_seed(seed: int = 42) -> None:
     np.random.seed(seed)
@@ -315,10 +316,11 @@ if __name__ == '__main__':
     pkl_path = args.directory+'/net'
 
 
-    if args.load:
+    if args.load and os.path.exists(pkl_file):
         with open(pkl_path,'rb') as pkl_file:
             net = pickle.load(pkl_file)
     else:
+        assert(0)
         if  (not args.discrete) & (args.learning_rule == 'vf') :
             net = VFcont(args)
 

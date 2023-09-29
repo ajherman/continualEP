@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import csv
 import argparse
+from itertools import product
 
 """
 'Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid',
@@ -43,6 +44,49 @@ def csv2array(directory,skiplines=0):
         except:
             return [],[]
     return train_error, test_error
+
+activity_type_li = ['spiking','nonspiking']
+learning_rule_li = ['cepalt','skewsym','stdp_slow','stdp_med','stdp_fast']
+max_fr_li = [3]
+kmax_li = [15,25]
+tau_dynamic_li = [3]
+beta_li = [0.2]
+batch_size_li = [25]
+
+def dir_name(activity_type,learning_rule,max_fr,kmax,tau_dynamic,beta,batch_size):
+    name = activity_type+"_"+learning_rule+"_maxfr="+str(max_fr)+"_kmax="+str(kmax)+"_tau="+str(tau_dynamic)+"_beta="+str(int(10*beta))+"_batch="+str(batch_size)
+    return name
+
+
+# Universal
+#################################################################################
+fig, ax = plt.subplots(2,figsize=(20,40))
+batch_size=25
+max_fr=3
+tau_dynamic=3
+beta=0.2
+labels=[]
+for idx,kmax in enumerate(kmax_li):
+    for activity_type,learning_rule in product(activity_type_li,learning_rule_li):
+        if idx==0:
+            labels.append(r''+activity_type+" "+learning_rule)
+        directory_name = dir_name(activity_type,learning_rule,max_fr,kmax,tau_dynamic,beta,batch_size)
+        error = csv2array(directory_name,skiplines=2)
+        ax[idx].plot(error[1])
+    ax[idx].set_xlabel('Epoch')
+    ax[idx].set_ylabel('Test error rate (%)')
+    ax[idx].set_xlim([0,30])
+    ax[idx].set_ylim([0,20])
+    ax[idx].grid(axis='y')
+    ax[idx].set_title(r'$N_1=$'+str(3*kmax)+", $N_2=$"+str(kmax))
+fig.suptitle(r'Batch size='+str(batch_size)+", max f.r.="+str(max_fr))
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('test.png',bbox_inches="tight")
+#################################################################################
+
+
+
+
 
 # Plot various levels of discretization for nonspiking cepalt
 n_plots = 12
