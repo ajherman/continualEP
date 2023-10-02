@@ -1,0 +1,75 @@
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.22119921692859512
+trace decay =  0.36787944117144233
+Random seed set as 42
+Random seed set as 42
+dt =  0.22119921692859512
+trace decay =  0.36787944117144233
+Random seed set as 42
+Train Epoch: 0 [20000/60000 (33%)]	Loss: 0.446755
+Train Epoch: 0 [40000/60000 (67%)]	Loss: 0.387861
+Train Epoch: 0 [60000/60000 (100%)]	Loss: 0.353222
+
+Average Training loss: 0.0021, Training Error Rate: 69.11% (41469/60000)
+
+
+Average Test loss: 0.0003, Test Error Rate: 45.74% (4574/10000)
+
+Train Epoch: 1 [20000/60000 (33%)]	Loss: 0.316447
+Train Epoch: 1 [40000/60000 (67%)]	Loss: 0.303533
+Train Epoch: 1 [60000/60000 (100%)]	Loss: 0.249981
+
+Average Training loss: 0.0016, Training Error Rate: 38.30% (22980/60000)
+
+
+Average Test loss: 0.0003, Test Error Rate: 28.53% (2853/10000)
+
+Train Epoch: 2 [20000/60000 (33%)]	Loss: 0.321071
+Train Epoch: 2 [40000/60000 (67%)]	Loss: 0.328182
+Train Epoch: 2 [60000/60000 (100%)]	Loss: 0.521136
+
+Average Training loss: 0.0017, Training Error Rate: 29.73% (17836/60000)
+
+
+Average Test loss: 0.0006, Test Error Rate: 36.36% (3636/10000)
+
+Train Epoch: 3 [20000/60000 (33%)]	Loss: 0.475019
+Train Epoch: 3 [40000/60000 (67%)]	Loss: 0.490564
+Train Epoch: 3 [60000/60000 (100%)]	Loss: 0.487921
+
+Average Training loss: 0.0024, Training Error Rate: 33.93% (20356/60000)
+
+
+Average Test loss: 0.0005, Test Error Rate: 36.16% (3616/10000)
+
+Train Epoch: 4 [20000/60000 (33%)]	Loss: 0.451486
+Train Epoch: 4 [40000/60000 (67%)]	Loss: 0.537032
+Train Epoch: 4 [60000/60000 (100%)]	Loss: 0.650452
+
+Average Training loss: 0.0027, Training Error Rate: 34.66% (20798/60000)
+
+
+Average Test loss: 0.0006, Test Error Rate: 37.53% (3753/10000)
+
+Train Epoch: 5 [20000/60000 (33%)]	Loss: 0.745470
+Train Epoch: 5 [40000/60000 (67%)]	Loss: 0.760195
+Train Epoch: 5 [60000/60000 (100%)]	Loss: 0.737695
+
+Average Training loss: 0.0035, Training Error Rate: 44.73% (26839/60000)
+
+
+Average Test loss: 0.0007, Test Error Rate: 48.41% (4841/10000)
+
+Train Epoch: 6 [20000/60000 (33%)]	Loss: 0.849090
+Train Epoch: 6 [40000/60000 (67%)]	Loss: 0.819732
+Train Epoch: 6 [60000/60000 (100%)]	Loss: 0.997587
+
+Average Training loss: 0.0043, Training Error Rate: 50.68% (30408/60000)
+
+
+Average Test loss: 0.0010, Test Error Rate: 56.05% (5605/10000)
+
+Train Epoch: 7 [20000/60000 (33%)]	Loss: 1.157342
+slurmstepd: error: *** STEP 15491172.86 ON cn432 CANCELLED AT 2023-10-02T12:30:17 ***
