@@ -74,30 +74,44 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='discrete-time dynamics (default: False)')
+
+# Fundamental hyperparameters
+################################################################################
 parser.add_argument(
-    '--dt',
-    type=float,
-    default=None,
-    metavar='DT',
-    help='time discretization (default: 0.2)')
-parser.add_argument(
-    '--T',
+    '--N1',
     type=int,
     default=100,
-    metavar='T',
+    metavar='N1',
     help='number of time steps in the forward pass (default: 100)')
 parser.add_argument(
-    '--Kmax',
+    '--N2',
     type=int,
     default=25,
-    metavar='Kmax',
+    metavar='N2',
     help='number of time steps in the backward pass (default: 25)')
+peraser.add_argument(
+    '--max-Q',
+    type=float,
+    default=1.0,
+    help='Maximum out charge per time bin')
 parser.add_argument(
     '--beta',
     type=float,
     default=1,
     metavar='BETA',
     help='nudging parameter (default: 1)')
+parser.add_argument(
+    '--n-dynamic',
+    type=float,
+    default=None,
+    help='Number of time steps to decay by 1/e')
+parser.add_argument(
+    '--n-trace',
+    type=float,
+    default=None,
+    help='Number of time steps to decay by 1/e')
+################################################################################
+
 parser.add_argument(
     '--activation-function',
     type=str,
@@ -120,11 +134,11 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='continual ep/vf (default: False)')
-parser.add_argument(
-    '--angle',
-    type=float,
-    default=0,
-    help='initial angle between forward and backward weights(defaut: 0)')
+# parser.add_argument(
+#     '--angle',
+#     type=float,
+#     default=0,
+#     help='initial angle between forward and backward weights(defaut: 0)')
 
 #other arguments
 parser.add_argument(
@@ -149,11 +163,11 @@ parser.add_argument(
     default=42,
     metavar='SEED',
     help='seed (default: None')
-parser.add_argument(
-    '--angle-grad',
-    action='store_true',
-    default=False,
-    help='computes initial angle between EP updates and BPTT gradients (default: False)')
+# parser.add_argument(
+#     '--angle-grad',
+#     action='store_true',
+#     default=False,
+#     help='computes initial angle between EP updates and BPTT gradients (default: False)')
 parser.add_argument(
     '--use-bias',
     action='store_true',
@@ -197,59 +211,118 @@ parser.add_argument(
     '--spiking',
     action='store_true',
     help='if set, uses spikes for dynamics')
+
+# Whatever unit step is in will be the same for tau-dynamic and tau-trace.
+
+# Non-fundamental arguments
+parser.add_argument(
+    '--T1',
+    type=float,
+    default=None,
+    help='Phase 1 duration')
+parser.add_argument(
+    '--T2',
+    type=float,
+    default=None,
+    help='Phase 1 duration')
+parser.add_argument(
+    '--max-fr',
+    type=float,
+    default=None,
+    help='maximum activity / firing rate')
+parser.add_argument(
+    '--step',
+    type=float,
+    default=1.0,
+    help='time step size')
+parser.add_argument(
+    '--tau-dynamic',
+    type=float,
+    default=None,
+    help='time constant for dynamics')
+parser.add_argument(
+    '--tau-trace',
+    type=float,
+    default=None,
+    help='decay factor for traces')
+parser.add_argument(
+    '--dt',
+    type=float,
+    default=None,
+    metavar='DT',
+    help='time discretization (default: 0.2)')
 parser.add_argument(
     '--spike-height',
     type=float,
     default=None,
     help='sets height of a spike')
 
-# Whatever unit step is in will be the same for tau-dynamic and tau-trace.
-parser.add_argument(
-    '--step',
-    type=float,
-    default=None,
-    help='time step size')
-parser.add_argument(
-    '--tau-dynamic',
-    type=float,
-    default=2.8,
-    help='time constant for dynamics')
-parser.add_argument(
-    '--tau-trace',
-    type=float,
-    default=1.44,
-    help='decay factor for traces')
-parser.add_argument(
-    '--max-fr',
-    type=float,
-    default=None,
-    help='maximum activity / firing rate')
-
 
 args = parser.parse_args()
 
-# New this should create consistency as we change the number of steps
-if args.step==None:
-    # args.step=12.8/args.Kmax
-    args.step=12./args.Kmax
+if args.n_dynamic==None:
+    args.n_dynamic=0.233*args.N2
 
-n_dynamic = args.tau_dynamic/args.step
-n_trace = args.tau_trace/args.step
+if args.n_trace==None:
+    args.n_trace=0.12*args.N2
+
+
+# Set steps/durations for both phases
+if args.T1==None:
+    args.T1=args.N1*args.step
+else:
+    assert args.N1==None, "Cannot set both N1 and T1"
+    assert args.T1>args.step, "T1 must be at least one time step"
+    args.N1 = int(args.T1/args.step)
+
+if args.T2==None:
+    args.T2=args.N2*args.step
+else:
+    assert args.N2==None, "Cannot set both N2 and T2"
+    assert args.T2>args.step, "T2 must be at least one time step"
+    args.N2 = int(args.T2/args.step)
+
+if args.max_fr==None:
+    args.max_fr=args.max_Q/args.step
+else:
+    assert args.max_Q==None, "Cannot set both max_fr and max_Q"
+    args.max_Q=args.max_fr*args.step
+
+if args.tau_dynamic==None:
+    args.tau_dynamic = args.n_dynamic*args.step
+else:
+    assert args.n_dynamic==None, "Cannot set both n_dynamic and tau_dynamic"
+    args.n_dynamic=args.tau_dynamics/args.step
+
+if args.tau_trace==None:
+    args.tau_trace = args.n_trace*args.step
+else:
+    assert args.n_trace==None, "Cannot set both n_trace and tau_trace"
+    args.n_trace=args.tau_trace/args.step
 
 if args.dt==None:
-    # args.dt = 1-(2**(-20/args.T))
-    args.dt = 1-np.exp(-1./n_dynamics)
+    # args.dt = 1-(2**(-20/args.N1))
+    args.dt = 1-np.exp(-1./args.n_dynamic)
     print("dt = ",args.dt)
 
 if args.trace_decay==None:
-    args.trace_decay=np.exp(-1./n_trace)
+    args.trace_decay=np.exp(-1./args.n_trace)
     print("trace decay = ",args.trace_decay)
-
-if args.max_fr==None:
-    args.max_fr = 1.0/args.step
 
 if args.spike_height==None:
     args.spike_height = args.step*args.max_fr
+
+# New this should create consistency as we change the number of steps
+# if args.step==None:
+#     # args.step=12.8/args.N2
+#     args.step=12./args.N2
+
+# Discrete versions of times constants
+
+#
+# if args.max_fr==None:
+#     args.max_fr = 1.0/args.step
+
 
 # if not not args.seed:
 #     torch.manual_seed(args.seed[0])
@@ -338,40 +411,6 @@ if __name__ == '__main__':
         elif args.learning_rule == 'stdp':
             net = SNN(args)
 
-
-    #
-    # if args.action == 'plotcurves':
-    #
-    #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-    #
-    #     if net.cuda:
-    #         example_data, example_targets = example_data.to(device), example_targets.to(net.device)
-    #
-    #     x = example_data
-    #     target = example_targets
-    #
-    #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-    #     plot_S(nS, dS)
-    #     plt.show()
-    #     nT = compute_nT(net, x, target)
-    #
-    #     plot_T(nT, dT, args)
-    #     plt.show()
-    #
-    #     #create path
-    #     BASE_PATH, name = createPath(args)
-    #
-    #     #save hyperparameters
-    #     createHyperparameterfile(BASE_PATH, name, args)
-    #
-    #     results_dict = {'nS' : nS, 'dS' : dS, 'nT': nT, 'dT': dT, 'args': args}
-    #
-    #     #outfile = open(os.path.join(BASE_PATH, 'results'), 'wb')
-    #     #pickle.dump(results_dict, outfile)
-    #     #outfile.close()
-    #
-    #
-
     if args.action == 'train':
 
         # #create path
@@ -387,11 +426,11 @@ if __name__ == '__main__':
         if not args.load:
             # csv_file = open(csv_path,'a',newline='')
             # csv_writer = csv.write(csvf)
-            fieldnames = ['learning_rule','update_rule','beta','dt','T','Kmax']
+            fieldnames = ['learning_rule','update_rule','beta','dt','N1','N2']
             with open(csv_path,'w',newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow(fieldnames)
-                csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.T,args.Kmax])
+                csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.N1,args.N2])
         # #compute initial angle between EP update and BPTT gradient
         # if args.angle_grad:
         #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))

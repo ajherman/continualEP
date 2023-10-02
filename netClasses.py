@@ -13,8 +13,8 @@ class SNN(nn.Module):
 
     def __init__(self, args):
         super(SNN, self).__init__()
-        self.T = args.T
-        self.Kmax = args.Kmax
+        self.N1 = args.N1
+        self.N2 = args.N2
         self.dt = args.dt
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
@@ -180,16 +180,16 @@ class SNN(nn.Module):
 
 
     def forward(self, data, s, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, return_deltas=False,**kwargs):
-        T = self.T
-        Kmax = self.Kmax
+        N1 = self.N1
+        N2 = self.N2
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
-            K = Kmax
+            K = N2
 
         if beta == 0:
             deltas = []
-            for t in range(T):
+            for t in range(N1):
                 s,dsdt = self.stepper(data, s)
                 if return_deltas:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
@@ -200,7 +200,7 @@ class SNN(nn.Module):
                 return s
         else:
             Dw = self.initGrad()
-            for t in range(Kmax):
+            for t in range(N2):
                 # print(type(trace))
                 # assert(0)
                 s, dw = self.stepper(data, s, trace, target, beta)
@@ -363,8 +363,8 @@ class VFcont(nn.Module):
 
     def __init__(self, args):
         super(VFcont, self).__init__()
-        self.T = args.T
-        self.Kmax = args.Kmax
+        self.N1 = args.N1
+        self.N2 = args.N2
         self.dt = args.dt
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
@@ -462,16 +462,16 @@ class VFcont(nn.Module):
         #**************************************************************#
 
     def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
-        T = self.T
-        Kmax = self.Kmax
+        N1 = self.N1
+        N2 = self.N2
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
-            K = Kmax
+            K = N2
         if (method == 'withgrad'):
             assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
+            # for t in range(N1):
+            #     if t == N1 - 1 - K:
             #         for i in range(self.ns):
             #             s[i] = s[i].detach()
             #             s[i].requires_grad = True
@@ -484,12 +484,12 @@ class VFcont(nn.Module):
 
             #*************ADD GRADIENT ACCUMULATION HERE*************#
             if beta == 0:
-                for t in range(T):
+                for t in range(N1):
                     s = self.stepper(data, s)
                 return s
             else:
                 Dw = self.initGrad()
-                for t in range(Kmax):
+                for t in range(N2):
                     s, dw = self.stepper(data, s, target, beta)
 
 
@@ -509,7 +509,7 @@ class VFcont(nn.Module):
             #     s_tab.append([])
             #
             # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
+            # for t in range(N1):
             #     for i in range(self.ns):
             #         s_tab[i].append(s[i])
             #         s_tab[i][t].retain_grad()
@@ -523,15 +523,15 @@ class VFcont(nn.Module):
             #
             # nS = []
             # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
+            #     nS.append(torch.zeros(N2, 1, s[i].size(1), device = self.device))
             #
-            # for t in range(Kmax):
+            # for t in range(N2):
             #     #**********************************nS COMPUTATION**********************************#
             #     for i in range(self.ns):
             #         if (t < i):
             #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
             #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
+            #             nS[i][t, :, :] = (s_tab[i][N1 - t].grad).sum(0).unsqueeze(0)
             #     #**********************************************************************************#
             #
             #
@@ -543,17 +543,17 @@ class VFcont(nn.Module):
             #
             # for i in range(len(self.w)):
             #     if self.w[i] is not None:
-            #         DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
+            #         DT.append(torch.zeros(N2, self.w[i].weight.size(0), self.w[i].weight.size(1)))
             #     else:
             #         DT.append(None)
             #
             # dS = []
             # for i in range(self.ns):
-            #     dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
+            #     dS.append(torch.zeros(N2, 1, self.size_tab[i], device = self.device))
             #
             # #*******************************************C-EP*******************************************#
             #
-            # for t in range(Kmax):
+            # for t in range(N2):
             #     s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
             #     #***********************************dS COMPUTATION***********************************#
             #     for i in range(self.ns):
@@ -688,8 +688,8 @@ class VFdisc(nn.Module):
 
     def __init__(self, args):
         super(VFdisc, self).__init__()
-        self.T = args.T
-        self.Kmax = args.Kmax
+        self.N1 = args.N1
+        self.N2 = args.N2
         self.dt = 1
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
@@ -780,16 +780,16 @@ class VFdisc(nn.Module):
         #**************************************************************#
 
     def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
-        T = self.T
-        Kmax = self.Kmax
+        N1 = self.N1
+        N2 = self.N2
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
-            K = Kmax
+            K = N2
         if (method == 'withgrad'):
             assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
+            # for t in range(N1):
+            #     if t == N1 - 1 - K:
             #         for i in range(self.ns):
             #             s[i] = s[i].detach()
             #             s[i].requires_grad = True
@@ -801,12 +801,12 @@ class VFdisc(nn.Module):
         elif (method == 'nograd'):
             #*************ADD GRADIENT ACCUMULATION HERE*************#
             if beta == 0:
-                for t in range(T):
+                for t in range(N1):
                     s = self.stepper(data, s)
                 return s
             else:
                 Dw = self.initGrad()
-                for t in range(Kmax):
+                for t in range(N2):
                     s, dw = self.stepper(data, s, target, beta)
                     with torch.no_grad():
                         for ind_type, dw_temp in enumerate(dw):
@@ -824,7 +824,7 @@ class VFdisc(nn.Module):
             #     s_tab.append([])
             #
             # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
+            # for t in range(N1):
             #     for i in range(self.ns):
             #         s_tab[i].append(s[i])
             #         s_tab[i][t].retain_grad()
@@ -839,15 +839,15 @@ class VFdisc(nn.Module):
             #
             # nS = []
             # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
+            #     nS.append(torch.zeros(N2, 1, s[i].size(1), device = self.device))
             #
-            # for t in range(Kmax):
+            # for t in range(N2):
             #     #**********************************nS COMPUTATION**********************************#
             #     for i in range(self.ns):
             #         if (t < i):
             #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
             #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
+            #             nS[i][t, :, :] = (s_tab[i][N1 - t].grad).sum(0).unsqueeze(0)
             #     #**********************************************************************************#
             #
             # return s, nS
@@ -858,19 +858,19 @@ class VFdisc(nn.Module):
     #
     #         for i in range(len(self.w)):
     #             if self.w[i] is not None:
-    #                 DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
+    #                 DT.append(torch.zeros(N2, self.w[i].weight.size(0), self.w[i].weight.size(1)))
     #             else:
     #                 DT.append(None)
     #
     #
     #         dS = []
     #         for i in range(self.ns):
-    #             dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
+    #             dS.append(torch.zeros(N2, 1, self.size_tab[i], device = self.device))
     #
     #
     #         #*******************************************C-EP*******************************************#
     #
-    #         for t in range(Kmax):
+    #         for t in range(N2):
     #             s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
     #             #*********************************dS COMPUTATION*************************************#
     #             for i in range(self.ns):
@@ -962,8 +962,8 @@ class EPcont(nn.Module):
     def __init__(self, args):
         super(EPcont, self).__init__()
 
-        self.T = args.T
-        self.Kmax = args.Kmax
+        self.N1 = args.N1
+        self.N2 = args.N2
         self.dt = args.dt
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
@@ -1048,18 +1048,18 @@ class EPcont(nn.Module):
         #**************************************************************#
 
     def forward(self, data, s, seq = None, method = 'nograd',  beta = 0, target = None, **kwargs):
-        T = self.T
-        Kmax = self.Kmax
+        N1 = self.N1
+        N2 = self.N2
 
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
-            K = Kmax
+            K = N2
 
         if (method == 'withgrad'):
             assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
+            # for t in range(N1):
+            #     if t == N1 - 1 - K:
             #         for i in range(self.ns):
             #             s[i] = s[i].detach()
             #             s[i].requires_grad = True
@@ -1070,10 +1070,10 @@ class EPcont(nn.Module):
 
         elif (method == 'nograd'):
             if beta == 0:
-                for t in range(T):
+                for t in range(N1):
                     s = self.stepper(data, s)
             else:
-                for t in range(Kmax):
+                for t in range(N2):
                     s = self.stepper(data, s, target, beta)
             return s
 
@@ -1084,7 +1084,7 @@ class EPcont(nn.Module):
             #     s_tab.append([])
             #
             # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
+            # for t in range(N1):
             #     for i in range(self.ns):
             #         s_tab[i].append(s[i])
             #         s_tab[i][t].retain_grad()
@@ -1097,15 +1097,15 @@ class EPcont(nn.Module):
             # loss.backward()
             # nS = []
             # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
+            #     nS.append(torch.zeros(N2, 1, s[i].size(1), device = self.device))
             #
-            # for t in range(Kmax):
+            # for t in range(N2):
             #     for i in range(self.ns):
             #     #***********************************nS COMPUTATION*********************************#
             #         if (t < i):
             #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
             #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
+            #             nS[i][t, :, :] = (s_tab[i][N1 - t].grad).sum(0).unsqueeze(0)
             #     #**********************************************************************************#
             #
             #
@@ -1116,17 +1116,17 @@ class EPcont(nn.Module):
         #     DT = []
         #     for i in range(len(self.w)):
         #         if self.w[i] is not None:
-        #             DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
+        #             DT.append(torch.zeros(N2, self.w[i].weight.size(0), self.w[i].weight.size(1)))
         #         else:
         #             DT.append(None)
         #     dS = []
         #     for i in range(self.ns):
-        #         dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
+        #         dS.append(torch.zeros(N2, 1, self.size_tab[i], device = self.device))
         #
         #
         #     #*******************************************C-EP*******************************************#
         #
-        #     for t in range(Kmax):
+        #     for t in range(N2):
         #         s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
         #         #***********************************dS COMPUTATION***********************************#
         #         for i in range(self.ns):
@@ -1205,8 +1205,8 @@ class EPdisc(nn.Module):
         super(EPdisc, self).__init__()
 
 
-        self.T = args.T
-        self.Kmax = args.Kmax
+        self.N1 = args.N1
+        self.N2 = args.N2
         self.dt = 1
         self.size_tab = args.size_tab
         self.lr_tab = args.lr_tab
@@ -1288,16 +1288,16 @@ class EPdisc(nn.Module):
         #**************************************************************#
 
     def forward(self, data, s, seq = None, method = 'nograd', beta = 0, target = None, **kwargs):
-        T = self.T
-        Kmax = self.Kmax
+        N1 = self.N1
+        N2 = self.N2
         if len(kwargs) > 0:
             K = kwargs['K']
         else:
-            K = Kmax
+            K = N2
         if (method == 'withgrad'):
             assert(0)
-            # for t in range(T):
-            #     if t == T - 1 - K:
+            # for t in range(N1):
+            #     if t == N1 - 1 - K:
             #         for i in range(self.ns):
             #             s[i] = s[i].detach()
             #             s[i].requires_grad = True
@@ -1308,18 +1308,18 @@ class EPdisc(nn.Module):
 
         elif (method == 'nograd'):
             if beta == 0:
-                for t in range(T):
+                for t in range(N1):
                     s = self.stepper(data, s)
                 return s
 
             elif (np.abs(beta) > 0) & (not self.debug_cep):
-                for t in range(Kmax):
+                for t in range(N2):
                     s = self.stepper(data, s, target, beta)
                 return s
 
             # elif (np.abs(beta) > 0) & (self.debug_cep):
             #     Dw = self.initGrad()
-            #     for t in range(Kmax):
+            #     for t in range(N2):
             #         s, _, dw = self.stepper(data, s, target, beta, return_derivatives = True)
             #
             #         with torch.no_grad():
@@ -1337,7 +1337,7 @@ class EPdisc(nn.Module):
             #     s_tab.append([])
             #
             # criterion = nn.MSELoss(reduction = 'sum')
-            # for t in range(T):
+            # for t in range(N1):
             #     for i in range(self.ns):
             #         s_tab[i].append(s[i])
             #         s_tab[i][t].retain_grad()
@@ -1351,15 +1351,15 @@ class EPdisc(nn.Module):
             #
             # nS = []
             # for i in range(self.ns):
-            #     nS.append(torch.zeros(Kmax, 1, s[i].size(1), device = self.device))
+            #     nS.append(torch.zeros(N2, 1, s[i].size(1), device = self.device))
             #
-            # for t in range(Kmax):
+            # for t in range(N2):
             #     for i in range(self.ns):
             #         #**********************************nS COMPUTATION**********************************#
             #         if (t < i):
             #             nS[i][t, :, :] = torch.zeros_like(nS[i][t, :, :])
             #         else:
-            #             nS[i][t, :, :] = (s_tab[i][T - t].grad).sum(0).unsqueeze(0)
+            #             nS[i][t, :, :] = (s_tab[i][N1 - t].grad).sum(0).unsqueeze(0)
             #         #**********************************************************************************#
             #
             #
@@ -1372,19 +1372,19 @@ class EPdisc(nn.Module):
             #
             # for i in range(len(self.w)):
             #     if self.w[i] is not None:
-            #         DT.append(torch.zeros(Kmax, self.w[i].weight.size(0), self.w[i].weight.size(1)))
+            #         DT.append(torch.zeros(N2, self.w[i].weight.size(0), self.w[i].weight.size(1)))
             #     else:
             #         DT.append(None)
             #
             #
             # dS = []
             # for i in range(self.ns):
-            #     dS.append(torch.zeros(Kmax, 1, self.size_tab[i], device = self.device))
+            #     dS.append(torch.zeros(N2, 1, self.size_tab[i], device = self.device))
             #
             #
             # #*******************************************C-EP*******************************************#
             #
-            # for t in range(Kmax):
+            # for t in range(N2):
             #     s, dsdt, dw = self.stepper(data, s, target, beta, return_derivatives = True)
             #     #***********************************dS COMPUTATION***********************************#
             #     for i in range(self.ns):
