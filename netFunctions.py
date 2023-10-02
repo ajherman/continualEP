@@ -116,7 +116,7 @@ def train(net, train_loader, epoch, learning_rule):
                 ##########################
                 if batch_idx%500==0:
                     fig, ax = plt.subplots()
-                    ax.plot(np.arange(net.T),deltas)
+                    ax.plot(np.arange(net.N1),deltas)
                     fig.savefig(net.directory+'/deltas_'+str(batch_idx)+'.png')
                     plt.close()
                 ###########################

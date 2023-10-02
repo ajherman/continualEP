@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 15
+#SBATCH -N 14
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -220,11 +220,7 @@ epochs=80
 batch_size=200 #25, 50,100,200
 N1=40
 N2=15
-<<<<<<< HEAD
-for beta in {0.2,0.9}
-=======
-for beta in {0.9,0.2}
->>>>>>> 9ee82773fb4447819414a7c162dc6a4c2f186913
+for beta in {0.2,}
 do
   for n_dynamic in {1,2,3,4,5}
   do
@@ -233,12 +229,12 @@ do
     # N1=$((3*N2))
     cores=$((N2/3))
     # Spiking networks
-    spiking_cepalt_dir=cepalt_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-    spiking_skewsym_dir=skewsym_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-    spiking_stdp_slug_dir=stdp_slug_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-    spiking_stdp_slow_dir=stdp_slow_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-    spiking_stdp_med_dir=stdp_med_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-    spiking_stdp_fast_dir=stdp_fast_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+    spiking_cepalt_dir=cepalt_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+    spiking_skewsym_dir=skewsym_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+    spiking_stdp_slug_dir=stdp_slug_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+    spiking_stdp_slow_dir=stdp_slow_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+    spiking_stdp_med_dir=stdp_med_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+    spiking_stdp_fast_dir=stdp_fast_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
     mkdir -p $spiking_cepalt_dir
     mkdir -p $spiking_skewsym_dir
     mkdir -p $spiking_stdp_slug_dir
