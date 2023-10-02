@@ -166,9 +166,9 @@
 epochs=100
 beta=0.2 #0.2,0.5,0.9
 tau_dynamic=3 #2,3,4,5
-max_fr=3 #3,5,10,20
-batch_size=50 #25, 50,100,200
-for N2 in {5,35}
+max_q=5 #3,5,10,20
+batch_size=25 #25, 50,100,200
+for N2 in {15,25}
 do
   ten_beta=$(echo "scale=2; 10*$beta" | bc)
   ten_beta=${ten_beta%.*}
