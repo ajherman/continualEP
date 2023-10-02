@@ -233,13 +233,16 @@ if args.step==None:
     # args.step=12.8/args.Kmax
     args.step=12./args.Kmax
 
+n_dynamic = args.tau_dynamic/args.step
+n_trace = args.tau_trace/args.step
+
 if args.dt==None:
     # args.dt = 1-(2**(-20/args.T))
-    args.dt = 1-np.exp(-args.step/args.tau_dynamic)
+    args.dt = 1-np.exp(-1./n_dynamics)
     print("dt = ",args.dt)
 
 if args.trace_decay==None:
-    args.trace_decay=np.exp(-args.step/args.tau_trace)
+    args.trace_decay=np.exp(-1./n_trace)
     print("trace decay = ",args.trace_decay)
 
 if args.max_fr==None:
