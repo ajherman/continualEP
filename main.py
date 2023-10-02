@@ -89,7 +89,7 @@ parser.add_argument(
     default=25,
     metavar='N2',
     help='number of time steps in the backward pass (default: 25)')
-peraser.add_argument(
+parser.add_argument(
     '--max-Q',
     type=float,
     default=1.0,
