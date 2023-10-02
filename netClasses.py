@@ -34,6 +34,7 @@ class SNN(nn.Module):
         self.spike_height = args.spike_height
         self.step = args.step
         self.max_fr = args.max_fr
+        self.max_Q = args.max_Q
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
             self.cuda = True
@@ -68,7 +69,7 @@ class SNN(nn.Module):
 
         # Spikes
         if self.spiking:
-            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.Q/self.spike_height)).float() for si in s] # Get Poisson spikes
+            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.max_Q/self.spike_height)).float() for si in s] # Get Poisson spikes
         else:
             spike = [rho(si)*self.max_Q for si in s] # Get Poisson spikes
 

@@ -436,8 +436,8 @@ def createHyperparameterfile(BASE_PATH, name, args):
         hyperparameters = open(BASE_PATH + r"/hyperparameters.txt","w+")
         L = [" TRAINING: list of hyperparameters " + "(" + name + ", " + datetime.datetime.now().strftime("cuda" + str(args.device_label)+"-%Y-%m-%d") + ") \n",
 			"- Learning rule: " + learning_rule + "\n",
-            "- T: {}".format(args.T) + "\n",
-            "- Kmax: {}".format(args.Kmax) + "\n",
+            "- N1: {}".format(args.N1) + "\n",
+            "- N2: {}".format(args.N2) + "\n",
             "- beta: {:.2f}".format(args.beta) + "\n",
             "- batch size: {}".format(args.batch_size) + "\n",
             "- activation function: " + args.activation_function + "\n",
@@ -462,8 +462,8 @@ def createHyperparameterfile(BASE_PATH, name, args):
         hyperparameters = open(BASE_PATH + r"/hyperparameters.txt","w+")
         L = ["NABLA-DELTA CURVES: list of hyperparameters " + "(" + name + ", " + datetime.datetime.now().strftime("cuda" + str(args.device_label)+"-%Y-%m-%d") + ") \n",
             "- Learning rule: " + args.learning_rule + "\n",
-            "- T: {}".format(args.T) + "\n",
-            "- Kmax: {}".format(args.Kmax) + "\n",
+            "- N1: {}".format(args.N1) + "\n",
+            "- N2: {}".format(args.N2) + "\n",
             "- beta: {:.2f}".format(args.beta) + "\n",
             "- batch size: {}".format(args.batch_size) + "\n",
             "- activation function: " + args.activation_function + "\n"]

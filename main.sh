@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 10
+#SBATCH -N 15
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -220,7 +220,11 @@ epochs=80
 batch_size=200 #25, 50,100,200
 N1=40
 N2=15
+<<<<<<< HEAD
 for beta in {0.2,0.9}
+=======
+for beta in {0.9,0.2}
+>>>>>>> 9ee82773fb4447819414a7c162dc6a4c2f186913
 do
   for n_dynamic in {1,2,3,4,5}
   do
