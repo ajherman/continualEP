@@ -59,67 +59,8 @@ class SNN(nn.Module):
         for i in range(self.ns - 1):
             w[2*i + 1].weight.data = torch.transpose(w[2*i].weight.data.clone(), 0, 1)
 
-        # #****************************TUNE INITIAL ANGLE****************************#
-        # if args.angle > 0:
-        #     p_switch = 0.5*(1 - np.cos(np.pi*args.angle/180))
-        #     for i in range(self.ns - 1):
-        #         mask = 2*torch.bernoulli((1 - p_switch)*torch.ones_like(w[2*i + 1].weight.data)) - 1
-        #         w[2*i + 1].weight.data = w[2*i + 1].weight.data*mask
-        #         angle = (180/np.pi)*np.arccos((w[2*i + 1].weight.data*torch.transpose(w[2*i].weight.data, 0 ,1)).sum().item()/np.sqrt((w[2*i + 1].weight.data**2).sum().item()*(w[2*i].weight.data**2).sum().item()))
-        #         print('Angle between forward and backward weights: {:.2f} degrees'.format(angle))
-        #         del angle, mask
-        # #**************************************************************************#
-
         self.w = w
         self = self.to(device)
-
-    # def stepper(self, data, s, target = None, beta = 0, return_derivatives = False):
-    #     dsdt = []
-    #
-    #     spike = [(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float() for i in range(self.ns)] # Get Poisson spikes
-    #     #spike = [rho(si) for si in s] # Get Poisson spikes
-    #     trace = []
-    #     data_spike = (torch.rand(data.size(),device=self.device)<data).float()
-    #     #data_spike = rho(data)
-    #
-    #     # Output layer
-    #     dsdt.append(-s[0] + self.w[0](spike[1]))
-    #     if np.abs(beta) > 0:
-    #         dsdt[0] = dsdt[0] + beta*(target-s[0]) #was spike[0]...
-    #
-    #     # Other layers
-    #     for i in range(1, self.ns - 1):
-    #         dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i - 1](spike[i-1]))
-    #     # Post-input layer
-    #     dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](spike[-2]))
-    #
-    #     if self.plain_data:
-    #         dsdt.append(-s[-1] + self.w[-1](data) + self.w[-2](rho(s[-2])))
-    #     else:
-    #         dsdt.append(-s[-1] + self.w[-1](data_spike) + self.w[-2](rho(s[-2])))
-    #
-    #     s_old = []
-    #     for ind, s_temp in enumerate(s):
-    #         s_old.append(s_temp.clone())
-    #
-    #     if self.no_clamp:
-    #         for i in range(self.ns):
-    #             s[i] = s[i] + self.dt*dsdt[i]
-    #     else:
-    #         for i in range(self.ns):
-    #             s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
-    #             dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
-    #
-    #     #*****************************C-EP*****************************#
-    #     if (np.abs(beta) > 0):
-    #         dw = self.computeGradients(data, s, s_old)
-    #         if self.cep:
-    #             with torch.no_grad():
-    #                 self.updateWeights(dw)
-    #         return s,dw
-    #     else:
-    #         return s
-    #     #**************************************************************#
 
     def stepper(self, data, s, trace=None, target = None, beta = 0, return_derivatives = False):
         dsdt = []
@@ -127,9 +68,9 @@ class SNN(nn.Module):
 
         # Spikes
         if self.spiking:
-            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.max_fr*self.step/self.spike_height)).float() for si in s] # Get Poisson spikes
+            spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.Q/self.spike_height)).float() for si in s] # Get Poisson spikes
         else:
-            spike = [rho(si)*self.max_fr*self.step for si in s] # Get Poisson spikes
+            spike = [rho(si)*self.max_Q for si in s] # Get Poisson spikes
 
         # data_spike = (torch.rand(data.size(),device=self.device)<data).float()
         #data_spike = rho(data)
@@ -266,8 +207,11 @@ class SNN(nn.Module):
                 # gradw.append((-1/(beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
 
                 # VER 1
-                gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
-                gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+                # gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                # gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+                # CORRECTED?
+                gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height**2*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height**2*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
 
                 # # VER 2
                 # gradw.append((-(1-self.trace_decay)**2/(self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))

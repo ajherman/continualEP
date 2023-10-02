@@ -97,18 +97,18 @@ peraser.add_argument(
 parser.add_argument(
     '--beta',
     type=float,
-    default=1,
+    default=1.0,
     metavar='BETA',
     help='nudging parameter (default: 1)')
 parser.add_argument(
     '--n-dynamic',
     type=float,
-    default=None,
+    default=3.5,
     help='Number of time steps to decay by 1/e')
 parser.add_argument(
     '--n-trace',
     type=float,
-    default=None,
+    default=1.8,
     help='Number of time steps to decay by 1/e')
 ################################################################################
 
@@ -309,7 +309,7 @@ if args.trace_decay==None:
     args.trace_decay=np.exp(-1./args.n_trace)
     print("trace decay = ",args.trace_decay)
 
-if args.spike_height==None:
+if args.spike_height==None: # spiking_height = max_Q
     args.spike_height = args.step*args.max_fr
 
 # New this should create consistency as we change the number of steps
