@@ -46,11 +46,11 @@ def csv2array(directory,skiplines=0):
     return train_error, test_error
 
 activity_type_li = ['spiking','nonspiking']
-learning_rule_li = ['cepalt','skewsym','stdp_slug','stdp_slow','stdp_med','stdp_fast']
+learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp_med']
 max_fr_li = [3]
-N2_li = [15,25]
-tau_dynamic_li = [3]
-beta_li = [0.2]
+N2_li = [15,30,60]
+n_dynamic_li = [1,2,4,8]
+beta_li = [0.4,0.9,1.5]
 batch_size_li = [25,50,200]
 
 def dir_name(activity_type,learning_rule,max_fr,N2,tau_dynamic,beta,batch_size):
@@ -61,33 +61,40 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
     name = learning_rule+"_N1="+str(N1)+"_N2="+str(N2)+"_dyn="+str(n_dynamic)+"_beta="+str(int(10*beta))+"_batch="+str(batch_size)
     return name
 
-n_col,n_row=2,5
-fig, ax = plt.subplots(n_row,n_col,figsize=(20,40))
+n_col,n_row=3,4
 # batch_size=200
-N1=80
-N2=30
-# beta=0.2
+N1=100
+# N2=30
 batch_size=200
-labels=[]
-for idx,(n_dynamic,beta) in enumerate(product([1,2,4,5,8,],[0.2,0.9])):
-    for learning_rule in learning_rule_li:
-        if idx==0:
-            labels.append("spiking"+learning_rule)
-        try:
-            directory_name = dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size)
-            error = csv2array(directory_name,skiplines=2)
-            ax[idx//n_col,idx%n_col].plot(error[1])
-        except:
-            pass
-    ax[idx//n_col,idx%n_col].set_xlabel('Epoch')
-    ax[idx//n_col,idx%n_col].set_ylabel('Test error rate (%)')
-    ax[idx//n_col,idx%n_col].set_xlim([0,80])
-    ax[idx//n_col,idx%n_col].set_ylim([0,25])
-    ax[idx//n_col,idx%n_col].grid(axis='y')
-    ax[idx//n_col,idx%n_col].set_title('n dyn = '+str(n_dynamic))
-fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
-fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-fig.savefig('test.png',bbox_inches="tight")
+for beta in [0.4,0.9]:
+    fig, ax = plt.subplots(n_row,n_col,figsize=(20,40))
+
+    labels=[]
+    for idx,(n_dynamic,N2) in enumerate(product(n_dynamic_li,N2_li)):
+        color = iter(colormap(np.linspace(0,1,12)))
+        for learning_rule in learning_rule_li:
+            if idx==0:
+                labels.append("spiking"+learning_rule)
+            try:
+                directory_name = dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size)
+                error = csv2array(directory_name,skiplines=2)
+                # if len(error[1])<90:
+                #     print("N2",N2)
+                #     print("lr",learning_rule)
+                #     print("dyn",n_dynamic)
+                #     print("")
+                ax[idx//n_col,idx%n_col].plot(error[1],c=next(color))
+            except:
+                print(directory_name)
+        ax[idx//n_col,idx%n_col].set_xlabel('Epoch')
+        ax[idx//n_col,idx%n_col].set_ylabel('Test error rate (%)')
+        ax[idx//n_col,idx%n_col].set_xlim([0,200])
+        ax[idx//n_col,idx%n_col].set_ylim([0,100])
+        ax[idx//n_col,idx%n_col].grid(axis='y')
+        ax[idx//n_col,idx%n_col].set_title('n dyn = '+str(n_dynamic)+', N2 = '+str(N2))
+    fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
+    fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+    fig.savefig('beta_'+str(int(10*beta))+'.png',bbox_inches="tight")
 
 # # # Universal
 # # #################################################################################
