@@ -222,9 +222,9 @@ N1=100
 # N2=15
 for N2 in {15,30,60}
   do
-  for beta in {1.5,0.9,0.4}
+  for beta in {1.5,2,4}
   do
-    for n_dynamic in {1,2,4,8}
+    for n_dynamic in {4,8,16}
     do
       ten_beta=$(echo "scale=2; 10*$beta" | bc)
       ten_beta=${ten_beta%.*}
