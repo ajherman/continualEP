@@ -212,7 +212,7 @@
 
 # Universal
 #########################################################################################################################################
-epochs=80
+epochs=100
 # beta=0.2 #0.2,0.5,0.9
 # n_dynamic=3.5 #2,3,4,5
 # max_Q=5 #3,5,10,20
@@ -222,21 +222,21 @@ N1=100
 # N2=15
 for N2 in {15,30,60}
   do
-  for beta in {0.2,0.9}
+  for beta in {0.4,0.9}
   do
     for n_dynamic in {1,2,4,8}
     do
       ten_beta=$(echo "scale=2; 10*$beta" | bc)
       ten_beta=${ten_beta%.*}
       # N1=$((3*N2))
-      cores=$((N2/4))
+      cores=$((N2/5))
       # Spiking networks
-      spiking_cepalt_dir=cepalt_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-      spiking_skewsym_dir=skewsym_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-      spiking_stdp_rock_dir=stdp_rock_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-      spiking_stdp_slug_dir=stdp_slug_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-      spiking_stdp_slow_dir=stdp_slow_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-      spiking_stdp_med_dir=stdp_med_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+      spiking_cepalt_dir=cepalt_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+      spiking_skewsym_dir=skewsym_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+      spiking_stdp_rock_dir=stdp_rock_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+      spiking_stdp_slug_dir=stdp_slug_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+      spiking_stdp_slow_dir=stdp_slow_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+      spiking_stdp_med_dir=stdp_med_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
       # spiking_stdp_fast_dir=stdp_fast_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
       mkdir -p $spiking_cepalt_dir
       mkdir -p $spiking_skewsym_dir
