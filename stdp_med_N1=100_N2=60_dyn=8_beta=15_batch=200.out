@@ -153,3 +153,60 @@ Average Training loss: 0.0005, Training Error Rate: 9.95% (5970/60000)
 Average Test loss: 0.0001, Test Error Rate: 9.67% (967/10000)
 
 slurmstepd: error: *** STEP 15492314.161 ON cn433 CANCELLED AT 2023-10-03T10:57:22 ***
+/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/vast/home/ajherman/miniconda3/envs/pytorch/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN5torch3jit17parseSchemaOrNameERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+Random seed set as 42
+dt =  0.11750309741540466
+trace decay =  0.6065306597126334
+Random seed set as 42
+Random seed set as 42
+dt =  0.11750309741540466
+trace decay =  0.6065306597126334
+Random seed set as 42
+Train Epoch: 16 [20000/60000 (33%)]	Loss: 0.091526
+Train Epoch: 16 [40000/60000 (67%)]	Loss: 0.088775
+Train Epoch: 16 [60000/60000 (100%)]	Loss: 0.097776
+
+Average Training loss: 0.0005, Training Error Rate: 9.76% (5853/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.60% (960/10000)
+
+Train Epoch: 17 [20000/60000 (33%)]	Loss: 0.100095
+Train Epoch: 17 [40000/60000 (67%)]	Loss: 0.103133
+Train Epoch: 17 [60000/60000 (100%)]	Loss: 0.076155
+
+Average Training loss: 0.0005, Training Error Rate: 9.90% (5940/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.61% (961/10000)
+
+Train Epoch: 18 [20000/60000 (33%)]	Loss: 0.098415
+Train Epoch: 18 [40000/60000 (67%)]	Loss: 0.074969
+Train Epoch: 18 [60000/60000 (100%)]	Loss: 0.096128
+
+Average Training loss: 0.0005, Training Error Rate: 9.79% (5875/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.32% (932/10000)
+
+Train Epoch: 19 [20000/60000 (33%)]	Loss: 0.094247
+Train Epoch: 19 [40000/60000 (67%)]	Loss: 0.087678
+Train Epoch: 19 [60000/60000 (100%)]	Loss: 0.096450
+
+Average Training loss: 0.0005, Training Error Rate: 9.73% (5837/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.26% (926/10000)
+
+Train Epoch: 20 [20000/60000 (33%)]	Loss: 0.087248
+Train Epoch: 20 [40000/60000 (67%)]	Loss: 0.086199
+Train Epoch: 20 [60000/60000 (100%)]	Loss: 0.069364
+
+Average Training loss: 0.0005, Training Error Rate: 9.55% (5728/60000)
+
+
+Average Test loss: 0.0001, Test Error Rate: 9.45% (945/10000)
+
+Train Epoch: 21 [20000/60000 (33%)]	Loss: 0.088753
+Train Epoch: 21 [40000/60000 (67%)]	Loss: 0.106019
