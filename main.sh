@@ -220,11 +220,11 @@ epochs=200
 batch_size=200 #25, 50,100,200
 N1=100
 # N2=15
-for N2 in {60,}
+for N2 in {60,40}
   do
-  for beta in {16,8,4}
+  for beta in {12,8}
   do
-    for n_dynamic in {16,8}
+    for n_dynamic in {8,16}
     do
       ten_beta=$(echo "scale=2; 10*$beta" | bc)
       ten_beta=${ten_beta%.*}
