@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 16
+#SBATCH -N 15
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -278,40 +278,35 @@
 
 # Test N1
 #########################################################################################################################################
-epochs=150
-# beta=0.2 #0.2,0.5,0.9
-# n_dynamic=3.5 #2,3,4,5
-# max_Q=5 #3,5,10,20
-# Use N2 nodes
+epochs=100
 batch_size=200 #25, 50,100,200
-N2=40
 n_dynamic=8
-# N2=15
+N1=$((8*n_dynamic))
 beta=3
-for N1 in {50,60,70,80}
+for k in {2,3,4,5,6,7,8}
   do
   ten_beta=$(echo "scale=2; 10*$beta" | bc)
   ten_beta=${ten_beta%.*}
-  # N1=$((3*N2))
-  cores=$((N1/10))
+  N2=$((k*n_dynamic))
+  cores=$((2*(k+1)))
   # Spiking networks
   # spiking_cepalt_dir=cepalt_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
   # spiking_skewsym_dir=skewsym_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
-  spiking_stdp_rock_dir=stdp_rock_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
+  # spiking_stdp_rock_dir=stdp_rock_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
   spiking_stdp_slug_dir=stdp_slug_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
   spiking_stdp_slow_dir=stdp_slow_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
   spiking_stdp_med_dir=stdp_med_N1="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
   # spiking_stdp_fast_dir=stdp_fast_N1_="$N1"_N2="$N2"_dyn="$n_dynamic"_beta="$ten_beta"_batch="$batch_size"
   # mkdir -p $spiking_cepalt_dir
   # mkdir -p $spiking_skewsym_dir
-  mkdir -p $spiking_stdp_rock_dir
+  # mkdir -p $spiking_stdp_rock_dir
   mkdir -p $spiking_stdp_slug_dir
   mkdir -p $spiking_stdp_slow_dir
   mkdir -p $spiking_stdp_med_dir
   # mkdir -p $spiking_stdp_fast_dir
   # srun -N 1 -n 1 -c $cores -o "$spiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cepalt_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
 	# srun -N 1 -n 1 -c $cores -o "$spiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_skewsym_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-  srun -N 1 -n 1 -c $cores -o "$spiking_stdp_rock_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_stdp_rock_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 5.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+  # srun -N 1 -n 1 -c $cores -o "$spiking_stdp_rock_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_stdp_rock_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 5.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
   srun -N 1 -n 1 -c $cores -o "$spiking_stdp_slug_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_stdp_slug_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
   srun -N 1 -n 1 -c $cores -o "$spiking_stdp_slow_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_stdp_slow_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 3.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 	srun -N 1 -n 1 -c $cores -o "$spiking_stdp_med_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_stdp_med_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 2.0  --activation-function hardsigm --size_tab 10 256 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &

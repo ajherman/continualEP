@@ -225,6 +225,41 @@ fig.savefig('test.png',bbox_inches="tight")
 
 ###################################################################################################
 
+learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp_med']
+
+batch_size=200
+# for beta in [1.5,0.9,0.4]:
+n_dynamic=8
+fig, ax = plt.subplots(3,3,figsize=(40,40))
+beta=3
+N2=40
+labels=[]
+for idx,N1 in enumerate([40,50,60,70,80,90,100,110,120]):
+    color = iter(colormap(np.linspace(0,1,12)))
+    for learning_rule in learning_rule_li:
+        if idx==0:
+            labels.append(learning_rule)
+        try:
+            directory_name = dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size)
+            error = csv2array(directory_name,skiplines=2)
+            # if len(error[1])<90:
+            #     print("N2",N2)
+            #     print("lr",learning_rule)
+            #     print("dyn",n_dynamic)
+            #     print("")
+            ax[idx//n_col,idx%n_col].plot(error[1],c=next(color))
+        except:
+            ax[idx//n_col,idx%n_col].plot([0],c=next(color))
+            print(directory_name)
+    ax[idx//n_col,idx%n_col].set_xlabel('Epoch')
+    ax[idx//n_col,idx%n_col].set_ylabel('Test error rate (%)')
+    ax[idx//n_col,idx%n_col].set_xlim([0,110])
+    ax[idx//n_col,idx%n_col].set_ylim([0,10])
+    ax[idx//n_col,idx%n_col].grid(axis='y')
+    ax[idx//n_col,idx%n_col].set_title('N1 = '+str(N1))
+fig.suptitle('Test Error (%)\n'+r'$N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('compare_N1.png',bbox_inches="tight")
 
 
 
