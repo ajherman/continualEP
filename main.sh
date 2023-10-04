@@ -282,8 +282,8 @@ epochs=100
 batch_size=200 #25, 50,100,200
 n_dynamic=8
 N1=$((8*n_dynamic))
-beta=3
-for k in {2,3,4,5,6,7,8}
+beta=1
+for k in {3,4,5,6,7,8}
   do
   ten_beta=$(echo "scale=2; 10*$beta" | bc)
   ten_beta=${ten_beta%.*}
