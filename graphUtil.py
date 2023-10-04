@@ -143,7 +143,7 @@ for beta in [0.4,0.9,1.5,2,4]:
 ###################################################################################################
 learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp_med','stdp_fast']
 
-n_col,n_row=3,7
+n_col,n_row=3,8
 # batch_size=200
 N1=100
 # N2=30
@@ -154,7 +154,7 @@ for n_dynamic in [1,2,4,8,16]:
     fig, ax = plt.subplots(n_row,n_col,figsize=(40,80))
 
     labels=[]
-    for idx,(beta,N2) in enumerate(product([0.4,0.9,1.5,2,4,8,16],[15,30,60])):
+    for idx,(beta,N2) in enumerate(product([0.4,0.9,1.5,2,4,8,12,16],[15,30,60])):
         color = iter(colormap(np.linspace(0,1,12)))
         for learning_rule in learning_rule_li:
             if idx==0:
@@ -187,7 +187,7 @@ learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp
 
 n_col,n_row=3,3
 # batch_size=200
-N1=80
+N1=100
 # N2=30
 # n_dynamic=16
 batch_size=200
