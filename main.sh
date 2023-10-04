@@ -285,7 +285,7 @@ epochs=200
 # Use N2 nodes
 batch_size=200 #25, 50,100,200
 N2=40
-dynamic=8
+n_dynamic=8
 # N2=15
 beta=3
 for N1 in {40,50,60,70,80,90,100,110,120}
