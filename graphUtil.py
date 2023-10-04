@@ -192,38 +192,38 @@ N1=80
 # n_dynamic=16
 batch_size=200
 # for beta in [1.5,0.9,0.4]:
-for n_dynamic in [1,2,4,8,16]:
-    fig, ax = plt.subplots(n_row,n_col,figsize=(40,80))
+n_dynamic=8
+fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 
-    labels=[]
-    for idx,(beta,N2) in enumerate(product([8,12,16],[40,60,80])):
-        color = iter(colormap(np.linspace(0,1,12)))
-        for learning_rule in learning_rule_li:
-            if idx==0:
-                labels.append(learning_rule)
-            try:
-                directory_name = dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size)
-                error = csv2array(directory_name,skiplines=2)
-                # if len(error[1])<90:
-                #     print("N2",N2)
-                #     print("lr",learning_rule)
-                #     print("dyn",n_dynamic)
-                #     print("")
-                ax[idx//n_col,idx%n_col].plot(error[1],c=next(color))
-            except:
-                ax[idx//n_col,idx%n_col].plot([0],c=next(color))
-                print(directory_name)
-        ax[idx//n_col,idx%n_col].set_xlabel('Epoch')
-        ax[idx//n_col,idx%n_col].set_ylabel('Test error rate (%)')
-        ax[idx//n_col,idx%n_col].set_xlim([0,200])
-        ax[idx//n_col,idx%n_col].set_ylim([0,20])
-        ax[idx//n_col,idx%n_col].grid(axis='y')
-        ax[idx//n_col,idx%n_col].set_title(r'$\beta = $'+str(beta)+', N2 = '+str(N2))
-    fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
-    fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
-    fig.savefif('test.png',bbox_inches="tight")
+labels=[]
+for idx,(beta,N2) in enumerate(product([8,12,16],[40,60,80])):
+    color = iter(colormap(np.linspace(0,1,12)))
+    for learning_rule in learning_rule_li:
+        if idx==0:
+            labels.append(learning_rule)
+        try:
+            directory_name = dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size)
+            error = csv2array(directory_name,skiplines=2)
+            # if len(error[1])<90:
+            #     print("N2",N2)
+            #     print("lr",learning_rule)
+            #     print("dyn",n_dynamic)
+            #     print("")
+            ax[idx//n_col,idx%n_col].plot(error[1],c=next(color))
+        except:
+            ax[idx//n_col,idx%n_col].plot([0],c=next(color))
+            print(directory_name)
+    ax[idx//n_col,idx%n_col].set_xlabel('Epoch')
+    ax[idx//n_col,idx%n_col].set_ylabel('Test error rate (%)')
+    ax[idx//n_col,idx%n_col].set_xlim([0,200])
+    ax[idx//n_col,idx%n_col].set_ylim([0,20])
+    ax[idx//n_col,idx%n_col].grid(axis='y')
+    ax[idx//n_col,idx%n_col].set_title(r'$\beta = $'+str(beta)+', N2 = '+str(N2))
+fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('test.png',bbox_inches="tight")
 
-
+###################################################################################################
 
 
 

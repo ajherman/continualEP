@@ -218,13 +218,13 @@ epochs=200
 # max_Q=5 #3,5,10,20
 # Use N2 nodes
 batch_size=200 #25, 50,100,200
-N1=80
+N1=100
 # N2=15
-for N2 in {40,60,80}
+for N2 in {60,}
   do
   for beta in {8,12,16}
   do
-    for n_dynamic in {8,}
+    for n_dynamic in {8,16}
     do
       ten_beta=$(echo "scale=2; 10*$beta" | bc)
       ten_beta=${ten_beta%.*}
