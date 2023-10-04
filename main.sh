@@ -222,7 +222,7 @@ N1=100
 # N2=15
 for N2 in {60,}
   do
-  for beta in {4,}
+  for beta in {4,8,16}
   do
     for n_dynamic in {4,8,16}
     do
