@@ -222,7 +222,11 @@ N1=100
 # N2=15
 for N2 in {60,40}
   do
+<<<<<<< HEAD
   for beta in {12,8}
+=======
+  for beta in {4,8,16}
+>>>>>>> f36bf9099b7e984b83943322ee724f7750310cb6
   do
     for n_dynamic in {8,16}
     do
