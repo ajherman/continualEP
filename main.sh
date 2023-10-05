@@ -283,17 +283,17 @@
 epochs=300
 hidden_size=256
 batch_size=200
+cores=12
 
 n_dynamic=4 #8
 beta=0.2
 N1=40
 N2=15
-cores=10
 
-spiking_cep_dir=spiking_cep
-nonspiking_cep_dir=nonspiking_cep
-nonspiking_skewsym_dir=nonspiking_skewsym
-stdp_dir=stdp
+spiking_cep_dir=spiking_cep_old
+nonspiking_cep_dir=nonspiking_cep_old
+nonspiking_skewsym_dir=nonspiking_skewsym_old
+stdp_dir=stdp_old
 
 mkdir -p $spiking_cep_dir
 mkdir -p $nonspiking_cep_dir
@@ -307,6 +307,29 @@ srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh
 
 
 # # New params
+
+n_dynamic=8
+beta=2
+N1=64
+N2=64
+
+spiking_cep_dir=spiking_cep_new
+nonspiking_cep_dir=nonspiking_cep_new
+nonspiking_skewsym_dir=nonspiking_skewsym_new
+stdp_dir=stdp_new
+
+mkdir -p $spiking_cep_dir
+mkdir -p $nonspiking_cep_dir
+mkdir -p $nonspiking_skewsym_dir
+mkdir -p $stdp_dir
+
+srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+
+
+
 # epochs=300
 # # beta=0.2 #0.2,0.5,0.9
 # # n_dynamic=3.5 #2,3,4,5
