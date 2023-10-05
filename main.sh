@@ -285,7 +285,7 @@ hidden_size=256
 batch_size=200
 cores=12
 
-n_dynamic=3.5 #8
+n_dynamic=6 #8
 beta=1.0
 N1=40
 N2=15
