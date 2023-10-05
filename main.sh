@@ -222,6 +222,7 @@ n_dynamic=8
 N1=$((8*n_dynamic))
 N2=$((8*n_dynamic))
 for batch_size in {200,25}
+do
   for beta in {1,2,4,8}
   do
     ten_beta=$(echo "scale=2; 10*$beta" | bc)
