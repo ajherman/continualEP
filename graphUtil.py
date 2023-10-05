@@ -221,7 +221,7 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 # #
 
 fig, ax = plt.subplots(2,figsize=(20,40))
-labels=['stdp','spiking_cep','nonspiking_cep','nonspiking_skewsym']
+labels=['nonspiking_skewsym','stdp','nonspiking_cep','spiking_cep']
 for idx,param_setting in enumerate(['old','new']):
     color = iter(colormap(np.linspace(0,1,12)))
     for label in labels:
