@@ -58,7 +58,7 @@ def dir_name(activity_type,learning_rule,max_fr,N2,tau_dynamic,beta,batch_size):
     return name
 
 def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
-    name = learning_rule+"_N1="+str(N1)+"_N2="+str(N2)+"_dyn="+str(n_dynamic)+"_beta="+str(int(10*beta))+"_batch="+str(batch_size)
+    name = learning_rule+"_N1="+str(N1)+"_N2="+str(N2)+"_dyn="+str(n_dynamic)+"_beta="+str(int(10*beta))+"_batch="+str(batch_size)+"_fast"
     return name
 
 n_col,n_row=3,4
