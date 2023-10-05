@@ -50,7 +50,7 @@ learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp
 max_fr_li = [3]
 N2_li = [15,30,60]
 n_dynamic_li = [1,2,4,8]
-beta_li = [0.4,0.9,1.5]
+beta_li = [0.4,0.9,1.5,2,4,8,12,16]
 batch_size_li = [25,50,200]
 
 def dir_name(activity_type,learning_rule,max_fr,N2,tau_dynamic,beta,batch_size):
@@ -194,7 +194,7 @@ n_dynamic=8
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 
 labels=[]
-for idx,(beta,batch_size) in enumerate(product([1,2,4,8],[20,200])):
+for idx,(beta,batch_size) in enumerate(product([1,2,4,8],[25,200])):
     color = iter(colormap(np.linspace(0,1,12)))
     for learning_rule in learning_rule_li:
         if idx==0:
@@ -208,7 +208,7 @@ for idx,(beta,batch_size) in enumerate(product([1,2,4,8],[20,200])):
             print(directory_name)
     ax[idx//n_col,idx%n_col].set_xlabel('Epoch')
     ax[idx//n_col,idx%n_col].set_ylabel('Test error rate (%)')
-    ax[idx//n_col,idx%n_col].set_xlim([0,200])
+    ax[idx//n_col,idx%n_col].set_xlim([0,300])
     ax[idx//n_col,idx%n_col].set_ylim([0,20])
     ax[idx//n_col,idx%n_col].grid(axis='y')
     ax[idx//n_col,idx%n_col].set_title(r'$\beta = $'+str(beta)+', N2 = '+str(N2))
