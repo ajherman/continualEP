@@ -256,6 +256,11 @@ parser.add_argument(
     type=float,
     default=None,
     help='sets height of a spike')
+parser.add_argument(
+    '--lr-decay',
+    type=float,
+    default=1.0,
+    help='how much to decay learning rates each epoch')
 
 
 args = parser.parse_args()
@@ -471,6 +476,7 @@ if __name__ == '__main__':
 
             #  Increment epoch and save network
             net.current_epoch += 1
+            net.lr_tab = [net.lr_decay*lr for lr in net.lr_tab]
             pkl_path = args.directory+'/net'
             with open(pkl_path,'wb') as pkl_file:
                 pickle.dump(net,pkl_file)

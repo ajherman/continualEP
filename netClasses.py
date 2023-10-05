@@ -35,6 +35,7 @@ class SNN(nn.Module):
         self.step = args.step
         self.max_fr = args.max_fr
         self.max_Q = args.max_Q
+        self.lr_decay = args.lr_decay
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
             self.cuda = True
