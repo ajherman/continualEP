@@ -53,7 +53,7 @@ cores=10
 batch_size=25
 N1=40
 N2=15
-beta=1.0
+beta=0.2
 i=0
 for n_dynamic in {1,2,3,4,5,6,7,8}
 do
