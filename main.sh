@@ -7,6 +7,64 @@
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
+
+# Trying to get this working!!
+
+
+
+epochs=150
+hidden_size=256
+cores=10
+i=0
+for beta in {0.2,0.9}
+do
+  for batch_size in {25,50}
+  do
+    for N2 in {16,24}
+    do
+      N1=$((3*N2))
+      n_dynamic=$((N2/4))
+
+      spiking_cep_dir=spiking_cep_old_"$i"
+      nonspiking_cep_dir=nonspiking_cep_old_"$i"
+      nonspiking_cepalt_dir=nonspiking_cepalt_old_"$i"
+      nonspiking_skewsym_dir=nonspiking_skewsym_old_"$i"
+      # stdp_dir=stdp_old_"$i"
+
+      mkdir -p $spiking_cep_dir
+      mkdir -p $nonspiking_cep_dir
+      mkdir -p $nonspiking_cepalt_dir
+      mkdir -p $nonspiking_skewsym_dir
+      # mkdir -p $stdp_dir
+
+      srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+      srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+      srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+      srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+      # srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+      i=$((i+1))
+    done
+  done
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # # Spiking and nonspiking cepalt for various levels of discretization
 # #######################################################################################################################################################
 # i=0
