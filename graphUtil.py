@@ -245,7 +245,7 @@ fig.savefig('results.png',bbox_inches="tight")
 
 
 
-fig, ax = plt.subplots(4,figsize=(20,40))
+fig, ax = plt.subplots(2,2,figsize=(20,40))
 labels=['0','1','2','3','4','5','6','7']
 for idx,rule in enumerate(['nonspiking_skewsym','nonspiking_cep','spiking_cep','nonspiking_cepalt']):
     color = iter(colormap(np.linspace(0,1,12)))
@@ -253,16 +253,16 @@ for idx,rule in enumerate(['nonspiking_skewsym','nonspiking_cep','spiking_cep','
         directory_name = rule+'_old_'+str(label)
         try:
             error = csv2array(directory_name,skiplines=2)
-            ax[idx].plot(error[1],c=next(color))
+            ax[idx//2,idx%2].plot(error[1],c=next(color))
         except:
-            ax[idx].plot([0],c=next(color))
+            ax[idx//2,idx%2].plot([0],c=next(color))
             print(directory_name)
-        ax[idx].set_xlabel('Epoch')
-        ax[idx].set_ylabel('Test error rate (%)')
-        ax[idx].set_xlim([0,300])
-        ax[idx].set_ylim([0,20])
-        ax[idx].grid(visible=True,axis='y')
-        ax[idx].set_title(rule)
+        ax[idx//2,idx%2].set_xlabel('Epoch')
+        ax[idx//2,idx%2].set_ylabel('Test error rate (%)')
+        ax[idx//2,idx%2].set_xlim([0,150])
+        ax[idx//2,idx%2].set_ylim([0,20])
+        ax[idx//2,idx%2].grid(visible=True,axis='y')
+        ax[idx//2,idx%2].set_title(rule)
 fig.suptitle('Test Error (%)')
 fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
 fig.savefig('experiment.png',bbox_inches="tight")
