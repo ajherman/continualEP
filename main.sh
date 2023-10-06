@@ -59,10 +59,10 @@ for n_dynamic in {1,2,3,4,5,6,7,8}
 do
   N1=$((3*N2))
 
-  spiking_cep_dir=spiking_cep_old_"$i"
-  nonspiking_cep_dir=nonspiking_cep_old_"$i"
-  nonspiking_cepalt_dir=nonspiking_cepalt_old_"$i"
-  nonspiking_skewsym_dir=nonspiking_skewsym_old_"$i"
+  spiking_cep_dir=spiking_cep_old_tau="$i"
+  nonspiking_cep_dir=nonspiking_cep_old_tau="$i"
+  nonspiking_cepalt_dir=nonspiking_cepalt_old_tau="$i"
+  nonspiking_skewsym_dir=nonspiking_skewsym_old_tau="$i"
   # stdp_dir=stdp_old_"$i"
 
   mkdir -p $spiking_cep_dir
