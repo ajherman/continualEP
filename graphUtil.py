@@ -244,6 +244,31 @@ fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.trans
 fig.savefig('results.png',bbox_inches="tight")
 
 
+
+fig, ax = plt.subplots(2,figsize=(20,40))
+labels=['0','1','2','3','4','5,','6','7']
+for rule in ['nonspiking_skewsym','stdp','nonspiking_cep','spiking_cep']:
+    color = iter(colormap(np.linspace(0,1,12)))
+    for label in labels:
+        directory_name = rule+'_old_'+str(label)
+        try:
+            error = csv2array(directory_name,skiplines=2)
+            ax[idx].plot(error[1],c=next(color))
+        except:
+            ax[idx].plot([0],c=next(color))
+            print(directory_name)
+        ax[idx].set_xlabel('Epoch')
+        ax[idx].set_ylabel('Test error rate (%)')
+        ax[idx].set_xlim([0,300])
+        ax[idx].set_ylim([0,20])
+        ax[idx].grid(visible=True,axis='y')
+        ax[idx].set_title(rule)
+fig.suptitle('Test Error (%)')
+fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+fig.savefig('experiment.png',bbox_inches="tight")
+
+
+
 #####################################################################################################33
 # learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp_med']
 #
