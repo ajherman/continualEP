@@ -294,7 +294,7 @@ spiking_cep_dir=spiking_cep_old_25
 nonspiking_cep_dir=nonspiking_cep_old_25
 nonspiking_cepalt_dir=nonspiking_cepalt_old_25
 nonspiking_skewsym_dir=nonspiking_skewsym_old_25
-stdp_dir=stdp_old
+stdp_dir=stdp_old_25
 
 mkdir -p $spiking_cep_dir
 mkdir -p $nonspiking_cep_dir

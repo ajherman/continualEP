@@ -226,6 +226,7 @@ for idx,param_setting in enumerate(['old','new']):
     color = iter(colormap(np.linspace(0,1,12)))
     for label in labels:
         directory_name = label+"_"+param_setting
+        if idx==0:  directory_name+='_25'
         try:
             error = csv2array(directory_name,skiplines=2)
             ax[idx].plot(error[1],c=next(color))
