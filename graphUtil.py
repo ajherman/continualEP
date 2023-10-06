@@ -245,7 +245,7 @@ fig.savefig('results.png',bbox_inches="tight")
 
 
 
-fig, ax = plt.subplots(2,2,figsize=(20,40))
+fig, ax = plt.subplots(2,2,figsize=(40,40))
 labels=['0','1','2','3','4','5','6','7']
 for idx,rule in enumerate(['nonspiking_skewsym','nonspiking_cep','spiking_cep','nonspiking_cepalt']):
     color = iter(colormap(np.linspace(0,1,12)))
@@ -269,7 +269,7 @@ fig.savefig('experiment.png',bbox_inches="tight")
 
 
 
-fig, ax = plt.subplots(4,2,figsize=(20,40))
+fig, ax = plt.subplots(2,2,figsize=(40,40))
 labels=['0','1','2','3','4','5','6','7']
 for idx,rule in enumerate(['nonspiking_skewsym','nonspiking_cep','spiking_cep','nonspiking_cepalt']):
     color = iter(colormap(np.linspace(0,1,12)))

@@ -93,9 +93,12 @@ class SNN(nn.Module):
         # Other layers
         for i in range(1, self.ns - 1):
             dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
+            print("Is this working?")
         # Post-input layer
 
         dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
+        print(len(s))
+        print(len(dsdt))
 
         s_old = []
         for ind, s_temp in enumerate(s):
