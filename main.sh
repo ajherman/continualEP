@@ -504,9 +504,9 @@ hidden_size=256
 cores=12
 
 n_dynamic=4 #8
-beta=1.0
-N1=75 #40
-N2=25 #15
+beta=0.9 #1.0
+N1=72 #40
+N2=24 #15
 batch_size=25 #200
 
 spiking_cep_dir=spiking_cep_old
