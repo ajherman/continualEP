@@ -12,7 +12,7 @@
 
 
 
-epochs=150
+epochs=100
 hidden_size=256
 cores=10
 i=0
