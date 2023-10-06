@@ -336,167 +336,167 @@ done
 
 # Final
 #########################################################################################################################################
-
-# Original params
-epochs=300
-hidden_size=256
-cores=12
-
-n_dynamic=3
-beta=0.5
-N1=40
-N2=15
-batch_size=25
-
-spiking_cep_dir=spiking_cep_old_A
-nonspiking_cep_dir=nonspiking_cep_old_A
-nonspiking_cepalt_dir=nonspiking_cepalt_old_A
-nonspiking_skewsym_dir=nonspiking_skewsym_old_A
-stdp_dir=stdp_old_A
-
-mkdir -p $spiking_cep_dir
-mkdir -p $nonspiking_cep_dir
-mkdir -p $nonspiking_cepalt_dir
-mkdir -p $nonspiking_skewsym_dir
-mkdir -p $stdp_dir
-
-srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
-
-n_dynamic=4
-beta=0.5
-N1=40
-N2=15
-batch_size=25
-
-spiking_cep_dir=spiking_cep_old_B
-nonspiking_cep_dir=nonspiking_cep_old_B
-nonspiking_cepalt_dir=nonspiking_cepalt_old_B
-nonspiking_skewsym_dir=nonspiking_skewsym_old_B
-stdp_dir=stdp_old_B
-
-mkdir -p $spiking_cep_dir
-mkdir -p $nonspiking_cep_dir
-mkdir -p $nonspiking_cepalt_dir
-mkdir -p $nonspiking_skewsym_dir
-mkdir -p $stdp_dir
-
-srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
-
-
-n_dynamic=5
-beta=0.5
-N1=40
-N2=15
-batch_size=25
-
-spiking_cep_dir=spiking_cep_old_C
-nonspiking_cep_dir=nonspiking_cep_old_C
-nonspiking_cepalt_dir=nonspiking_cepalt_old_C
-nonspiking_skewsym_dir=nonspiking_skewsym_old_C
-stdp_dir=stdp_old_C
-
-mkdir -p $spiking_cep_dir
-mkdir -p $nonspiking_cep_dir
-mkdir -p $nonspiking_cepalt_dir
-mkdir -p $nonspiking_skewsym_dir
-mkdir -p $stdp_dir
-
-srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
-
-n_dynamic=3
-beta=1.5
-N1=40
-N2=15
-batch_size=25
-
-spiking_cep_dir=spiking_cep_old_D
-nonspiking_cep_dir=nonspiking_cep_old_D
-nonspiking_cepalt_dir=nonspiking_cepalt_old_D
-nonspiking_skewsym_dir=nonspiking_skewsym_old_D
-stdp_dir=stdp_old_D
-
-mkdir -p $spiking_cep_dir
-mkdir -p $nonspiking_cep_dir
-mkdir -p $nonspiking_cepalt_dir
-mkdir -p $nonspiking_skewsym_dir
-mkdir -p $stdp_dir
-
-srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
-
-n_dynamic=4
-beta=1.5
-N1=40
-N2=15
-batch_size=25
-
-spiking_cep_dir=spiking_cep_old_E
-nonspiking_cep_dir=nonspiking_cep_old_E
-nonspiking_cepalt_dir=nonspiking_cepalt_old_E
-nonspiking_skewsym_dir=nonspiking_skewsym_old_E
-stdp_dir=stdp_old_E
-
-mkdir -p $spiking_cep_dir
-mkdir -p $nonspiking_cep_dir
-mkdir -p $nonspiking_cepalt_dir
-mkdir -p $nonspiking_skewsym_dir
-mkdir -p $stdp_dir
-
-srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
-n_dynamic=7
-beta=1.5
-N1=40
-N2=15
-batch_size=25
-
-spiking_cep_dir=spiking_cep_old_F
-nonspiking_cep_dir=nonspiking_cep_old_F
-nonspiking_cepalt_dir=nonspiking_cepalt_old_F
-nonspiking_skewsym_dir=nonspiking_skewsym_old_F
-stdp_dir=stdp_old_F
-
-mkdir -p $spiking_cep_dir
-mkdir -p $nonspiking_cep_dir
-mkdir -p $nonspiking_cepalt_dir
-mkdir -p $nonspiking_skewsym_dir
-mkdir -p $stdp_dir
-
-srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
+#
+# # Original params
+# epochs=300
+# hidden_size=256
+# cores=12
+#
+# n_dynamic=3
+# beta=0.5
+# N1=40
+# N2=15
+# batch_size=25
+#
+# spiking_cep_dir=spiking_cep_old_A
+# nonspiking_cep_dir=nonspiking_cep_old_A
+# nonspiking_cepalt_dir=nonspiking_cepalt_old_A
+# nonspiking_skewsym_dir=nonspiking_skewsym_old_A
+# stdp_dir=stdp_old_A
+#
+# mkdir -p $spiking_cep_dir
+# mkdir -p $nonspiking_cep_dir
+# mkdir -p $nonspiking_cepalt_dir
+# mkdir -p $nonspiking_skewsym_dir
+# mkdir -p $stdp_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+#
+#
+# n_dynamic=4
+# beta=0.5
+# N1=40
+# N2=15
+# batch_size=25
+#
+# spiking_cep_dir=spiking_cep_old_B
+# nonspiking_cep_dir=nonspiking_cep_old_B
+# nonspiking_cepalt_dir=nonspiking_cepalt_old_B
+# nonspiking_skewsym_dir=nonspiking_skewsym_old_B
+# stdp_dir=stdp_old_B
+#
+# mkdir -p $spiking_cep_dir
+# mkdir -p $nonspiking_cep_dir
+# mkdir -p $nonspiking_cepalt_dir
+# mkdir -p $nonspiking_skewsym_dir
+# mkdir -p $stdp_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+#
+#
+#
+# n_dynamic=5
+# beta=0.5
+# N1=40
+# N2=15
+# batch_size=25
+#
+# spiking_cep_dir=spiking_cep_old_C
+# nonspiking_cep_dir=nonspiking_cep_old_C
+# nonspiking_cepalt_dir=nonspiking_cepalt_old_C
+# nonspiking_skewsym_dir=nonspiking_skewsym_old_C
+# stdp_dir=stdp_old_C
+#
+# mkdir -p $spiking_cep_dir
+# mkdir -p $nonspiking_cep_dir
+# mkdir -p $nonspiking_cepalt_dir
+# mkdir -p $nonspiking_skewsym_dir
+# mkdir -p $stdp_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+#
+#
+# n_dynamic=3
+# beta=1.5
+# N1=40
+# N2=15
+# batch_size=25
+#
+# spiking_cep_dir=spiking_cep_old_D
+# nonspiking_cep_dir=nonspiking_cep_old_D
+# nonspiking_cepalt_dir=nonspiking_cepalt_old_D
+# nonspiking_skewsym_dir=nonspiking_skewsym_old_D
+# stdp_dir=stdp_old_D
+#
+# mkdir -p $spiking_cep_dir
+# mkdir -p $nonspiking_cep_dir
+# mkdir -p $nonspiking_cepalt_dir
+# mkdir -p $nonspiking_skewsym_dir
+# mkdir -p $stdp_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+#
+#
+# n_dynamic=4
+# beta=1.5
+# N1=40
+# N2=15
+# batch_size=25
+#
+# spiking_cep_dir=spiking_cep_old_E
+# nonspiking_cep_dir=nonspiking_cep_old_E
+# nonspiking_cepalt_dir=nonspiking_cepalt_old_E
+# nonspiking_skewsym_dir=nonspiking_skewsym_old_E
+# stdp_dir=stdp_old_E
+#
+# mkdir -p $spiking_cep_dir
+# mkdir -p $nonspiking_cep_dir
+# mkdir -p $nonspiking_cepalt_dir
+# mkdir -p $nonspiking_skewsym_dir
+# mkdir -p $stdp_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+#
+# n_dynamic=7
+# beta=1.5
+# N1=40
+# N2=15
+# batch_size=25
+#
+# spiking_cep_dir=spiking_cep_old_F
+# nonspiking_cep_dir=nonspiking_cep_old_F
+# nonspiking_cepalt_dir=nonspiking_cepalt_old_F
+# nonspiking_skewsym_dir=nonspiking_skewsym_old_F
+# stdp_dir=stdp_old_F
+#
+# mkdir -p $spiking_cep_dir
+# mkdir -p $nonspiking_cep_dir
+# mkdir -p $nonspiking_cepalt_dir
+# mkdir -p $nonspiking_skewsym_dir
+# mkdir -p $stdp_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$spiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $spiking_cep_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cep_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cepalt_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_cepalt_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule cepalt &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_dir".out --open-mode=append ./main_wrapper.sh --load --directory $nonspiking_skewsym_dir --n-dynamic $n_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1 --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$stdp_dir".out --open-mode=append ./main_wrapper.sh --load --directory $stdp_dir --n-dynamic $n_dynamic --spiking --action train --batch-size $batch_size --n-trace 4.0  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --N1 $N1  --N2 $N2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+##########################################################33
 
 # # Original params
 # epochs=300
