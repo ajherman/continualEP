@@ -82,27 +82,28 @@ class SNN(nn.Module):
                 # trace[i] = trace_decay*(trace[i] + spike[i])
                 trace[i] = trace_decay*trace[i] + spike[i]
 #
-        # # Output layer
-        # dsdt.append(-s[0] + self.w[0](spike[1]))
-        # if np.abs(beta) > 0:
-        #     dsdt[0] = dsdt[0] + beta*(target-spike[0]) #was spike[0]... # CHANGED
-        #
-        # # Other layers
-        # for i in range(1, self.ns - 1):
-        #     dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
-        #     print("Is this working?")
-
-
-        # Alternate version
         # Output layer
-        dsdt.append(-s[0] + self.w[0](rho(s[1])))
+        dsdt.append(-s[0] + self.w[0](spike[1]))
         if np.abs(beta) > 0:
-            dsdt[0] = dsdt[0] + beta*(target-rho(s[0])) #was spike[0]... # CHANGED
+            dsdt[0] = dsdt[0] + beta*(target-spike[0]) #was spike[0]... # CHANGED
 
         # Other layers
         for i in range(1, self.ns - 1):
-            dsdt.append(-s[i] + self.w[2*i](rho(s[i+1])) + self.w[2*i-1](rho(s[i-1])))
+            dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
             # print("Is this working?")
+        dsdt.append(-s[-2] + self.w[-1](spike[-1]) + self.w[-2](spike[-3]))
+
+
+        # # Alternate version
+        # # Output layer
+        # dsdt.append(-s[0] + self.w[0](rho(s[1])))
+        # if np.abs(beta) > 0:
+        #     dsdt[0] = dsdt[0] + beta*(target-rho(s[0])) #was spike[0]... # CHANGED
+        #
+        # # Other layers
+        # for i in range(1, self.ns - 1):
+        #     dsdt.append(-s[i] + self.w[2*i](rho(s[i+1])) + self.w[2*i-1](rho(s[i-1])))
+        #     # print("Is this working?")
 
         # Post-input layer
 
