@@ -284,17 +284,17 @@ epochs=300
 hidden_size=256
 cores=12
 
-n_dynamic=4 #8
+n_dynamic=8
 beta=1.0
 N1=40
 N2=15
-batch_size=25
+batch_size=200
 
-spiking_cep_dir=spiking_cep_old_25
-nonspiking_cep_dir=nonspiking_cep_old_25
-nonspiking_cepalt_dir=nonspiking_cepalt_old_25
-nonspiking_skewsym_dir=nonspiking_skewsym_old_25
-stdp_dir=stdp_old_25
+spiking_cep_dir=spiking_cep_old_200
+nonspiking_cep_dir=nonspiking_cep_old_200
+nonspiking_cepalt_dir=nonspiking_cepalt_old_200
+nonspiking_skewsym_dir=nonspiking_skewsym_old_200
+stdp_dir=stdp_old_200
 
 mkdir -p $spiking_cep_dir
 mkdir -p $nonspiking_cep_dir
