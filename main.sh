@@ -57,8 +57,6 @@ beta=1.0
 i=0
 for n_dynamic in {1,2,3,4,5,6,7,8}
 do
-  N1=$((3*N2))
-
   spiking_cep_dir=spiking_cep_old_tau="$i"
   nonspiking_cep_dir=nonspiking_cep_old_tau="$i"
   nonspiking_cepalt_dir=nonspiking_cepalt_old_tau="$i"
