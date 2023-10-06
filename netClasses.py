@@ -97,7 +97,7 @@ class SNN(nn.Module):
         # Output layer
         dsdt.append(-s[0] + self.w[0](rho(s[1])))
         if np.abs(beta) > 0:
-            dsdt[0] = dsdt[0] + beta*(target-rho([0])) #was spike[0]... # CHANGED
+            dsdt[0] = dsdt[0] + beta*(target-rho(s[0])) #was spike[0]... # CHANGED
 
         # Other layers
         for i in range(1, self.ns - 1):
