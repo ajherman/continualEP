@@ -313,8 +313,8 @@ if args.spike_height==None: # spiking_height = max_Q
     args.spike_height = args.step*args.max_fr
 
 ##### Just making sure #####
-self.max_Q=1.0
-self.spike_height=1.0
+args.max_Q=1.0
+args.spike_height=1.0
 
 
 # New this should create consistency as we change the number of steps
