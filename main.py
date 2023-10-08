@@ -260,11 +260,11 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if args.n_dynamic==None:
-    args.n_dynamic=0.233*args.N2
+# if args.n_dynamic==None:
+#     args.n_dynamic=0.233*args.N2
 
-if args.n_trace==None:
-    args.n_trace=0.12*args.N2
+# if args.n_trace==None:
+#     args.n_trace=0.12*args.N2
 
 
 # Set steps/durations for both phases
