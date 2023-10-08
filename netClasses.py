@@ -108,7 +108,7 @@ class SNN(nn.Module):
         # Post-input layer
 
         # dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
-        dsdt.append(-s[-2] + self.w[-1](rho(s[-1])) + self.w[-2](rho(s[-3])))
+        # dsdt.append(-s[-2] + self.w[-1](rho(s[-1])) + self.w[-2](rho(s[-3])))
 
 
         s_old = []

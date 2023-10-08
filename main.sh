@@ -18,11 +18,11 @@ cores=10
 i=0
 for beta in {0.2,}
 do
-  for batch_size in {25,}
+  for batch_size in {20,}
   do
     for N2 in {16,}
     do
-      for n_dynamic in {2,3,4,5,6}
+      for n_dynamic in {0.2,0.5,1.0,2.0}
       do
       N1=$((3*N2))
       # n_dynamic=$((N2/4))
