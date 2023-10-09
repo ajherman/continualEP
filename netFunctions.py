@@ -22,16 +22,19 @@ def train(net, train_loader, epoch, learning_rule):
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
+        spike = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
 
         if learning_rule == 'stdp':
             for i in range(net.ns+1):
                 s[i] = s[i].to(net.device)
                 trace[i] = trace[i].to(net.device)
+                spike[i] = spike[i].to(net.device)
         else:
             for i in range(net.ns):
                 s[i] = s[i].to(net.device)
                 trace[i] = trace[i].to(net.device)
+                spike[i] = spike[i].to(net.device)
 
         if learning_rule == 'ep':
             with torch.no_grad():
@@ -95,7 +98,7 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s[net.ns] = data
-                s,deltas = net.forward(data, s, return_deltas=True)
+                s,deltas = net.forward(data, s, spike,return_deltas=True)
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
                 #*******************************************VF-EQPROP ******************************************#
@@ -109,7 +112,7 @@ def train(net, train_loader, epoch, learning_rule):
                 # else:
                 #     beta = net.beta
                 beta = net.beta
-                s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
+                s, Dw = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd')
                 #***********************************************************************************************#
 
                 # Plots deltas to visualize convergence
