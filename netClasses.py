@@ -121,8 +121,9 @@ class SNN(nn.Module):
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
-                trace[i] = trace_decay*(0*trace[i] + spike[i])
+                trace[i] = trace_decay*rho(s_old[i])   #trace_decay*(trace[i] + spike[i])
                 # trace[i] = trace_decay*trace[i] + spike[i]
+
 
         for i in range(self.ns+1):
             # Spikes
@@ -130,9 +131,10 @@ class SNN(nn.Module):
                 spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<(rho(s[i])*self.max_Q/self.spike_height)).float()
             else:
                 spike[i] = rho(s[i])*self.max_Q # Get Poisson spikes
-                
+
 
         #*****************************C-EP*****************************#
+
         if (np.abs(beta) > 0):
             dw = self.computeGradients(data, s, s_old, trace, spike)
             if self.cep:
