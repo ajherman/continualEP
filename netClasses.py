@@ -130,7 +130,7 @@ class SNN(nn.Module):
                 spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<(rho(s[i])*self.max_Q/self.spike_height)).float()
             else:
                 spike[i] = rho(s[i])*self.max_Q # Get Poisson spikes
-
+                
 
         #*****************************C-EP*****************************#
         if (np.abs(beta) > 0):
