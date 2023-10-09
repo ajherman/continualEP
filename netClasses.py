@@ -66,26 +66,6 @@ class SNN(nn.Module):
     def stepper(self, data, s, spike, trace=None, target = None, beta = 0, return_derivatives = False):
         dsdt = []
         trace_decay = self.trace_decay
-#
-
-        # # Spikes
-        # if self.spiking:
-        #     spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.max_Q/self.spike_height)).float() for si in s] # Get Poisson spikes
-        # else:
-        #     spike = [rho(si)*self.max_Q for si in s] # Get Poisson spikes
-
-        for i in range(self.ns+1):
-            # Spikes
-            if self.spiking:
-                spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<(rho(s[i])*self.max_Q/self.spike_height)).float()
-            else:
-                spike[i] = [rho(s[i])*self.max_Q # Get Poisson spikes
-
-        # Traces
-        if not trace is None:
-            for i in range(self.ns+1):
-                # trace[i] = trace_decay*(trace[i] + spike[i])
-                trace[i] = trace_decay*trace[i] + spike[i]
 
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
@@ -130,6 +110,18 @@ class SNN(nn.Module):
                 s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
                 dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
+        # Traces
+        if not trace is None:
+            for i in range(self.ns+1):
+                # trace[i] = trace_decay*(trace[i] + spike[i])
+                trace[i] = trace_decay*trace[i] + spike[i]
+
+        for i in range(self.ns+1):
+            # Spikes
+            if self.spiking:
+                spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<(rho(s[i])*self.max_Q/self.spike_height)).float()
+            else:
+                spike[i] = [rho(s[i])*self.max_Q # Get Poisson spikes
 
 
         #*****************************C-EP*****************************#
