@@ -67,6 +67,14 @@ class SNN(nn.Module):
         dsdt = []
         trace_decay = self.trace_decay
 
+#
+
+        # # Spikes
+        # if self.spiking:
+        #     spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.max_Q/self.spike_height)).float() for si in s] # Get Poisson spikes
+        # else:
+        #     spike = [rho(si)*self.max_Q for si in s] # Get Poisson spikes
+            # Spikes
         # Output layer
         dsdt.append(-s[0] + self.w[0](spike[1]))
         if np.abs(beta) > 0:
@@ -113,15 +121,15 @@ class SNN(nn.Module):
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
-                # trace[i] = trace_decay*(trace[i] + spike[i])
-                trace[i] = trace_decay*trace[i] + spike[i]
+                trace[i] = trace_decay*(trace[i] + spike[i])
+                #trace[i] = trace_decay*trace[i] + spike[i]
 
         for i in range(self.ns+1):
             # Spikes
             if self.spiking:
                 spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<(rho(s[i])*self.max_Q/self.spike_height)).float()
             else:
-                spike[i] = [rho(s[i])*self.max_Q # Get Poisson spikes
+                spike[i] = rho(s[i])*self.max_Q # Get Poisson spikes
 
 
         #*****************************C-EP*****************************#
