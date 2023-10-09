@@ -160,13 +160,14 @@ def evaluate(net, test_loader, learning_rule=None):
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
+            spike = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
             if learning_rule == 'stdp':
                 s[net.ns] = data
-            s = net.forward(data, s, method = 'nograd')
+            s = net.forward(data, s, spike,method = 'nograd')
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
