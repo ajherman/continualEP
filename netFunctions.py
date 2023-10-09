@@ -12,6 +12,8 @@ from shutil import copyfile
 import copy
 import csv
 
+from main import rho, rhop
+
 def train(net, train_loader, epoch, learning_rule):
 
     net.train()
