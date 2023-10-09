@@ -12,6 +12,11 @@ from shutil import copyfile
 import copy
 import csv
 
+def rho(x):
+    return x.clamp(min = 0).clamp(max = 1)
+def rhop(x):
+    return ((x >= 0) & (x <= 1)).float()
+
 def train(net, train_loader, epoch, learning_rule):
 
     net.train()
@@ -35,7 +40,7 @@ def train(net, train_loader, epoch, learning_rule):
                 s[i] = s[i].to(net.device)
                 trace[i] = trace[i].to(net.device)
                 spike[i] = spike[i].to(net.device)
-                
+
         # New!
         for i in range(net.ns+1):
             if net.spiking:
