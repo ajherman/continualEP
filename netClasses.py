@@ -63,9 +63,10 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, data, s, spike, trace=None, target = None, beta = 0, return_derivatives = False):
+    def stepper(self, data, s, spike, trace=None, target=None, beta=0, return_derivatives=False):
         dsdt = []
         trace_decay = self.trace_decay
+        print(trace_decay)
 
 #
 
@@ -104,7 +105,6 @@ class SNN(nn.Module):
 
         # dsdt.append(-s[-2] + self.w[-1](s[-1]) + self.w[-2](rho(s[-3])))
         # dsdt.append(-s[-2] + self.w[-1](rho(s[-1])) + self.w[-2](rho(s[-3])))
-
 
         s_old = []
         for ind, s_temp in enumerate(s):
