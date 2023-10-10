@@ -61,6 +61,46 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
     name = learning_rule+"_N1="+str(N1)+"_N2="+str(N2)+"_dyn="+str(n_dynamic)+"_beta="+str(int(10*beta))+"_batch="+str(batch_size)
     return name
 
+
+
+n_col,n_row=3,4
+# batch_size=200
+N1=100
+# N2=30
+batch_size=200
+for beta in [1.5]:
+    fig, ax = plt.subplots(n_row,n_col,figsize=(20,40))
+
+    labels=[]
+    for idx1,n_dynamics in enumerate([0.2,0.5,1.0,2.0]):
+        color = iter(colormap(np.linspace(0,1,12)))
+        for idx2,n_trace in enumerate([0.03, 0.3, 3.0]):
+            for rule in ['stdp','nonspikingstdp','skewsym','cep']
+            # if idx==0:
+            #     labels.append("spiking"+learning_rule)
+                try:
+                    directory_name = rule+"_"+str(idx2)+"_"+str(idx1)
+                    error = csv2array(directory_name,skiplines=2)
+                    # if len(error[1])<90:
+                    #     print("N2",N2)
+                    #     print("lr",learning_rule)
+                    #     print("dyn",n_dynamic)
+                    #     print("")
+                    ax[idx1,idx2].plot(error[1],c=next(color))
+                except:
+                    ax[idx1,idx2].plot([0],c=next(color))
+                    print(directory_name)
+            ax[idx1,idx2].set_xlabel('Epoch')
+            ax[idx1,idx2].set_ylabel('Test error rate (%)')
+            ax[idx1,idx2].set_xlim([0,200])
+            ax[idx1,idx2].set_ylim([0,20])
+            ax[idx1,idx2].grid(axis='y')
+            ax[idx1,idx2].set_title('n dyn = '+str(n_dynamic)+', N2 = '+str(N2))
+    fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
+    fig.legend(labels, loc='lower right', ncol=len(labels), bbox_transform=fig.transFigure)
+    fig.savefig('nonspiking_dynamics.png',bbox_inches="tight")
+
+
 # n_col,n_row=3,4
 # # batch_size=200
 # N1=100
