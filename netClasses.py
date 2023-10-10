@@ -123,8 +123,10 @@ class SNN(nn.Module):
             for i in range(self.ns+1):
                 # # Ver 1-4
                 # trace[i] = self.trace_decay*rho(s_old[i])
-                # Ver 5
-                trace[i] = self.trace_decay*spike[i]
+                # # Ver 5
+                # trace[i] = self.trace_decay*spike[i]
+                # Ver 6
+                trace[i] = self.trace_decay*(trace[i]+spike[i])
 
         for i in range(self.ns+1):
             # Spikes
