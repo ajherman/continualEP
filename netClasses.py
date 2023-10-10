@@ -121,7 +121,7 @@ class SNN(nn.Module):
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
-                # trace[i] = trace_decay*rho(s_old[i])   #trace_decay*(trace[i] + spike[i])
+                #trace[i] = trace_decay*rho(s_old[i])   #trace_decay*(trace[i] + spike[i])
                 trace[i] = trace_decay*trace[i] + spike[i]
 
 
@@ -248,10 +248,10 @@ class SNN(nn.Module):
                 # gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), self.trace_decay*rho(seq[i])) -  torch.mm(torch.transpose(self.trace_decay*rho(seq[i+1]),0,1),spike[i]) ))
 
                 # # Ver 2
-                # trace[i]=self.trace_decay*rho(seq[i])
-                # trace[i+1]=self.trace_decay*rho(seq[i+1])
-                # gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
-                # gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
+                #trace[i]=self.trace_decay*rho(seq[i])
+                #trace[i+1]=self.trace_decay*rho(seq[i+1])
+                #gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) -  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
+                #gradw.append((-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size))*( torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) -  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
 
                 # Ver 3
                 tracei=self.trace_decay*rho(seq[i])
