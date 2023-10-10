@@ -66,16 +66,7 @@ class SNN(nn.Module):
     def stepper(self, data, s, spike, trace=None, target=None, beta=0, return_derivatives=False):
         dsdt = []
         trace_decay = self.trace_decay
-        #print(trace_decay)
 
-#
-
-        # # Spikes
-        # if self.spiking:
-        #     spike = [self.spike_height*(torch.rand(si.size(),device=self.device)<(rho(si)*self.max_Q/self.spike_height)).float() for si in s] # Get Poisson spikes
-        # else:
-        #     spike = [rho(si)*self.max_Q for si in s] # Get Poisson spikes
-            # Spikes
         # Output layer
         if self.spiking:
             assert(0)

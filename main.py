@@ -260,48 +260,56 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-# if args.n_dynamic==None:
-#     args.n_dynamic=0.233*args.N2
-
-# if args.n_trace==None:
-#     args.n_trace=0.12*args.N2
+# Keep ration of N2 to n_dynamic fixed
+# args.n_dynamic=0.233*args.N2
+# args.n_trace=0.12*args.N2
 
 
 # Set steps/durations for both phases
-if args.T1==None:
-    args.T1=args.N1*args.step
-else:
-    assert args.N1==None, "Cannot set both N1 and T1"
-    assert args.T1>args.step, "T1 must be at least one time step"
-    args.N1 = int(args.T1/args.step)
-
-if args.T2==None:
-    args.T2=args.N2*args.step
-else:
-    assert args.N2==None, "Cannot set both N2 and T2"
-    assert args.T2>args.step, "T2 must be at least one time step"
-    args.N2 = int(args.T2/args.step)
-
-if args.max_fr==None:
-    args.max_fr=args.max_Q/args.step
-else:
-    assert args.max_Q==None, "Cannot set both max_fr and max_Q"
-    args.max_Q=args.max_fr*args.step
-
-if args.tau_dynamic==None:
-    args.tau_dynamic = args.n_dynamic*args.step
-else:
-    assert args.n_dynamic==None, "Cannot set both n_dynamic and tau_dynamic"
+use_time_variables=True
+if use_time_variables:
+    args.N1 = round(args.T1/args.step) # step should divide T1
+    args.N2 = round(args.T2/args.step) # step should divide T2
+    args.max_Q = args.max_fr*args.step
+    args.spike_height=args.max_fr*args.step
     args.n_dynamic=args.tau_dynamics/args.step
-
-if args.tau_trace==None:
-    args.tau_trace = args.n_trace*args.step
-else:
-    assert args.n_trace==None, "Cannot set both n_trace and tau_trace"
     args.n_trace=args.tau_trace/args.step
 
+# if args.T1==None:
+#     args.T1=args.N1*args.step
+# else:
+#     assert args.N1==None, "Cannot set both N1 and T1"
+#     assert args.T1>args.step, "T1 must be at least one time step"
+#     args.N1 = int(args.T1/args.step)
+#
+# if args.T2==None:
+#     args.T2=args.N2*args.step
+# else:
+#     assert args.N2==None, "Cannot set both N2 and T2"
+#     assert args.T2>args.step, "T2 must be at least one time step"
+#     args.N2 = int(args.T2/args.step)
+#
+# if args.max_fr==None:
+#     args.max_fr=args.max_Q/args.step
+# else:
+#     assert args.max_Q==None, "Cannot set both max_fr and max_Q"
+#     args.max_Q=args.max_fr*args.step
+#
+# if args.tau_dynamic==None:
+#     args.tau_dynamic = args.n_dynamic*args.step
+# else:
+#     assert args.n_dynamic==None, "Cannot set both n_dynamic and tau_dynamic"
+#     args.n_dynamic=args.tau_dynamics/args.step
+#
+# if args.tau_trace==None:
+#     args.tau_trace = args.n_trace*args.step
+# else:
+#     assert args.n_trace==None, "Cannot set both n_trace and tau_trace"
+#     args.n_trace=args.tau_trace/args.step
+# if args.spike_height==None: # spiking_height = max_Q
+#     args.spike_height = args.step*args.max_fr
+
 if args.dt==None:
-    # args.dt = 1-(2**(-20/args.N1))
     args.dt = 1-np.exp(-1./args.n_dynamic)
     print("dt = ",args.dt)
 
@@ -309,12 +317,10 @@ if args.trace_decay==None:
     args.trace_decay=np.exp(-1./args.n_trace)
     print("trace decay = ",args.trace_decay)
 
-if args.spike_height==None: # spiking_height = max_Q
-    args.spike_height = args.step*args.max_fr
-
 ##### Just making sure #####
-args.max_Q=1.0
-args.spike_height=1.0
+# Should these go back in??????????????????
+# args.max_Q=1.0
+# args.spike_height=1.0
 
 
 # New this should create consistency as we change the number of steps
