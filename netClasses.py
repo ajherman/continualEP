@@ -274,7 +274,7 @@ class SNN(nn.Module):
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
 
-        if self.update_rule == 'stdp' or update_rule =='nonspikingstdp':
+        if self.update_rule == 'stdp' or self.update_rule =='nonspikingstdp':
             # Ver 1
             # gradw.append( (1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[-2]),0,1),rho(seq[-1])) - torch.mm(torch.transpose(rho(seq[-2]),0,1), rho(s[-1])) ))
 
