@@ -121,9 +121,10 @@ class SNN(nn.Module):
         # Traces
         if not trace is None:
             for i in range(self.ns+1):
-                trace[i] = self.trace_decay*rho(s_old[i])   #trace_decay*(trace[i] + spike[i])
-                # trace[i] = trace_decay*trace[i] + spike[i]
-
+                # # Ver 1-4
+                # trace[i] = self.trace_decay*rho(s_old[i])
+                # Ver 5
+                trace[i] = self.trace_decay*spike[i]
 
         for i in range(self.ns+1):
             # Spikes
