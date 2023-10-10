@@ -280,10 +280,10 @@ class SNN(nn.Module):
                 gradw_bias.append(None)
 
         if self.update_rule == 'stdp':
-            # gradw.append( (1/(beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), spike[-1]) ))
-            gradw.append( (-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),self.trace_decay*rho(s[-1])) - torch.mm(torch.transpose(self.trace_decay*rho(s[-2]),0,1), spike[-1]) ))
+            gradw.append( (1/(beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), spike[-1]) ))
+            #gradw.append( (-(1-self.trace_decay)**2/(self.trace_decay*self.spike_height*beta*batch_size)) * ( torch.mm(torch.transpose(spike[-2],0,1),self.trace_decay*rho(s[-1])) - torch.mm(torch.transpose(self.trace_decay*rho(s[-2]),0,1), spike[-1]) ))
         else:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-2]) - rho(seq[-2]), 0, 1), s[-1])) # Changed this by adding rho's 9/27/23
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-2]) - rho(seq[-2]), 0, 1), rho(s[-1]))) # Changed this by adding rho's 9/27/23
 
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
