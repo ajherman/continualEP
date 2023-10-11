@@ -21,7 +21,7 @@ tau_dynamic=0.2
 max_fr=5
 for tau_trace in {0.006,0.06,0.6}
 do
-for step in {1.0,0.5,0.2,0.1}
+for step in {0.2,0.1,0.05,0.02}
 do
 
 nonspiking_cep_dir=nonspiking_cep_"$((i/4))"_"$((i%4))"
