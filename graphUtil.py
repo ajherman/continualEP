@@ -45,13 +45,13 @@ def csv2array(directory,skiplines=0):
             return [],[]
     return train_error, test_error
 
-activity_type_li = ['spiking','nonspiking']
-learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp_med']
-max_fr_li = [3]
-N2_li = [15,30,60]
-n_dynamic_li = [1,2,4,8]
-beta_li = [0.4,0.9,1.5]
-batch_size_li = [25,50,200]
+# activity_type_li = ['spiking','nonspiking']
+# learning_rule_li = ['cepalt','skewsym','stdp_rock','stdp_slug','stdp_slow','stdp_med']
+# max_fr_li = [3]
+# N2_li = [15,30,60]
+# n_dynamic_li = [1,2,4,8]
+# beta_li = [0.4,0.9,1.5]
+# batch_size_li = [25,50,200]
 
 def dir_name(activity_type,learning_rule,max_fr,N2,tau_dynamic,beta,batch_size):
     name = activity_type+"_"+learning_rule+"_maxfr="+str(max_fr)+"_N2="+str(N2)+"_tau="+str(tau_dynamic)+"_beta="+str(int(10*beta))+"_batch="+str(batch_size)
@@ -81,40 +81,41 @@ fig.suptitle('Test')
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('test.png',bbox_inches="tight")
 
-# # This is what I was using
-# n_col,n_row=3,4
-# # batch_size=200
-# N1=100
-# # N2=30
+# This is what I was using
+n_col,n_row=2,2
 # batch_size=200
-# fig, ax = plt.subplots(n_row,n_col,figsize=(20,30))
-#
-# rules=['stdp','nonspiking_stdp','nonspiking_skewsym','nonspiking_cep']
-# for idx1,step in enumerate([1.0,0.5,0.2,0.1]):
-#     for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
-#         color = iter(colormap(np.linspace(0,1,12)))
-#         for rule in rules:
-#             try:
-#                 directory_name = rule+"_"+str(idx2)+"_"+str(idx1)
-#                 error = csv2array(directory_name,skiplines=0)
-#                 # if len(error[1])<90:
-#                 #     print("N2",N2)
-#                 #     print("lr",learning_rule)
-#                 #     print("dyn",n_dynamic)
-#                 #     print("")
-#                 ax[idx1,idx2].plot(error[1],c=next(color))
-#             except:
-#                 ax[idx1,idx2].plot([0],c=next(color))
-#                 print(directory_name)
-#         ax[idx1,idx2].set_xlabel('Epoch')
-#         ax[idx1,idx2].set_ylabel('Test error rate (%)')
-#         ax[idx1,idx2].set_xlim([0,100])
-#         ax[idx1,idx2].set_ylim([0,20])
-#         ax[idx1,idx2].grid(axis='y')
-#         ax[idx1,idx2].set_title('step = '+str(step)+', tau trace = '+str(tau_trace))
-# # fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
-# fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
-# fig.savefig('nonspiking_dynamics.png',bbox_inches="tight")
+N1=100
+# N2=30
+batch_size=200
+fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
+
+rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+# rules=['stdp_fast','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+for idx,step in enumerate([0.2,0.1,0.05,0.02]):
+    # for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
+    color = iter(colormap(np.linspace(0,1,12)))
+    for rule in rules:
+        try:
+            directory_name = rule+"_"+str(idx)
+            error = csv2array(directory_name,skiplines=0)
+            # if len(error[1])<90:
+            #     print("N2",N2)
+            #     print("lr",learning_rule)
+            #     print("dyn",n_dynamic)
+            #     print("")
+            ax[idx//2,idx%2].plot(error[1],c=next(color))
+        except:
+            ax[idx//2,idx%2].plot([0],c=next(color))
+            print(directory_name)
+    ax[idx//2,idx%2].set_xlabel('Epoch')
+    ax[idx//2,idx%2].set_ylabel('Test error rate (%)')
+    ax[idx//2,idx%2].set_xlim([0,80])
+    ax[idx//2,idx%2].set_ylim([0,80])
+    ax[idx//2,idx%2].grid(axis='y')
+    ax[idx//2,idx%2].set_title('step = '+str(step))
+# fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
+fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+fig.savefig('nonspiking_dynamics.png',bbox_inches="tight")
 
 #
 # # n_col,n_row=3,4
