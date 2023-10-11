@@ -228,7 +228,7 @@ parser.add_argument(
 parser.add_argument(
     '--max-fr',
     type=float,
-    default=None,
+    default=1.0,
     help='maximum activity / firing rate')
 parser.add_argument(
     '--step',
@@ -254,7 +254,7 @@ parser.add_argument(
 parser.add_argument(
     '--spike-height',
     type=float,
-    default=None,
+    default=1.0,
     help='sets height of a spike')
 parser.add_argument(
     '--use-time-variables',
