@@ -62,24 +62,24 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
     return name
 
 
-# why aren't these coming out the same????
-fig, ax = plt.subplots(2,figsize=(20,30))
-for idx,case in enumerate(['A','B']):
-    color = iter(colormap(np.linspace(0,1,12)))
-    rules=['stdp','nonspiking_stdp','nonspiking_skewsym','nonspiking_cep']
-    for rule in rules:
-        dir_name = rule+"_"+case
-        error = csv2array(dir_name,skiplines=0)
-        ax[idx].plot(error[1],c=next(color))
-    ax[idx].set_xlabel('Epoch')
-    ax[idx].set_ylabel('Test error rate (%)')
-    ax[idx].set_xlim([0,80])
-    ax[idx].set_ylim([0,20])
-    ax[idx].grid(axis='y')
-    ax[idx].set_title('Case: '+case)
-fig.suptitle('Test')
-fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
-fig.savefig('test.png',bbox_inches="tight")
+# # why aren't these coming out the same????
+# fig, ax = plt.subplots(2,figsize=(20,30))
+# for idx,case in enumerate(['A','B']):
+#     color = iter(colormap(np.linspace(0,1,12)))
+#     rules=['stdp','nonspiking_stdp','nonspiking_skewsym','nonspiking_cep']
+#     for rule in rules:
+#         dir_name = rule+"_"+case
+#         error = csv2array(dir_name,skiplines=0)
+#         ax[idx].plot(error[1],c=next(color))
+#     ax[idx].set_xlabel('Epoch')
+#     ax[idx].set_ylabel('Test error rate (%)')
+#     ax[idx].set_xlim([0,80])
+#     ax[idx].set_ylim([0,20])
+#     ax[idx].grid(axis='y')
+#     ax[idx].set_title('Case: '+case)
+# fig.suptitle('Test')
+# fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+# fig.savefig('test.png',bbox_inches="tight")
 
 # This is what I was using
 n_col,n_row=2,2
@@ -89,7 +89,7 @@ N1=100
 batch_size=200
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 
-rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym']#,'nonspiking_cep']
 # rules=['stdp_fast','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
 for idx,step in enumerate([0.2,0.1,0.05,0.02]):
     # for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
