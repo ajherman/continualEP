@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 8
+#SBATCH -N 16
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -60,23 +60,9 @@ batch_size=20
 
 
 
-
-
-
-
-
-
-
-
-
-
-# Trying to get this working!!
-epochs=100
-hidden_size=256
-cores=10
 i=0
-beta=0.2
-batch_size=20
+#beta=0.2
+#batch_size=20
 T1=8
 T2=3
 tau_dynamic=0.2
@@ -121,13 +107,6 @@ i=$((i+1))
 
 done
 
-
-# epochs=100
-# hidden_size=256
-# cores=10
-# i=0
-# beta=0.2
-# batch_size=20
 # N1=40
 # N2=15
 # for n_trace in {0.03,0.3,3.0}
