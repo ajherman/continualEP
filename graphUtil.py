@@ -71,8 +71,8 @@ batch_size=200
 fig, ax = plt.subplots(n_row,n_col,figsize=(20,30))
 
 rules=['stdp','nonspiking_stdp','nonspiking_skewsym','nonspiking_cep']
-for idx1,n_dynamic in enumerate([0.2,0.5,1.0,2.0]):
-    for idx2,n_trace in enumerate([0.03, 0.3, 3.0]):
+for idx1,step in enumerate([1.0,0.5,0.2,0.1]):
+    for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
         color = iter(colormap(np.linspace(0,1,12)))
         for rule in rules:
             try:
@@ -92,7 +92,7 @@ for idx1,n_dynamic in enumerate([0.2,0.5,1.0,2.0]):
         ax[idx1,idx2].set_xlim([0,100])
         ax[idx1,idx2].set_ylim([0,20])
         ax[idx1,idx2].grid(axis='y')
-        ax[idx1,idx2].set_title('n dyn = '+str(n_dynamic)+', n trace = '+str(n_trace))
+        ax[idx1,idx2].set_title('step = '+str(step)+', tau trace = '+str(tau_trace))
 # fig.suptitle('Test Error (%)\n'+r'$N_1=$'+str(N1)+r', $N_2=$1'+str(N2)+'\n'+r'$\beta=$'+str(beta))
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('nonspiking_dynamics.png',bbox_inches="tight")
