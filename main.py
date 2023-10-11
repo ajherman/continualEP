@@ -256,6 +256,11 @@ parser.add_argument(
     type=float,
     default=None,
     help='sets height of a spike')
+parser.add_argument(
+    '--use-time-variables',
+    action='store_true',
+    default=False,
+    help='if set, expect time-based variables')
 
 
 args = parser.parse_args()
@@ -266,8 +271,8 @@ args = parser.parse_args()
 
 
 # Set steps/durations for both phases
-use_time_variables=True
-if use_time_variables:
+# use_time_variables=True
+if args.use_time_variables:
     args.N1 = round(args.T1/args.step) # step should divide T1
     args.N2 = round(args.T2/args.step) # step should divide T2
     args.max_Q = args.max_fr*args.step
