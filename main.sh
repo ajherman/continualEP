@@ -21,7 +21,7 @@ T2=3
 tau_dynamic=0.2
 max_fr=5
 step=0.2
-tau_dynamic=0.006
+
 
 nonspiking_cep_dir=nonspiking_cep_A
 nonspiking_skewsym_dir=nonspiking_skewsym_A
