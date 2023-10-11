@@ -272,9 +272,10 @@ if use_time_variables:
     args.N2 = round(args.T2/args.step) # step should divide T2
     args.max_Q = args.max_fr*args.step
     args.spike_height=args.max_fr*args.step
-    args.n_dynamic=args.tau_dynamics/args.step
+    args.n_dynamic=args.tau_dynamic/args.step
     if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
         args.n_trace=args.tau_trace/args.step
+
 
 # if args.T1==None:
 #     args.T1=args.N1*args.step
