@@ -281,6 +281,13 @@ if args.use_time_variables:
     if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
         args.n_trace=args.tau_trace/args.step
 
+print('N1 ',args.N1)
+print('N2 ',args.N2)
+print('max Q',args.max_Q)
+print('spike height ',args.spike_height)
+print('step ', args.step)
+print('n trace ', args.n_trace)
+print('n dynamic ',args.n_dynamic)
 
 # if args.T1==None:
 #     args.T1=args.N1*args.step
