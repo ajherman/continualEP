@@ -68,7 +68,7 @@ T2=3
 tau_dynamic=0.2
 max_fr=5
 
-for step in {0.5,0.2,0.1}
+for step in {0.5,0.2,0.1,0.05}
 do
 
 nonspiking_cep_dir=nonspiking_cep_"$i"
