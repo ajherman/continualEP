@@ -116,10 +116,10 @@ def train(net, train_loader, epoch, learning_rule):
                     record=False
                 if record:
                     s,deltas1, mps1 = net.forward(data, s, spike,record=True)
-                    with open('deltas.csv', 'w', newline='') as f:
+                    with open(net.directory+'/deltas.csv', 'w', newline='') as f:
                         writer = csv.writer(f)
                         writer.writerows(deltas1)
-                    with open('mps.csv', 'w', newline='') as f:
+                    with open(net.directory+'/mps.csv', 'w', newline='') as f:
                         writer = csv.writer(f)
                         writer.writerows(mps1)
                 else:
