@@ -88,7 +88,7 @@ N1=100
 # N2=30
 batch_size=200
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
-
+layers=2
 rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym']#,'nonspiking_cep']
 # rules=['nonspiking_stdp_slow']#,'nonspiking_skewsym']
 for idx,step in enumerate([0.5,0.2,0.1,0.05]):
@@ -97,6 +97,8 @@ for idx,step in enumerate([0.5,0.2,0.1,0.05]):
     for rule in rules:
         try:
             directory_name = rule+"_"+str(idx)
+            if layers==2:
+                directory_name += "_2layer"
             error = csv2array(directory_name,skiplines=0)
             # if len(error[1])<90:
             #     print("N2",N2)
@@ -110,12 +112,12 @@ for idx,step in enumerate([0.5,0.2,0.1,0.05]):
     ax[idx//2,idx%2].set_xlabel('Epoch')
     ax[idx//2,idx%2].set_ylabel('Test error rate (%)')
     ax[idx//2,idx%2].set_xlim([0,100])
-    ax[idx//2,idx%2].set_ylim([0,30])
+    ax[idx//2,idx%2].set_ylim([0,20])
     ax[idx//2,idx%2].grid(axis='y')
     ax[idx//2,idx%2].set_title('step = '+str(step))
 fig.suptitle('Test Error (%)\n'+r'$T_1=8, T_2=3, \beta=0.2$'+'\n'+'stdp: slow =1.0, med=0.5, fast=0.05')
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
-fig.savefig('nonspiking_dynamics.png',bbox_inches="tight")
+fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
 
 #
 # # n_col,n_row=3,4
