@@ -89,7 +89,7 @@ N1=100
 batch_size=200
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
-rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym']#,'nonspiking_cep']
+rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
 # rules=['nonspiking_stdp_slow']#,'nonspiking_skewsym']
 for idx,step in enumerate([0.5,0.2,0.1,0.05]):
     # for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
@@ -112,7 +112,7 @@ for idx,step in enumerate([0.5,0.2,0.1,0.05]):
     ax[idx//2,idx%2].set_xlabel('Epoch')
     ax[idx//2,idx%2].set_ylabel('Test error rate (%)')
     ax[idx//2,idx%2].set_xlim([0,100])
-    ax[idx//2,idx%2].set_ylim([0,20])
+    ax[idx//2,idx%2].set_ylim([0,100])
     ax[idx//2,idx%2].grid(axis='y')
     ax[idx//2,idx%2].set_title('step = '+str(step))
 fig.suptitle('Test Error (%)\n'+r'$T_1=8, T_2=3, \beta=0.2$'+'\n'+'stdp: slow =1.0, med=0.5, fast=0.05')
