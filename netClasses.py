@@ -148,7 +148,10 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, return_deltas=False,**kwargs):
+    def forward(self, data, s, spike, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, return_deltas=False,**kwargs):
+        node_list = [(0,4),(1,25),(1,40),(2,16)]
+        mps = {node:[] for node in node_list}
+
         N1 = self.N1
         N2 = self.N2
         if len(kwargs) > 0:
@@ -163,6 +166,10 @@ class SNN(nn.Module):
                 if return_deltas:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
+                for node in node_list:
+                    print(s[1].size())
+                    assert(0)
+                    mps[node].append(s[node[0]])
             if return_deltas:
                 return s, deltas
             else:
@@ -170,8 +177,7 @@ class SNN(nn.Module):
         else:
             Dw = self.initGrad()
             for t in range(N2):
-                # print(type(trace))
-                # assert(0)
+
                 s, dw = self.stepper(data, s, spike, trace, target, beta)
 
                 with torch.no_grad():
@@ -209,9 +215,6 @@ class SNN(nn.Module):
         gradw_bias = []
         batch_size = s[0].size(0)
         beta = self.beta
-        # print(self.ns)
-        # print("===")
-        # print(len(gradw))
         for i in range(self.ns - 1):
             # rate0, rate1 = rho(seq[i]), rho(s[i])
             # if self.update_rule == 'asym1':
@@ -308,11 +311,6 @@ class SNN(nn.Module):
     def updateWeights(self, gradw):
         lr_tab = self.lr_tab
         for i in range(len(self.w)):
-            # print(len(self.w))
-            # print(len(gradw[0]))
-            # print(len(gradw[0]))
-
-            # assert(0)
             if self.w[i] is not None:
                 self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
             if self.use_bias:
@@ -414,16 +412,16 @@ class VFcont(nn.Module):
         for i in range(self.ns - 1):
             w[2*i + 1].weight.data = torch.transpose(w[2*i].weight.data.clone(), 0, 1)
 
-        #****************************TUNE INITIAL ANGLE****************************#
-        if args.angle > 0:
-            p_switch = 0.5*(1 - np.cos(np.pi*args.angle/180))
-            for i in range(self.ns - 1):
-                mask = 2*torch.bernoulli((1 - p_switch)*torch.ones_like(w[2*i + 1].weight.data)) - 1
-                w[2*i + 1].weight.data = w[2*i + 1].weight.data*mask
-                angle = (180/np.pi)*np.arccos((w[2*i + 1].weight.data*torch.transpose(w[2*i].weight.data, 0 ,1)).sum().item()/np.sqrt((w[2*i + 1].weight.data**2).sum().item()*(w[2*i].weight.data**2).sum().item()))
-                print('Angle between forward and backward weights: {:.2f} degrees'.format(angle))
-                del angle, mask
-        #**************************************************************************#
+        # #****************************TUNE INITIAL ANGLE****************************#
+        # if args.angle > 0:
+        #     p_switch = 0.5*(1 - np.cos(np.pi*args.angle/180))
+        #     for i in range(self.ns - 1):
+        #         mask = 2*torch.bernoulli((1 - p_switch)*torch.ones_like(w[2*i + 1].weight.data)) - 1
+        #         w[2*i + 1].weight.data = w[2*i + 1].weight.data*mask
+        #         angle = (180/np.pi)*np.arccos((w[2*i + 1].weight.data*torch.transpose(w[2*i].weight.data, 0 ,1)).sum().item()/np.sqrt((w[2*i + 1].weight.data**2).sum().item()*(w[2*i].weight.data**2).sum().item()))
+        #         print('Angle between forward and backward weights: {:.2f} degrees'.format(angle))
+        #         del angle, mask
+        # #**************************************************************************#
 
         self.w = w
         self = self.to(device)
