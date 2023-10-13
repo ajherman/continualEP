@@ -142,7 +142,7 @@ class SNN(nn.Module):
             if self.cep:
                 with torch.no_grad():
                     self.updateWeights(dw)
-            return s,dw
+            return s,dw,dsdt
         else:
             return s,dsdt
         #**************************************************************#
@@ -181,7 +181,7 @@ class SNN(nn.Module):
             Dw = self.initGrad()
             deltas = []
             for t in range(N2):
-                s, dw = self.stepper(data, s, spike, trace, target, beta)
+                s, dw, dsdt = self.stepper(data, s, spike, trace, target, beta)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
