@@ -141,7 +141,7 @@ def train(net, train_loader, epoch, learning_rule):
                 if record:
                     s, Dw, deltas2, mps2 = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd',record=True)
                 else:
-                    s,Dw = net.forward(data,s,spike,trace=trace,target=target,beta=beta,method='nograd')
+                    s,Dw = net.forward(data,s,spike,trace=trace,target=targets,beta=beta,method='nograd')
                 #***********************************************************************************************#
 
                 # Plots deltas to visualize convergence
