@@ -195,8 +195,6 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
-            # print("\n\n\n potentials")
-            # print(mps[(1,25)].detach().cpu().numpy())
             # Plot plot deltas
             if record:
                 return s, Dw, deltas, mps
