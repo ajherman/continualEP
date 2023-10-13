@@ -169,7 +169,7 @@ class SNN(nn.Module):
                 for node in node_list:
                     # print(s[1].size())
                     # assert(0)
-                    mps[node].append(s[node[0]][0,node[1]])
+                    mps[node].append(s[node[0]][0,node[1]].detach().cpu().numpy())
             if return_deltas:
                 return s, deltas
             else:
@@ -180,14 +180,14 @@ class SNN(nn.Module):
 
                 s, dw = self.stepper(data, s, spike, trace, target, beta)
                 for node in node_list:
-                    mps[node].append(s[node[0]][0,node[1]])
+                    mps[node].append(s[node[0]][0,node[1]].detach().cpu().numpy())
                 with torch.no_grad():
                     for ind_type, dw_temp in enumerate(dw):
                         for ind, dw_temp_layer in enumerate(dw_temp):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
-            print("\n\n\potentials")
+            print("\n\n\n potentials")
             print(mps[(1,25)])
             # Plot plot deltas
             if return_deltas:
