@@ -150,7 +150,7 @@ class SNN(nn.Module):
 
     def forward(self, data, s, spike, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, return_deltas=False,**kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
-        mps = {node:[] for node in node_list}
+        mps = {node:torch.zeros(self.N1+self.N2) for node in node_list}
 
         N1 = self.N1
         N2 = self.N2
@@ -169,7 +169,7 @@ class SNN(nn.Module):
                 for node in node_list:
                     # print(s[1].size())
                     # assert(0)
-                    mps[node].append(s[node[0]][0,node[1]].detach().cpu().numpy())
+                    mps[node][t]=s[node[0]][0,node[1]]
             if return_deltas:
                 return s, deltas
             else:
@@ -180,7 +180,7 @@ class SNN(nn.Module):
 
                 s, dw = self.stepper(data, s, spike, trace, target, beta)
                 for node in node_list:
-                    mps[node].append(s[node[0]][0,node[1]].detach().cpu().numpy())
+                    mps[node][N1+t]=s[node[0]][0,node[1]]
                 with torch.no_grad():
                     for ind_type, dw_temp in enumerate(dw):
                         for ind, dw_temp_layer in enumerate(dw_temp):
@@ -188,7 +188,7 @@ class SNN(nn.Module):
                                 Dw[ind_type][ind] += dw_temp_layer
 
             print("\n\n\n potentials")
-            print(mps[(1,25)])
+            print(mps[(1,25)].detach().cpu().numpy())
             # Plot plot deltas
             if return_deltas:
                 return s, Dw, deltas
