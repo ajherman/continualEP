@@ -166,10 +166,11 @@ class SNN(nn.Module):
                 if return_deltas:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
-                for node in node_list:
-                    # print(s[1].size())
-                    # assert(0)
-                    mps[node][t]=s[node[0]][0,node[1]]
+
+                if record:
+                    for node in node_list:
+                        mps[node][t]=s[node[0]][0,node[1]]
+
             if return_deltas:
                 return s, deltas
             else:
@@ -179,8 +180,11 @@ class SNN(nn.Module):
             for t in range(N2):
 
                 s, dw = self.stepper(data, s, spike, trace, target, beta)
-                for node in node_list:
-                    mps[node][N1+t]=s[node[0]][0,node[1]]
+
+                if record:
+                    for node in node_list:
+                        mps[node][N1+t]=s[node[0]][0,node[1]]
+
                 with torch.no_grad():
                     for ind_type, dw_temp in enumerate(dw):
                         for ind, dw_temp_layer in enumerate(dw_temp):
