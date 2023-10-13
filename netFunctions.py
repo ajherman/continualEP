@@ -110,11 +110,11 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s[net.ns] = data
-                if batch_idx%500==0:
-                    record=True
-                else:
-                    record=False
-                s,deltas = net.forward(data, s, spike,record=record,return_deltas=True)
+                # if batch_idx%500==0:
+                #     record=True
+                # else:
+                #     record=False
+                s,deltas = net.forward(data, s, spike,return_deltas=True)
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
                 #*******************************************VF-EQPROP ******************************************#
