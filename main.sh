@@ -18,7 +18,7 @@ batch_size=20
 # #batch_size=20
 # T1=8
 # T2=3
-# tau_dynamic=0.2
+# tau_dynamic=0.2 # Try 0.04 or something smaller than 0.2
 # max_fr=5
 #
 # for step in {0.5,0.2,0.1,0.05}

@@ -110,11 +110,21 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s[net.ns] = data
-                # if batch_idx%500==0:
-                #     record=True
-                # else:
-                #     record=False
-                s,deltas = net.forward(data, s, spike,return_deltas=True)
+                if batch_idx%500==0:
+                    record=True
+                else:
+                    record=False
+                if record:
+                    s,deltas1, mps1 = net.forward(data, s, spike,record=True)
+                    with open('deltas.csv', 'w', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerows(deltas1)
+                    with open('mps.csv', 'w', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerows(mps1)
+                else:
+                    s = net.forward(data,s,spike)
+
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
                 #*******************************************VF-EQPROP ******************************************#
@@ -128,7 +138,10 @@ def train(net, train_loader, epoch, learning_rule):
                 # else:
                 #     beta = net.beta
                 beta = net.beta
-                s, Dw = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd')
+                if record:
+                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd',record=True)
+                else:
+                    s,Dw = net.forward(data,s,spike,trace=trace,target=target,beta=beta,method='nograd')
                 #***********************************************************************************************#
 
                 # Plots deltas to visualize convergence

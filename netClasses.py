@@ -148,9 +148,12 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, return_deltas=False,**kwargs):
+    def forward(self, data, s, spike, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, **kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
-        mps = {node:torch.zeros(self.N1+self.N2) for node in node_list}
+        if beta==0:
+            mps = [[] for i in range(len(node_list))]
+        else:
+            mps = [[] for i in range(len(node_list))]
 
         N1 = self.N1
         N2 = self.N2
@@ -163,27 +166,28 @@ class SNN(nn.Module):
             deltas = []
             for t in range(N1):
                 s,dsdt = self.stepper(data, s,spike)
-                if return_deltas:
+                if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
+                    for i in range(len(node_list)):
+                        layer,node = node_list[i]
+                        mps[i].append(s[layer][0,node])
 
-                if record:
-                    for node in node_list:
-                        mps[node][t]=s[node[0]][0,node[1]]
-
-            if return_deltas:
-                return s, deltas
+            if record:
+                return s, deltas, mps
             else:
                 return s
         else:
             Dw = self.initGrad()
+            deltas = []
             for t in range(N2):
-
                 s, dw = self.stepper(data, s, spike, trace, target, beta)
-
                 if record:
-                    for node in node_list:
-                        mps[node][N1+t]=s[node[0]][0,node[1]]
+                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+                    deltas.append(delta)
+                    for i in range(len(node_list)):
+                        layer,node = node_list[i]
+                        mps[i].append(s[layer][0,node])
 
                 with torch.no_grad():
                     for ind_type, dw_temp in enumerate(dw):
@@ -191,11 +195,11 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
 
-            print("\n\n\n potentials")
-            print(mps[(1,25)].detach().cpu().numpy())
+            # print("\n\n\n potentials")
+            # print(mps[(1,25)].detach().cpu().numpy())
             # Plot plot deltas
-            if return_deltas:
-                return s, Dw, deltas
+            if record:
+                return s, Dw, deltas, mps
             else:
                 return s, Dw
 
