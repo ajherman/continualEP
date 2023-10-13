@@ -91,7 +91,7 @@ fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 
 rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym']#,'nonspiking_cep']
 # rules=['nonspiking_stdp_slow']#,'nonspiking_skewsym']
-for idx,step in enumerate([0.2,0.1,0.05,0.02]):
+for idx,step in enumerate([0.5,0.2,0.1,0.05]):
     # for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
     color = iter(colormap(np.linspace(0,1,12)))
     for rule in rules:
@@ -109,11 +109,11 @@ for idx,step in enumerate([0.2,0.1,0.05,0.02]):
             print(directory_name)
     ax[idx//2,idx%2].set_xlabel('Epoch')
     ax[idx//2,idx%2].set_ylabel('Test error rate (%)')
-    ax[idx//2,idx%2].set_xlim([0,85])
-    ax[idx//2,idx%2].set_ylim([0,20])
+    ax[idx//2,idx%2].set_xlim([0,100])
+    ax[idx//2,idx%2].set_ylim([0,30])
     ax[idx//2,idx%2].grid(axis='y')
     ax[idx//2,idx%2].set_title('step = '+str(step))
-fig.suptitle('Test Error (%)\n'+r'$T_1=8, T_2=3, \beta=0.2, max f.r.=5$'+'\n'+'stdp: slow =0.5, med=0.05, fast=0.005')
+fig.suptitle('Test Error (%)\n'+r'$T_1=8, T_2=3, \beta=0.2$'+'\n'+'stdp: slow =1.0, med=0.5, fast=0.05')
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('nonspiking_dynamics.png',bbox_inches="tight")
 
