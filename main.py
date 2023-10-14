@@ -276,7 +276,7 @@ if args.use_time_variables:
     print("Using time variables")
     args.N1 = round(args.T1/args.step) # step should divide T1
     args.N2 = round(args.T2/args.step) # step should divide T2
-    args.max_Q=1.0 #args.max_fr*args.step
+    # args.max_Q=1.0 #args.max_fr*args.step
     args.spike_height=1.0 #args.max_fr*args.step
     args.n_dynamic=args.tau_dynamic/args.step
     if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
@@ -284,7 +284,7 @@ if args.use_time_variables:
 
 print('N1 ',args.N1)
 print('N2 ',args.N2)
-print('max Q',args.max_Q)
+# print('max Q',args.max_Q)
 print('spike height ',args.spike_height)
 print('step ', args.step)
 print('n trace ', args.n_trace)

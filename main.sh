@@ -61,10 +61,12 @@ i=0
 beta=0.5
 T1=5
 T2=1
-tau_dynamic=0.02
+# tau_dynamic=0.02
 max_fr=1
 
-for step in {0.2,0.1,0.05}
+for tau_dynamic in {0.2,0.02}
+do
+for step in {0.2,0.02}
 do
 
 nonspiking_cep_dir=nonspiking_cep_"$i"_2layer
@@ -95,7 +97,7 @@ srun -N 1 -n 1 -c $cores -o "$stdp_med_dir".out --open-mode=append ./main_wrappe
 srun -N 1 -n 1 -c $cores -o "$stdp_fast_dir".out --open-mode=append ./main_wrapper.sh --load --use-time-variables --directory $stdp_fast_dir --step $step --max-fr $max_fr --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.01  --activation-function hardsigm --size_tab 10 $hidden_size $hidden_size 784 --lr_tab 0.00018 0.0018 0.01 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 
 i=$((i+1))
-
+done
 done
 
 
