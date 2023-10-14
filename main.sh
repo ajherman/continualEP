@@ -2,14 +2,14 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 12
+#SBATCH -N 8
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
 hidden_size=256
-cores=8
+cores=10
 batch_size=20
 
 # # One layer
@@ -63,7 +63,7 @@ T1=5
 T2=1
 # tau_dynamic=0.02
 max_fr=1
-
+# Was 0.2,0.02 for both
 for tau_dynamic in {0.2,0.1,0.05,0.02}
 do
 for step in {0.2,0.1,0.05,0.02}
