@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 from main import rho, rhop
 
-
+use_bias = True
 #*****************************VF, real-time setting *********************************#
 
 class VFcont(nn.Module):
@@ -39,7 +39,7 @@ class VFcont(nn.Module):
         w = nn.ModuleList([])
 
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = use_bias))
             w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False))
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
@@ -291,7 +291,7 @@ class VFdisc(nn.Module):
 
         w = nn.ModuleList([])
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = use_bias))
             w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False))
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
@@ -536,7 +536,7 @@ class EPcont(nn.Module):
         w = nn.ModuleList([])
         for i in range(self.ns - 1):
 
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = use_bias))
             w.append(None)
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
@@ -752,7 +752,7 @@ class EPdisc(nn.Module):
         w = nn.ModuleList([])
 
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = True))
+            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = use_bias))
             w.append(None)
 
         w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
