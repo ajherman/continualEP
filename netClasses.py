@@ -240,11 +240,13 @@ class VFcont(nn.Module):
         for i in range(self.ns - 1):
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i] - seq[i], 0, 1), rho(seq[i + 1])))
             gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[i + 1] - seq[i + 1], 0, 1), rho(seq[i])))
-            gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
-            gradw_bias.append(None)
+            if use_bias:
+                gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+                gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), rho(data)))
-        gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
+        if use_bias:
+            gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
 
         return  gradw, gradw_bias
@@ -940,11 +942,13 @@ class EPdisc(nn.Module):
         for i in range(self.ns - 1):
             gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(s[i], 0, 1), s[i + 1]) - torch.mm(torch.transpose(seq[i], 0, 1), seq[i + 1])))
             gradw.append(None)
-            gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
-            gradw_bias.append(None)
+            if use_bias:
+                gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
+                gradw_bias.append(None)
 
         gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(s[-1] - seq[-1], 0, 1), data))
-        gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
+        if use_bias:
+            gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 
         return  gradw, gradw_bias
 
@@ -957,5 +961,5 @@ class EPdisc(nn.Module):
         for i in range(len(self.w)):
             if self.w[i] is not None:
                 self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
-            if gradw[1][i] is not None:
+            if use_bias and gradw[1][i] is not None:
                 self.w[i].bias += lr_tab[int(np.floor(i/2))]*gradw[1][i]
