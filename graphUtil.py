@@ -42,7 +42,7 @@ if args.plot_type == 'deltas':
         ax.plot(deltas[:,layer],c=next(color),linewidth=1)
         ax.set_xlabel('Step')
         ax.set_ylabel('Test error rate (%)')
-        ax.set_xlim([0,100])
+        ax.set_xlim([0,120])
         ax.set_ylim([0,1])
         ax.grid(axis='y')
         # ax.set_title('step = '+str(step))
@@ -62,7 +62,7 @@ elif args.plot_type == 'mps':
         ax.plot(mps[node],c=next(color),linewidth=1)
         ax.set_xlabel('Step')
         ax.set_ylabel('Test error rate (%)')
-        ax.set_xlim([0,100])
+        ax.set_xlim([0,120])
         ax.set_ylim([0,1.01])
         ax.grid(axis='y')
         # ax.set_title('step = '+str(step))
@@ -130,7 +130,7 @@ n_col,n_row=4,4
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
 # rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
-rules=['nonspiking_cep','nonspiking_skewsym']
+rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
 for idx in range(16):
     # for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
     color = iter(colormap(np.linspace(0,1,12)))
