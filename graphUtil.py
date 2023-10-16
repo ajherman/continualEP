@@ -38,16 +38,17 @@ if args.plot_type == 'deltas':
     fig, ax = plt.subplots(figsize=(40,40))
     n_steps,n_layers = np.shape(deltas)
     color = iter(colormap(np.linspace(0,1,12)))
-    for layer in range(n_layers):
+    layers=[i for i in range(n_layers)]
+    for layer in layers:
         ax.plot(deltas[:,layer],c=next(color),linewidth=1)
         ax.set_xlabel('Step')
         ax.set_ylabel('Test error rate (%)')
-        ax.set_xlim([0,120])
-        ax.set_ylim([0,1])
+        # ax.set_xlim([0,120])
+        # ax.set_ylim([0,1])
         ax.grid(axis='y')
-        # ax.set_title('step = '+str(step))
-    fig.suptitle(args.directory)
-    # fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+        ax.set_title('L2 norm of layer diffs',fontsize=40)
+    fig.suptitle(args.directory,fontsize=50)
+    fig.legend(layers, loc='lower right', ncol=len(layers), bbox_transform=fig.transFigure,fontsize=30)
     fig.savefig(args.directory+"/deltas.png",bbox_inches="tight")
     assert(0)
 
@@ -57,17 +58,18 @@ elif args.plot_type == 'mps':
         mps = np.array(list(csv_reader)).astype('float')
     fig, ax = plt.subplots(figsize=(40,40))
     n_nodes,n_steps = np.shape(mps)
+    nodes = [i for i in range(n_nodes)]
     color = iter(colormap(np.linspace(0,1,12)))
-    for node in range(n_nodes):
+    for node in nodes:
         ax.plot(mps[node],c=next(color),linewidth=1)
         ax.set_xlabel('Step')
         ax.set_ylabel('Test error rate (%)')
-        ax.set_xlim([0,120])
+        # ax.set_xlim([0,120])
         ax.set_ylim([0,1.01])
         ax.grid(axis='y')
-        # ax.set_title('step = '+str(step))
-    fig.suptitle(args.directory)
-    # fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+        ax.set_title('Membrane potentials')
+    fig.suptitle(args.directory,fontsize=50)
+    fig.legend(nodes, loc='lower right', ncol=len(nodes), bbox_transform=fig.transFigure,fontsize=30)
     fig.savefig(args.directory+"/mps.png",bbox_inches="tight")
     assert(0)
 else:
@@ -125,37 +127,32 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 # fig.savefig('test.png',bbox_inches="tight")
 
 # This is what I was using
-n_col,n_row=4,4
+n_col,n_row=3,3
 
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
-# rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
-rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
-for idx in range(16):
-    # for idx2,tau_trace in enumerate([0.006, 0.06, 0.6]):
-    color = iter(colormap(np.linspace(0,1,12)))
-    for rule in rules:
-        try:
-            directory_name = rule+"_"+str(idx)
-            if layers==2:
-                directory_name += "_2layer"
-            error = csv2array(directory_name,skiplines=0)
-            # if len(error[1])<90:
-            #     print("N2",N2)
-            #     print("lr",learning_rule)
-            #     print("dyn",n_dynamic)
-            #     print("")
-            ax[idx//4,idx%4].plot(error[1],c=next(color),linewidth=1)
-        except:
-            ax[idx//4,idx%4].plot([0],c=next(color))
-            print(directory_name)
-    ax[idx//4,idx%4].set_xlabel('Epoch')
-    ax[idx//4,idx%4].set_ylabel('Test error rate (%)')
-    ax[idx//4,idx%4].set_xlim([0,100])
-    ax[idx//4,idx%4].set_ylim([0,20])
-    ax[idx//4,idx%4].grid(axis='y')
-    # ax[idx//2,idx%2].set_title('step = '+str(step))
-fig.suptitle('Test Error (%)\n'+r'$T_1=8, T_2=3, \beta=0.2$'+'\n'+'stdp: slow =1.0, med=0.5, fast=0.05')
+rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+# rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
+for idx1,tau_dynamic in enumerate([0.01,0.02,0.005]):
+    for idx2, step in enumerate([0.05,0.1,0.2]):
+        color = iter(colormap(np.linspace(0,1,12)))
+        for rule in rules:
+            try:
+                directory_name = rule+"_"+str(3*idx1+idx2)
+                if layers==2:
+                    directory_name += "_2layer"
+                error = csv2array(directory_name,skiplines=0)
+                ax[idx1,idx2].plot(error[1],c=next(color),linewidth=1)
+            except:
+                ax[idx1,idx2].plot([0],c=next(color))
+                print(directory_name)
+        ax[idx1,idx2].set_xlabel('Epoch')
+        ax[idx1,idx2].set_ylabel('Test error rate (%)')
+        ax[idx1,idx2].set_xlim([0,100])
+        ax[idx1,idx2].set_ylim([0,20])
+        ax[idx1,idx2].grid(axis='y')
+        ax[idx1,idx2].set_title('step = '+str(step)+r', $\tau = $'+str(tau_dynamic),fontsize=30)
+fig.suptitle('Test Error (%)',fontsize=50)
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
 
