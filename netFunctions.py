@@ -110,18 +110,11 @@ def train(net, train_loader, epoch, learning_rule):
         elif learning_rule == 'stdp':
             with torch.no_grad():
                 s[net.ns] = data
-                if batch_idx%500==0:
-                    record=True
-                else:
-                    record=False
+
+                recortd=batch_idx%500==0:
+
                 if record:
                     s,deltas1, mps1 = net.forward(data, s, spike,record=True)
-                    with open(net.directory+'/deltas.csv', 'w', newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerows(deltas1)
-                    with open(net.directory+'/mps.csv', 'w', newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerows(mps1)
                 else:
                     s = net.forward(data,s,spike)
 
@@ -131,18 +124,23 @@ def train(net, train_loader, epoch, learning_rule):
                 seq = []
                 for i in range(len(s)): seq.append(s[i].clone())
 
-                #******************************************FORMER C-VF******************************************#
-                # if net.randbeta > 0:
-                #     signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-                #     beta = signbeta*net.beta
-                # else:
-                #     beta = net.beta
                 beta = net.beta
+
                 if record:
                     s, Dw, deltas2, mps2 = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd',record=True)
                 else:
                     s,Dw = net.forward(data,s,spike,trace=trace,target=targets,beta=beta,method='nograd')
                 #***********************************************************************************************#
+
+                if record:
+                    mps=np.concatenate((mps1,mps2),axis=1)
+                    deltas=np.concatenate((deltas1,deltas2,axis=0))
+                    with open(net.directory+'/deltas.csv', 'w', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerows(deltas)
+                    with open(net.directory+'/mps.csv', 'w', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerows(mps)
 
                 # Plots deltas to visualize convergence
                 ##########################

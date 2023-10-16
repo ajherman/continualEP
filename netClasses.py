@@ -172,6 +172,7 @@ class SNN(nn.Module):
                     for i in range(len(node_list)):
                         layer,node = node_list[i]
                         mps[i].append(s[layer][0,node].detach().cpu().numpy())
+                    mps = np.array(mps)
 
             if record:
                 return s, deltas, mps
@@ -188,6 +189,7 @@ class SNN(nn.Module):
                     for i in range(len(node_list)):
                         layer,node = node_list[i]
                         mps[i].append(s[layer][0,node].detach().cpu().numpy())
+                    mps = np.array(mps)
 
                 with torch.no_grad():
                     for ind_type, dw_temp in enumerate(dw):

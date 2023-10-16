@@ -50,8 +50,26 @@ if args.plot_type == 'deltas':
     # fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
     fig.savefig(args.directory+"/deltas.png",bbox_inches="tight")
     assert(0)
+
 elif args.plot_type == 'mps':
-    pass
+    with open(args.directory+'/mps.csv','r',newline='') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        mps = np.array(list(csv_reader)).astype('float')
+    fig, ax = plt.subplots(figsize=(40,40))
+    n_nodes,n_steps = np.shape(mps)
+    color = iter(colormap(np.linspace(0,1,12)))
+    for node in range(n_nodes):
+        ax.plot(mps[node],c=next(color),linewidth=1)
+        ax.set_xlabel('Step')
+        ax.set_ylabel('Test error rate (%)')
+        ax.set_xlim([0,100])
+        ax.set_ylim([0,1.01])
+        ax.grid(axis='y')
+        # ax.set_title('step = '+str(step))
+    fig.suptitle(args.directory)
+    # fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+    fig.savefig(args.directory+"/mps.png",bbox_inches="tight")
+    assert(0)
 else:
     pass
 
