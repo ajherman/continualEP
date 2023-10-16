@@ -64,10 +64,9 @@ T2=1
 # tau_dynamic=0.02
 max_fr=1
 # Was 0.2,0.02 for both
-# for tau_dynamic in {0.02,0.01}
-# do
-tau_dynamic=0.0
-for step in {0.05,0.02}
+for tau_dynamic in {0.05,0.02,0.005}
+do
+for step in {0.05,}
 do
 
 nonspiking_cep_dir=nonspiking_cep_"$i"_2layer
@@ -99,7 +98,7 @@ srun -N 1 -n 1 -c $cores -o "$stdp_fast_dir".out --open-mode=append ./main_wrapp
 
 i=$((i+1))
 done
-# done
+done
 
 
 
