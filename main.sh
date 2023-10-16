@@ -66,6 +66,7 @@ max_fr=1
 # Was 0.2,0.02 for both
 # for tau_dynamic in {0.02,0.01}
 # do
+tau_dynamic=0.0
 for step in {0.05,0.02}
 do
 
