@@ -281,8 +281,8 @@ if args.use_time_variables:
     args.n_dynamic=args.tau_dynamic/args.step
     if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
         args.n_trace=args.tau_trace/args.step
-    # TEMP!
-    args.dt=1.0
+    # # TEMP!
+    # args.dt=1.0
 
 print('N1 ',args.N1)
 print('N2 ',args.N2)
