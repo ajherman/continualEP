@@ -111,7 +111,7 @@ def train(net, train_loader, epoch, learning_rule):
             with torch.no_grad():
                 s[net.ns] = data
 
-                recortd=batch_idx%500==0:
+                record=batch_idx%500==0
 
                 if record:
                     s,deltas1, mps1 = net.forward(data, s, spike,record=True)
@@ -134,7 +134,7 @@ def train(net, train_loader, epoch, learning_rule):
 
                 if record:
                     mps=np.concatenate((mps1,mps2),axis=1)
-                    deltas=np.concatenate((deltas1,deltas2,axis=0))
+                    deltas=np.concatenate((deltas1,deltas2),axis=0)
                     with open(net.directory+'/deltas.csv', 'w', newline='') as f:
                         writer = csv.writer(f)
                         writer.writerows(deltas)
