@@ -171,7 +171,7 @@ class SNN(nn.Module):
                     deltas.append(delta)
                     for i in range(len(node_list)):
                         layer,node = node_list[i]
-                        mps[i].append(s[layer][0,node])
+                        mps[i].append(s[layer][0,node].detach().cpu().numpy())
 
             if record:
                 return s, deltas, mps
