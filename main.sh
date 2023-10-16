@@ -2,13 +2,13 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 12
+#SBATCH -N 16
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
-hidden_size=512 #256
+hidden_size=256
 cores=10
 batch_size=20
 
