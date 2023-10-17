@@ -8,7 +8,7 @@
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
-hidden_size=256
+hidden_size=512
 cores=8
 batch_size=20
 
