@@ -9,7 +9,7 @@
 
 epochs=100
 hidden_size=256
-cores=10
+cores=8
 batch_size=20
 
 # # One layer
