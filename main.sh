@@ -59,8 +59,8 @@ batch_size=20
 
 i=0
 beta=0.5
-T1=10
-T2=2
+T1=8
+T2=3
 # tau_dynamic=0.02
 max_fr=1
 # Was 0.2,0.02 for both
