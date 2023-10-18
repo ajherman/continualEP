@@ -1,10 +1,7 @@
 import argparse
-try:
-    import torchvision.datasets as datasets
-    import torchvision.transforms as transforms
-    import torch.optim as optim
-except:
-    pass
+import torchvision.datasets as datasets
+import torchvision.transforms as transforms
+import torch.optim as optim
 import pickle
 import datetime
 import random

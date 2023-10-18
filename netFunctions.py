@@ -1,17 +1,11 @@
 from __future__ import print_function
 from __future__ import division
-try:
-    import torch
-    import torch.nn as nn
-except:
-    pass
+import torch
+import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
-try:
-    import torchvision
-    import torch.optim as optim
-except:
-    pass
+import torchvision
+import torch.optim as optim
 import os, sys
 import datetime
 from shutil import copyfile
