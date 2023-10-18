@@ -127,18 +127,18 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 # fig.savefig('test.png',bbox_inches="tight")
 
 # This is what I was using
-n_col,n_row=3,4
+n_col,n_row=1,3
 
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
 rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
 # rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
-for idx1,tau_dynamic in enumerate([0.1,0.02,0.05,0.01]):
-    for idx2, step in enumerate([0.2,0.1,0.05]):
+for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
+    for idx2, step in enumerate([0.1]):
         color = iter(colormap(np.linspace(0,1,12)))
         for rule in rules:
             try:
-                directory_name = rule+"_"+str(3*idx1+idx2)
+                directory_name = rule+"_"+str(1*idx1+idx2)
                 if layers==2:
                     directory_name += "_2layer"
                 error = csv2array(directory_name,skiplines=0)
