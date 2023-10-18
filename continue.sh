@@ -7,9 +7,9 @@
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
-dirs="$1"/*
+cores=4
 
-for dir in dirs:
+for dir in "$1"/*
 do
 echo $dir
 srun -N 1 -n 1 -c $cores -o "$dir".out --open-mode=append ./main_wrapper.sh --load --directory $dir &
