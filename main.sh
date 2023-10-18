@@ -64,9 +64,9 @@ T2=1
 # tau_dynamic=0.02
 max_fr=1
 # Was 0.2,0.02 for both
-for tau_dynamic in {0.025,0.01,0.005}
+for tau_dynamic in {0.025,0.0125,0.005}
 do
-for step in {0.1,}
+for step in {0.025,}
 do
 
 nonspiking_cep_dir=nonspiking_cep_"$i"_2layer
