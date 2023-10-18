@@ -1,7 +1,10 @@
 import argparse
-import torchvision.datasets as datasets
-import torchvision.transforms as transforms
-import torch.optim as optim
+try:
+    import torchvision.datasets as datasets
+    import torchvision.transforms as transforms
+    import torch.optim as optim
+except:
+    pass
 import pickle
 import datetime
 import random
@@ -440,6 +443,10 @@ if __name__ == '__main__':
         elif args.learning_rule == 'stdp':
             net = SNN(args)
 
+    # Write params to pickle file
+    with open(args.directory+'/params', 'wb') as pkl_file:
+        pickle.dump(net.__dict__,pkl_file)
+        assert(0)
     if args.action == 'train':
 
         # #create path

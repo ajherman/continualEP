@@ -1,11 +1,13 @@
 from __future__ import print_function
-import torch
-import torch.nn as nn
 import numpy as np
-import torchvision
-import torch.optim as optim
-import torch.nn.functional as F
-
+try:
+    import torch
+    import torch.nn as nn
+    import torchvision
+    import torch.optim as optim
+    import torch.nn.functional as F
+except:
+    pass
 
 from main import rho, rhop
 

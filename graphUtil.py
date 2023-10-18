@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import csv
 import argparse
+import pickle
 from itertools import product
 
 """
@@ -126,35 +127,70 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 # fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 # fig.savefig('test.png',bbox_inches="tight")
 
-# This is what I was using
-n_col,n_row=1,3
 
-fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
+# This is what I was using
+fig, ax = plt.subplots(4,4,figsize=(40,40))
+if args.directory==None:
+    args.directory='.'
+
 layers=2
 rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
 # rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
-for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
-    for idx2, step in enumerate([0.1]):
-        color = iter(colormap(np.linspace(0,1,12)))
-        for rule in rules:
-            try:
-                directory_name = rule+"_"+str(1*idx1+idx2)
-                if layers==2:
-                    directory_name += "_2layer"
-                error = csv2array(directory_name,skiplines=0)
-                ax[idx1,idx2].plot(error[1],c=next(color),linewidth=1)
-            except:
-                ax[idx1,idx2].plot([0],c=next(color))
-                print(directory_name)
-        ax[idx1,idx2].set_xlabel('Epoch')
-        ax[idx1,idx2].set_ylabel('Test error rate (%)')
-        ax[idx1,idx2].set_xlim([0,100])
-        ax[idx1,idx2].set_ylim([0,20])
-        ax[idx1,idx2].grid(axis='y')
-        ax[idx1,idx2].set_title('step = '+str(step)+r', $\tau = $'+str(tau_dynamic),fontsize=30)
-fig.suptitle('Test Error (%)',fontsize=50)
+for idx in range(16):
+    color = iter(colormap(np.linspace(0,1,12)))
+    for rule in rules:
+        try:
+            directory_name = args.directory+'/'+rule+"_"+str(idx)
+            if layers==2:
+                directory_name += "_2layer"
+            error = csv2array(directory_name,skiplines=0)
+            ax[idx//4,idx%4].plot(error[1],c=next(color),linewidth=1)
+        except:
+            ax[idx//4,idx%4].plot([0],c=next(color))
+            print(directory_name)
+    # Get parameters
+    # pkl_path = directory_name+'/net'
+    # with open(pkl_path,'rb') as pkl_file:
+    #     net = pickle.load(pkl_file)
+    ax[idx//4,idx%4].set_xlabel('Epoch')
+    ax[idx//4,idx%4].set_ylabel('Test error rate (%)')
+    ax[idx//4,idx%4].set_xlim([0,100])
+    ax[idx//4,idx%4].set_ylim([0,20])
+    ax[idx//4,idx%4].grid(axis='y')
+    ax[idx//4,idx%4].set_title("idx = "+str(idx))#+r'T_1 = '+str(net.T_1)+'\n'+r'T_2 = '+str(net.T_2)+'\n'+r'\tau = '+str(net.tau_dynamic)+'\nstep = '+str(step),fontsize=30)
+fig.suptitle('Test Error (%)\n Directory: '+args.directory,fontsize=50)
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
-fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
+fig.savefig(args.directory+'/nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
+
+# # This is what I was using
+# n_col,n_row=1,3
+#
+# fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
+# layers=2
+# rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+# # rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
+# for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
+#     for idx2, step in enumerate([0.1]):
+#         color = iter(colormap(np.linspace(0,1,12)))
+#         for rule in rules:
+#             try:
+#                 directory_name = rule+"_"+str(1*idx1+idx2)
+#                 if layers==2:
+#                     directory_name += "_2layer"
+#                 error = csv2array(directory_name,skiplines=0)
+#                 ax[idx1,idx2].plot(error[1],c=next(color),linewidth=1)
+#             except:
+#                 ax[idx1,idx2].plot([0],c=next(color))
+#                 print(directory_name)
+#         ax[idx1,idx2].set_xlabel('Epoch')
+#         ax[idx1,idx2].set_ylabel('Test error rate (%)')
+#         ax[idx1,idx2].set_xlim([0,100])
+#         ax[idx1,idx2].set_ylim([0,20])
+#         ax[idx1,idx2].grid(axis='y')
+#         ax[idx1,idx2].set_title('step = '+str(step)+r', $\tau = $'+str(tau_dynamic),fontsize=30)
+# fig.suptitle('Test Error (%)',fontsize=50)
+# fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+# fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
 
 #
 # # n_col,n_row=3,4
