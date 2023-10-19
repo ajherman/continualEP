@@ -9,6 +9,7 @@ from netClasses import *
 from netFunctions import *
 from plotFunctions import *
 import os
+import json
 
 def set_seed(seed: int = 42) -> None:
     np.random.seed(seed)
@@ -404,10 +405,10 @@ if __name__ == '__main__':
             net = SNN(args)
 
     # Write params to pickle file
-    with open(args.directory+'/params', 'wb') as pkl_file:
+    with open(args.directory+'/params.txt', 'wb') as f:
         keys = ['N1','N2','dt','size_tab','lr_tab','use_bias','no_reset','no_rhop','plain_data','update_rule','trace_decay','directory','spiking','spike_height','step','max_fr','max_Q','no_clamp','beta']
         param_dict = {key:net.__dict__[key] for key in keys}
-        pickle.dump(param_dict,pkl_file)
+        json.dump(param_dict,f)
         print(param_dict)
 
     if args.action == 'train':
