@@ -4,6 +4,7 @@ import csv
 import argparse
 import pickle
 from itertools import product
+import json
 
 """
 'Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid',
@@ -133,34 +134,35 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 # if args.directory==None:
 #     args.directory='.'
 #
-# layers=2
-# rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
-# # rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
-# for idx in range(16):
-#     color = iter(colormap(np.linspace(0,1,12)))
-#     for rule in rules:
-#         try:
-#             directory_name = args.directory+'/'+rule+"_"+str(idx)
-#             if layers==2:
-#                 directory_name += "_2layer"
-#             error = csv2array(directory_name,skiplines=0)
-#             ax[idx//4,idx%4].plot(error[1],c=next(color),linewidth=1)
-#         except:
-#             ax[idx//4,idx%4].plot([0],c=next(color))
-#             print(directory_name)
-#     # Get parameters
-#     # pkl_path = directory_name+'/net'
-#     # with open(pkl_path,'rb') as pkl_file:
-#     #     net = pickle.load(pkl_file)
-#     ax[idx//4,idx%4].set_xlabel('Epoch')
-#     ax[idx//4,idx%4].set_ylabel('Test error rate (%)')
-#     ax[idx//4,idx%4].set_xlim([0,100])
-#     ax[idx//4,idx%4].set_ylim([0,20])
-#     ax[idx//4,idx%4].grid(axis='y')
-#     ax[idx//4,idx%4].set_title("idx = "+str(idx))#+r'T_1 = '+str(net.T_1)+'\n'+r'T_2 = '+str(net.T_2)+'\n'+r'\tau = '+str(net.tau_dynamic)+'\nstep = '+str(step),fontsize=30)
-# fig.suptitle('Test Error (%)\n Directory: '+args.directory,fontsize=50)
-# fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
-# fig.savefig(args.directory+'/nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
+layers=2
+rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+# rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
+for idx in range(16):
+    color = iter(colormap(np.linspace(0,1,12)))
+    for rule in rules:
+        try:
+            directory_name = args.directory+'/'+rule+"_"+str(idx)
+            if layers==2:
+                directory_name += "_2layer"
+            error = csv2array(directory_name,skiplines=0)
+            ax[idx//4,idx%4].plot(error[1],c=next(color),linewidth=1)
+        except:
+            ax[idx//4,idx%4].plot([0],c=next(color))
+            print(directory_name)
+    # Get parameters
+    param_path = directory_name+'/params.txt'
+    with open(param_path,'rb') as f:
+        param_dict = json.load(f)
+
+    ax[idx//4,idx%4].set_xlabel('Epoch')
+    ax[idx//4,idx%4].set_ylabel('Test error rate (%)')
+    ax[idx//4,idx%4].set_xlim([0,100])
+    ax[idx//4,idx%4].set_ylim([0,20])
+    ax[idx//4,idx%4].grid(axis='y')
+    ax[idx//4,idx%4].set_title(str(param_dict))#+r'T_1 = '+str(net.T_1)+'\n'+r'T_2 = '+str(net.T_2)+'\n'+r'\tau = '+str(net.tau_dynamic)+'\nstep = '+str(step),fontsize=30)
+fig.suptitle('Test Error (%)\n Directory: '+args.directory,fontsize=50)
+fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
+fig.savefig(args.directory+'/test.png',bbox_inches="tight")
 
 # This is what I was using
 n_col,n_row=3,3
