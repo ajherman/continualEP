@@ -168,7 +168,7 @@ n_col,n_row=3,3
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
 # rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
-rules=['nonspiking_cep','nonspiking_skewsym']
+rules=['nonspiking_cep','nonspiking_stdp_fast']#'nonspiking_skewsym']
 for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
     for idx2, step in enumerate([0.05,0.02,0.01]):
         color = iter(colormap(np.linspace(0,1,12)))

@@ -272,69 +272,35 @@ args = parser.parse_args()
 
 # Set steps/durations for both phases
 # use_time_variables=True
-if args.use_time_variables:
-    print("Using time variables")
-    args.N1 = round(args.T1/args.step) # step should divide T1
-    args.N2 = round(args.T2/args.step) # step should divide T2
-    # args.max_Q=1.0 #args.max_fr*args.step
-    args.spike_height=1.0 #args.max_fr*args.step
-    args.n_dynamic=args.tau_dynamic/args.step
-    if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
-        args.n_trace=args.tau_trace/args.step
-    # # TEMP!
-    # args.dt=1.0
 
-print('N1 ',args.N1)
-print('N2 ',args.N2)
-# print('max Q',args.max_Q)
-print('spike height ',args.spike_height)
-print('step ', args.step)
-print('n trace ', args.n_trace)
-print('n dynamic ', args.n_dynamic)
-print('dt ', args.dt)
+if not args.load:
+    if args.use_time_variables:
+        print("Using time variables")
+        args.N1 = round(args.T1/args.step) # step should divide T1
+        args.N2 = round(args.T2/args.step) # step should divide T2
+        # args.max_Q=1.0 #args.max_fr*args.step
+        args.spike_height=1.0 #args.max_fr*args.step
+        args.n_dynamic=args.tau_dynamic/args.step
+        if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
+            args.n_trace=args.tau_trace/args.step
 
-# if args.T1==None:
-#     args.T1=args.N1*args.step
-# else:
-#     assert args.N1==None, "Cannot set both N1 and T1"
-#     assert args.T1>args.step, "T1 must be at least one time step"
-#     args.N1 = int(args.T1/args.step)
-#
-# if args.T2==None:
-#     args.T2=args.N2*args.step
-# else:
-#     assert args.N2==None, "Cannot set both N2 and T2"
-#     assert args.T2>args.step, "T2 must be at least one time step"
-#     args.N2 = int(args.T2/args.step)
-#
-# if args.max_fr==None:
-#     args.max_fr=args.max_Q/args.step
-# else:
-#     assert args.max_Q==None, "Cannot set both max_fr and max_Q"
-#     args.max_Q=args.max_fr*args.step
-#
-# if args.tau_dynamic==None:
-#     args.tau_dynamic = args.n_dynamic*args.step
-# else:
-#     assert args.n_dynamic==None, "Cannot set both n_dynamic and tau_dynamic"
-#     args.n_dynamic=args.tau_dynamics/args.step
-#
-# if args.tau_trace==None:
-#     args.tau_trace = args.n_trace*args.step
-# else:
-#     assert args.n_trace==None, "Cannot set both n_trace and tau_trace"
-#     args.n_trace=args.tau_trace/args.step
-# if args.spike_height==None: # spiking_height = max_Q
-#     args.spike_height = args.step*args.max_fr
+    print('N1 ',args.N1)
+    print('N2 ',args.N2)
+    print('spike height ',args.spike_height)
+    print('step ', args.step)
+    print('n trace ', args.n_trace)
+    print('n dynamic ', args.n_dynamic)
+    print('dt ', args.dt)
 
-if args.dt==None:
-    args.dt = 1-np.exp(-1./args.n_dynamic)
-    print("dt = ",args.dt)
+    if args.dt==None:
+        args.dt = 1-np.exp(-1./args.n_dynamic)
+        print("dt = ",args.dt)
 
-if args.trace_decay==None:
-    args.trace_decay=np.exp(-1./args.n_trace)
-    print("trace decay = ",args.trace_decay)
+    if args.trace_decay==None:
+        args.trace_decay=np.exp(-1./args.n_trace)
+        print("trace decay = ",args.trace_decay)
 
+print("Made it here...")
 ##### Just making sure #####
 # Should these go back in??????????????????
 # args.max_Q=1.0
