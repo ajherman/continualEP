@@ -405,21 +405,24 @@ if __name__ == '__main__':
 
     # Write params to pickle file
     with open(args.directory+'/params', 'wb') as pkl_file:
-        pickle.dump(net.__dict__,pkl_file)
-        print(net.__dict__)
+        keys = ['N1','N2','dt','size_tab','lr_tab','use_bias','no_reset','no_rhop','plain_data','update_rule','trace_decay','directory','spiking','spike_height','step','max_fr','max_Q','no_clamp','beta']
+        param_dict = {key:net.__dict__[key] for key in keys}
+        pickle.dump(param_dict,pkl_file)
+        print(param_dict)
 
     if args.action == 'train':
 
-        # Create csv file
-        csv_path = args.directory+"/results.csv"
-        if not args.load:
-            # csv_file = open(csv_path,'a',newline='')
-            # csv_writer = csv.write(csvf)
-            fieldnames = ['learning_rule','update_rule','beta','dt','N1','N2']
-            with open(csv_path,'w',newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow(fieldnames)
-                csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.N1,args.N2])
+        # # Create csv file
+        # csv_path = args.directory+"/results.csv"
+        # if not args.load:
+        #     # csv_file = open(csv_path,'a',newline='')
+        #     # csv_writer = csv.write(csvf)
+        #     fieldnames = ['learning_rule','update_rule','beta','dt','N1','N2']
+        #     with open(csv_path,'w',newline='') as csv_file:
+        #         csv_writer = csv.writer(csv_file)
+        #         csv_writer.writerow(fieldnames)
+        #         csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.N1,args.N2])
+
         # #compute initial angle between EP update and BPTT gradient
         # if args.angle_grad:
         #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
