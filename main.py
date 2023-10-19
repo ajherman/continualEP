@@ -377,7 +377,6 @@ elif args.activation_function == 'tanh':
     def rhop(x):
         return 1 - torch.tanh(x)**2
 
-print('made it 1')
 if __name__ == '__main__':
 
     input_size = 28
@@ -385,11 +384,9 @@ if __name__ == '__main__':
     #Build the net
     pkl_path = args.directory+'/net'
 
-    print('made it 2')
     if args.load and os.path.exists(pkl_path):
         with open(pkl_path,'rb') as pkl_file:
             net = pickle.load(pkl_file)
-        print('made it 3')
     else:
         if  (not args.discrete) & (args.learning_rule == 'vf') :
             net = VFcont(args)
@@ -409,16 +406,9 @@ if __name__ == '__main__':
     # Write params to pickle file
     with open(args.directory+'/params', 'wb') as pkl_file:
         pickle.dump(net.__dict__,pkl_file)
-    print('made it 3.2')
-    if args.action == 'train':
-        print('made it 3.5')
-        # #create path
-        # BASE_PATH, name = createPath(args)
-        #
-        # #save hyperparameters
-        # createHyperparameterfile(BASE_PATH, name, args)
+        print(net.__dict__)
 
-        # Create pickle path
+    if args.action == 'train':
 
         # Create csv file
         csv_path = args.directory+"/results.csv"
@@ -449,12 +439,7 @@ if __name__ == '__main__':
         error_test_tab = []
 
         start_time = datetime.datetime.now()
-        print('made is 3.8')
-        # for epoch in range(net.current_epoch, args.epochs):
-        print(net.current_epoch)
-        print(args.epochs)
         while net.current_epoch<args.epochs:
-            print('made it 4')
             epoch=net.current_epoch
             error_train,mps_li,deltas_li = train(net, train_loader, epoch, args.learning_rule)
 
