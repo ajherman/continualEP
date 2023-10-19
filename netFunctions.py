@@ -22,6 +22,8 @@ def train(net, train_loader, epoch, learning_rule):
     net.train()
     loss_tot = 0
     correct = 0
+    mps_li = []
+    deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
     for batch_idx, (data, targets) in enumerate(train_loader):
         if not net.no_reset or batch_idx == 0:
@@ -135,21 +137,8 @@ def train(net, train_loader, epoch, learning_rule):
                 if record:
                     mps=np.concatenate((mps1,mps2),axis=1)
                     deltas=np.concatenate((deltas1,deltas2),axis=0)
-                    with open(net.directory+'/deltas.csv', 'w', newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerows(deltas)
-                    with open(net.directory+'/mps.csv', 'w', newline='') as f:
-                        writer = csv.writer(f)
-                        writer.writerows(mps)
-
-                # Plots deltas to visualize convergence
-                ##########################
-                # if batch_idx%500==0:
-                #     fig, ax = plt.subplots()
-                #     ax.plot(np.arange(net.N1),deltas)
-                #     fig.savefig(net.directory+'/deltas_'+str(batch_idx)+'.png')
-                #     plt.close()
-                ###########################
+                    mps_li.append(mps)
+                    deltas_li.append(deltas)
 
                 if not net.cep:
                     if not net.former:
@@ -176,7 +165,7 @@ def train(net, train_loader, epoch, learning_rule):
        loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
        ))
 
-    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
+    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset),mps_li,deltas_li
 
 def evaluate(net, test_loader, learning_rule=None):
     net.eval()
