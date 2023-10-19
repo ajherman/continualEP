@@ -414,7 +414,7 @@ if __name__ == '__main__':
     if args.action == 'train':
 
         # # Create csv file
-        # csv_path = args.directory+"/results.csv"
+        csv_path = args.directory+"/results.csv"
         # if not args.load:
         #     # csv_file = open(csv_path,'a',newline='')
         #     # csv_writer = csv.write(csvf)
