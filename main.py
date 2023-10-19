@@ -409,7 +409,7 @@ if __name__ == '__main__':
     # Write params to pickle file
     with open(args.directory+'/params', 'wb') as pkl_file:
         pickle.dump(net.__dict__,pkl_file)
-        assert(0)
+
     if args.action == 'train':
 
         # #create path
