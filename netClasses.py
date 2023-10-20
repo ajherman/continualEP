@@ -91,7 +91,7 @@ class SNN(nn.Module):
         # If using LIF method, reset membrane potential after spike
         if self.spike_method == 'lif':
             for i in range(self.ns+1):
-                s[i] = s[i]*(1.0-self.spike[i])
+                s[i] = s[i]*(1.0-spike[i])
 
         if self.no_clamp:
             for i in range(self.ns):
@@ -113,7 +113,7 @@ class SNN(nn.Module):
                     assert(0)
                     spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
                 elif self.spike_method == 'lif':
-                    spike[i] = self.spike_height*(s[i]>0.2).float()
+                    spike[i] = self.spike_height*(s[i]>0.005).float()
         elif self.update_rule == 'nonspikingstdp':
             for i in range(self.ns+1):
                 spike[i] = rho(s[i])*self.spike_height
