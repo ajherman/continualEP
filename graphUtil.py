@@ -175,14 +175,16 @@ fig.savefig(args.directory+'/test.png',bbox_inches="tight")
 n_col,n_row=3,3
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
-# rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
-rules=['nonspiking_cep','nonspiking_skewsym']
-for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
-    for idx2, step in enumerate([0.05,0.02,0.01]):
+rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
+# rules=['nonspiking_cep','nonspiking_skewsym']
+# for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
+#     for idx2, step in enumerate([0.05,0.02,0.01]):
+for idx1,hidden_size1 in enumerate([256,512]):
+    for idx2,hidden_size2 in enumerate([256,512]):
         color = iter(colormap(np.linspace(0,1,12)))
         for rule in rules:
             try:
-                directory_name = args.directory+"/"+rule+"_"+str(3*idx1+idx2)
+                directory_name = args.directory+"/"+rule+"_"+str(2*idx1+idx2)
                 if layers==2:
                     directory_name += "_2layer"
                 error = csv2array(directory_name,skiplines=0)
@@ -195,7 +197,8 @@ for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
         ax[idx1,idx2].set_xlim([0,100])
         ax[idx1,idx2].set_ylim([0,20])
         ax[idx1,idx2].grid(axis='y')
-        ax[idx1,idx2].set_title('step = '+str(step)+r', $\tau = $'+str(tau_dynamic),fontsize=30)
+        # ax[idx1,idx2].set_title('step = '+str(step)+r', $\tau = $'+str(tau_dynamic),fontsize=30)
+        ax[idx1,idx2].set_title('hidden1 = '+str(hidden_size1)+', hidden2 = '+str(hidden_size2),fontsize=30)
 fig.suptitle('Test Error (%)\n'+r'$T_1=5,T_2=1$',fontsize=50)
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
