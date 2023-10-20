@@ -100,7 +100,7 @@ class SNN(nn.Module):
                 trace[i] = self.trace_decay*(trace[i]+spike[i])
 
         # If update rule is stdp or nonspiking stdp, then record spikes
-        if self.update_rule == 'stdp':
+        if self.update_rule == 'stdp' or self.spiking:
             for i in range(self.ns+1):
                 if spike_method == 'poisson':
                     spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
