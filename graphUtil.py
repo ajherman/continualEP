@@ -5,6 +5,7 @@ import argparse
 import pickle
 from itertools import product
 import json
+import os
 
 """
 'Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid',
@@ -129,44 +130,49 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 # fig.savefig('test.png',bbox_inches="tight")
 
 
-# # This is what I was using
-# fig, ax = plt.subplots(4,4,figsize=(40,40))
-# if args.directory==None:
-#     args.directory='.'
-#
+# General
+
+# This is what I was using
+fig, ax = plt.subplots(4,4,figsize=(40,40))
+if args.directory==None:
+    args.directory='.'
+
 layers=2
 rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
 # rules=['nonspiking_cep','nonspiking_skewsym','nonspiking_stdp_fast']
-for idx in range(16):
+for idx,dir in enumerate(os.listdir(args.directory)):
+    dir_path = args.directory+"/"+dir
+    param_path = dir_path+'/params.txt'
+    if os.path.isfile(param_path):
+        with open(param_path,'rb') as f:
+            param_dict = json.load(f)
+        plot_title = ''
+        for key in ['dt','step','N1','N2']:
+            plot_title += key + ' = ' + str(param_dict[key]) + '\n'
+    else:
+        plot_title = ""
+
     color = iter(colormap(np.linspace(0,1,12)))
-    for rule in rules:
-        try:
-            directory_name = args.directory+'/'+rule+"_"+str(idx)
-            if layers==2:
-                directory_name += "_2layer"
-            error = csv2array(directory_name,skiplines=0)
-            ax[idx//4,idx%4].plot(error[1],c=next(color),linewidth=1)
-        except:
-            ax[idx//4,idx%4].plot([0],c=next(color))
-            print(directory_name)
-    # Get parameters
-    param_path = directory_name+'/params.txt'
-    with open(param_path,'rb') as f:
-        param_dict = json.load(f)
+    try:
+        error = csv2array(dir_path,skiplines=0)
+        ax[idx//4,idx%4].plot(error[1],c=next(color),linewidth=1)
+    except:
+        ax[idx//4,idx%4].plot([0],c=next(color))
+        print(dir_path)
 
     ax[idx//4,idx%4].set_xlabel('Epoch')
     ax[idx//4,idx%4].set_ylabel('Test error rate (%)')
     ax[idx//4,idx%4].set_xlim([0,100])
     ax[idx//4,idx%4].set_ylim([0,20])
     ax[idx//4,idx%4].grid(axis='y')
-    ax[idx//4,idx%4].set_title(str(param_dict))#+r'T_1 = '+str(net.T_1)+'\n'+r'T_2 = '+str(net.T_2)+'\n'+r'\tau = '+str(net.tau_dynamic)+'\nstep = '+str(step),fontsize=30)
+    ax[idx//4,idx%4].set_title(plot_title)#+r'T_1 = '+str(net.T_1)+'\n'+r'T_2 = '+str(net.T_2)+'\n'+r'\tau = '+str(net.tau_dynamic)+'\nstep = '+str(step),fontsize=30)
 fig.suptitle('Test Error (%)\n Directory: '+args.directory,fontsize=50)
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig(args.directory+'/test.png',bbox_inches="tight")
 
 # This is what I was using
 n_col,n_row=3,3
-
+"""
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
 # rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
@@ -193,7 +199,7 @@ for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
 fig.suptitle('Test Error (%)\n'+r'$T_1=5,T_2=1$',fontsize=50)
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
-
+"""
 #
 # # n_col,n_row=3,4
 # # # batch_size=200
