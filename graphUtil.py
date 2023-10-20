@@ -131,7 +131,7 @@ def dir_name2(learning_rule,N1,N2,n_dynamic,beta,batch_size):
 
 
 # General
-
+"""
 # This is what I was using
 fig, ax = plt.subplots(4,4,figsize=(40,40))
 if args.directory==None:
@@ -171,18 +171,18 @@ fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFi
 fig.savefig(args.directory+'/test.png',bbox_inches="tight")
 
 # This is what I was using
-n_col,n_row=3,3
 """
+n_col,n_row=3,3
 fig, ax = plt.subplots(n_row,n_col,figsize=(40,40))
 layers=2
 # rules=['stdp_slow','stdp_med','stdp_fast','nonspiking_stdp_slow','nonspiking_stdp_med','nonspiking_stdp_fast','nonspiking_skewsym','nonspiking_cep']
-rules=['nonspiking_cep','nonspiking_stdp_fast']#'nonspiking_skewsym']
+rules=['nonspiking_cep','nonspiking_skewsym']
 for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
     for idx2, step in enumerate([0.05,0.02,0.01]):
         color = iter(colormap(np.linspace(0,1,12)))
         for rule in rules:
             try:
-                directory_name = rule+"_"+str(3*idx1+idx2)
+                directory_name = args.directory+"/"+rule+"_"+str(3*idx1+idx2)
                 if layers==2:
                     directory_name += "_2layer"
                 error = csv2array(directory_name,skiplines=0)
@@ -199,7 +199,7 @@ for idx1,tau_dynamic in enumerate([0.05,0.02,0.01]):
 fig.suptitle('Test Error (%)\n'+r'$T_1=5,T_2=1$',fontsize=50)
 fig.legend(rules, loc='lower right', ncol=len(rules), bbox_transform=fig.transFigure)
 fig.savefig('nonspiking_dynamics_'+str(layers)+'layer.png',bbox_inches="tight")
-"""
+
 #
 # # n_col,n_row=3,4
 # # # batch_size=200

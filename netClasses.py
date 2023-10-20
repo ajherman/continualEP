@@ -70,7 +70,6 @@ class SNN(nn.Module):
         # Output layer
         spike_method = 'poisson'
         if self.spiking:
-            assert(0)
             dsdt.append(-s[0] + self.w[0](spike[1]))
             if np.abs(beta) > 0:
                 dsdt[0] = dsdt[0] + beta*(target-spike[0])
