@@ -262,6 +262,11 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='if set, expect time-based variables')
+parser.add_argument(
+    '--spike-method',
+    type=str,
+    default='poisson',
+    help='rule for generating spikes')
 
 
 args = parser.parse_args()
@@ -300,13 +305,6 @@ if True: #if not args.load:
     if args.trace_decay==None:
         args.trace_decay=np.exp(-1./args.n_trace)
         print("trace decay = ",args.trace_decay)
-
-
-##### Just making sure #####
-# Should these go back in??????????????????
-# args.max_Q=1.0
-# args.spike_height=1.0
-
 
 # New this should create consistency as we change the number of steps
 # if args.step==None:
@@ -423,20 +421,6 @@ if __name__ == '__main__':
         #         csv_writer = csv.writer(csv_file)
         #         csv_writer.writerow(fieldnames)
         #         csv_writer.writerow([args.learning_rule,args.update_rule,args.beta,args.dt,args.N1,args.N2])
-
-        # #compute initial angle between EP update and BPTT gradient
-        # if args.angle_grad:
-        #     batch_idx, (example_data, example_targets) = next(enumerate(train_loader))
-        #     if net.cuda:
-        #         example_data, example_targets = example_data.to(net.device), example_targets.to(net.device)
-        #     x = example_data
-        #     target = example_targets
-        #     nS, dS, dT, _ = compute_nSdSdT(net, x, target)
-        #     nT = compute_nT(net, x, target)
-        #     theta_T = compute_angleGrad(nS, dS, nT, dT)
-        #     results_dict_angle = {'theta_T': theta_T}
-        #     print('Initial angle between total EP update and total BPTT gradient: {:.2f} degrees'.format(theta_T))
-
 
         #train with EP
         error_train_tab = []

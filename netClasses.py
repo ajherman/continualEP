@@ -44,6 +44,7 @@ class SNN(nn.Module):
         self.device = device
         self.no_clamp = args.no_clamp
         self.beta = args.beta
+        self.spike_method = args.spike_method
 
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
@@ -68,7 +69,7 @@ class SNN(nn.Module):
         trace_decay = self.trace_decay
 
         # Output layer
-        spike_method = 'poisson'
+        # spike_method = 'poisson'
         if self.spiking:
             dsdt.append(-s[0] + self.w[0](spike[1]))
             if np.abs(beta) > 0:
@@ -102,9 +103,9 @@ class SNN(nn.Module):
         # If update rule is stdp or nonspiking stdp, then record spikes
         if self.update_rule == 'stdp' or self.spiking:
             for i in range(self.ns+1):
-                if spike_method == 'poisson':
+                if self.spike_method == 'poisson':
                     spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
-                elif spike_method == 'lif':
+                elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.2).float()
         elif self.update_rule == 'nonspikingstdp':
             for i in range(self.ns+1):
