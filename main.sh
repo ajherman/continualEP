@@ -84,7 +84,7 @@ mkdir -p $nonspiking_skewsym_dir
 mkdir -p $stdp_slow_dir
 mkdir -p $stdp_med_dir
 mkdir -p $stdp_fast_dir
-mkdir -p $nonspiking_stdp_slow_dirs
+mkdir -p $nonspiking_stdp_slow_dir
 mkdir -p $nonspiking_stdp_med_dir
 mkdir -p $nonspiking_stdp_fast_dir
 
