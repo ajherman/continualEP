@@ -77,6 +77,7 @@ class SNN(nn.Module):
             for i in range(1, self.ns):
                 dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
         else:
+            assert(0)
             dsdt.append(-s[0] + self.w[0](self.spike_height*rho(s[1])))
             if np.abs(beta) > 0:
                 dsdt[0] = dsdt[0] + beta*(target-self.spike_height*rho(s[0])) #was spike[0]... # CHANGED
@@ -86,6 +87,11 @@ class SNN(nn.Module):
         s_old = []
         for ind, s_temp in enumerate(s):
             s_old.append(s_temp.clone())
+
+        # If using LIF method, reset membrane potential after spike
+        if self.spike_method == 'lif':
+            for i in range(self.ns+1):
+                s[i] = s[i]*(1.0-self.spike[i])
 
         if self.no_clamp:
             for i in range(self.ns):
@@ -104,6 +110,7 @@ class SNN(nn.Module):
         if self.update_rule == 'stdp' or self.spiking:
             for i in range(self.ns+1):
                 if self.spike_method == 'poisson':
+                    assert(0)
                     spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
                 elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.2).float()
