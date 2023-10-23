@@ -117,6 +117,7 @@ class SNN(nn.Module):
                 elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.005).float()
                 elif self.spike_method == 'accumulator':
+                    omega = 1000
                     spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
                     error[i] = rho(s[i])+error[i]-spike[i]
         elif self.update_rule == 'nonspikingstdp':
