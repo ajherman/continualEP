@@ -117,7 +117,7 @@ def train(net, train_loader, epoch, learning_rule):
                 record=batch_idx%500==0
 
                 if record:
-                    s,deltas1, mps1 = net.forward(data, s, spike,record=True)
+                    s,deltas1, mps1 = net.forward(data, s, spike,error,record=True)
                 else:
                     s = net.forward(data,s,spike)
 
@@ -130,9 +130,9 @@ def train(net, train_loader, epoch, learning_rule):
                 beta = net.beta
 
                 if record:
-                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd',record=True)
+                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
                 else:
-                    s,Dw = net.forward(data,s,spike,trace=trace,target=targets,beta=beta,method='nograd')
+                    s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
                 #***********************************************************************************************#
 
                 if record:
