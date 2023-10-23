@@ -64,7 +64,7 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, data, s, spike, trace=None, target=None, beta=0, return_derivatives=False):
+    def stepper(self, data, s, spike, error=None, trace=None, target=None, beta=0, return_derivatives=False):
         dsdt = []
         trace_decay = self.trace_decay
 
@@ -92,9 +92,9 @@ class SNN(nn.Module):
         if self.spike_method == 'lif':
             for i in range(self.ns+1):
                 s[i] = s[i]*(1.0-spike[i])
-        elif spike_method == 'accumulator':
-            for i in range(self.ns+1):
-                s[i] += error[i]
+        # elif self.spike_method == 'accumulator':
+        #     for i in range(self.ns+1):
+        #         s[i] += error[i]
 
         if self.no_clamp:
             for i in range(self.ns):
@@ -113,13 +113,12 @@ class SNN(nn.Module):
         if self.update_rule == 'stdp' or self.spiking:
             for i in range(self.ns+1):
                 if self.spike_method == 'poisson':
-                    assert(0)
                     spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
                 elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.005).float()
                 elif self.spike_method == 'accumulator':
-                    spike[i] = torch.ceil(omega*s[i])/omega
-                    error[i] = s[i]-spike[i]
+                    spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
+                    error[i] = rho(s[i])+error[i]-spike[i]
         elif self.update_rule == 'nonspikingstdp':
             for i in range(self.ns+1):
                 spike[i] = rho(s[i])*self.spike_height
