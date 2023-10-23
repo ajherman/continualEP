@@ -30,6 +30,8 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
         spike = net.initHidden(data.size(0))
+        if net.spike_method == 'accumulator':
+            error = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
 
         if learning_rule == 'stdp':

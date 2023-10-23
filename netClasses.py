@@ -92,6 +92,9 @@ class SNN(nn.Module):
         if self.spike_method == 'lif':
             for i in range(self.ns+1):
                 s[i] = s[i]*(1.0-spike[i])
+        elif spike_method == 'accumulator':
+            for i in range(self.ns+1):
+                s[i] += error[i]
 
         if self.no_clamp:
             for i in range(self.ns):
@@ -114,6 +117,9 @@ class SNN(nn.Module):
                     spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
                 elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.005).float()
+                elif self.spike_method == 'accumulator':
+                    spike[i] = torch.ceil(omega*s[i])/omega
+                    error[i] = s[i]-spike[i]
         elif self.update_rule == 'nonspikingstdp':
             for i in range(self.ns+1):
                 spike[i] = rho(s[i])*self.spike_height
@@ -132,7 +138,8 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, **kwargs):
+    # def forward(self, data, s, spike, error=None, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, **kwargs):
+    def forward(self, data, s, spike, error=None, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, **kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         if beta==0:
             mps = [[] for i in range(len(node_list))]
