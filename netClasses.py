@@ -138,7 +138,7 @@ class SNN(nn.Module):
 
 
     # def forward(self, data, s, spike, **kwargs):
-    def forward(self, data, s, spike,  beta = 0, target = None, record=False, N1=self.N1, N2=self.N2, **state):
+    def forward(self, data, s, spike,  beta = 0, target = None, record=False, **state):
         error = state['error']
         trace = state['trace']
         seq = state['seq']
@@ -151,10 +151,6 @@ class SNN(nn.Module):
 
         N1 = self.N1
         N2 = self.N2
-        # if len(kwargs) > 0:
-        #     K = kwargs['K']
-        # else:
-        #     K = N2
 
         if beta == 0:
             deltas = []
