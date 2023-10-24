@@ -30,7 +30,7 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
         spike = net.initHidden(data.size(0))
-        if net.spike_method == 'accumulator':
+        if 1 or net.spike_method == 'accumulator':
             error = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
 
@@ -180,7 +180,7 @@ def evaluate(net, test_loader, learning_rule=None):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
             spike = net.initHidden(data.size(0))
-            if net.spike_method == 'accumulator':
+            if net.spike_method == 'accumulator' or 1:
                 error = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
