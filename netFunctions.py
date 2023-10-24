@@ -39,11 +39,13 @@ def train(net, train_loader, epoch, learning_rule):
                 s[i] = s[i].to(net.device)
                 trace[i] = trace[i].to(net.device)
                 spike[i] = spike[i].to(net.device)
+                error[i] = error[i].to(net.device)
         else:
             for i in range(net.ns):
                 s[i] = s[i].to(net.device)
                 trace[i] = trace[i].to(net.device)
                 spike[i] = spike[i].to(net.device)
+                error[i] = error[i].to(net.device)
 
         # New!
         for i in range(net.ns+1):
@@ -117,9 +119,9 @@ def train(net, train_loader, epoch, learning_rule):
                 record=batch_idx%500==0
 
                 if record:
-                    s,deltas1, mps1 = net.forward(data, s, spike,record=True)
+                    s,deltas1, mps1 = net.forward(data, s, spike,error,record=True)
                 else:
-                    s = net.forward(data,s,spike)
+                    s = net.forward(data,s,spike,error)
 
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
@@ -130,9 +132,9 @@ def train(net, train_loader, epoch, learning_rule):
                 beta = net.beta
 
                 if record:
-                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, trace=trace, target=targets, beta=beta, method='nograd',record=True)
+                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
                 else:
-                    s,Dw = net.forward(data,s,spike,trace=trace,target=targets,beta=beta,method='nograd')
+                    s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
                 #***********************************************************************************************#
 
                 if record:
@@ -178,12 +180,14 @@ def evaluate(net, test_loader, learning_rule=None):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
             spike = net.initHidden(data.size(0))
+            if net.spike_method == 'accumulator':
+                error = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
                     spike[i] = spike[i].to(net.device)
-
+                    error[i] = error[i].to(net.device)
             if learning_rule == 'stdp':
                 s[net.ns] = data
 
@@ -194,7 +198,7 @@ def evaluate(net, test_loader, learning_rule=None):
                 else:
                     spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
-            s = net.forward(data, s, spike,method = 'nograd')
+            s = net.forward(data, s,error, spike,method = 'nograd')
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
