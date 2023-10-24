@@ -267,6 +267,11 @@ parser.add_argument(
     type=str,
     default='poisson',
     help='rule for generating spikes')
+parser.add_argument(
+    '--omega',
+    type=int,
+    default=100000,
+    help='omega for accumulator neuron')
 
 
 args = parser.parse_args()

@@ -45,7 +45,7 @@ class SNN(nn.Module):
         self.no_clamp = args.no_clamp
         self.beta = args.beta
         self.spike_method = args.spike_method
-
+        self.omega = args.omega
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
         #*****************************#
@@ -77,7 +77,6 @@ class SNN(nn.Module):
             for i in range(1, self.ns):
                 dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
         else:
-            assert(0)
             dsdt.append(-s[0] + self.w[0](self.spike_height*rho(s[1])))
             if np.abs(beta) > 0:
                 dsdt[0] = dsdt[0] + beta*(target-self.spike_height*rho(s[0])) #was spike[0]... # CHANGED
@@ -117,7 +116,7 @@ class SNN(nn.Module):
                 elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.005).float()
                 elif self.spike_method == 'accumulator':
-                    omega = 1000
+                    omega = self.omega
                     spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
                     error[i] = rho(s[i])+error[i]-spike[i]
         elif self.update_rule == 'nonspikingstdp':
