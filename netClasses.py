@@ -104,7 +104,8 @@ class SNN(nn.Module):
                 dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
         # Traces
-        if not trace is None:
+        if 'trace' in state:
+            trace = state['trace']
             for i in range(self.ns+1):
                 trace[i] = self.trace_decay*(trace[i]+spike[i])
 
@@ -116,6 +117,7 @@ class SNN(nn.Module):
                 elif self.spike_method == 'lif':
                     spike[i] = self.spike_height*(s[i]>0.005).float()
                 elif self.spike_method == 'accumulator':
+                    error = state['error']
                     omega = self.omega
                     spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
                     error[i] = rho(s[i])+error[i]-spike[i]
