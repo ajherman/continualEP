@@ -155,7 +155,7 @@ class SNN(nn.Module):
         if beta == 0:
             deltas = []
             for t in range(N1):
-                s,dsdt = self.stepper(data, s,spike,error)
+                s,dsdt = self.stepper(data, s,spike,self.error)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
@@ -172,7 +172,7 @@ class SNN(nn.Module):
             Dw = self.initGrad()
             deltas = []
             for t in range(N2):
-                s, dw, dsdt = self.stepper(data, s, spike, error, trace, target, beta)
+                s, dw, dsdt = self.stepper(data, s, spike, self.error, self.trace, target, beta)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
