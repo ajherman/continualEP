@@ -129,11 +129,11 @@ class SNN(nn.Module):
         #*****************************C-EP*****************************#
 
         if (np.abs(beta) > 0):
-            dw = self.computeGradients(data, s, s_old, trace, spike)
+            dw = self.computeGradients(s, s_old, trace, spike)
             if self.cep:
                 with torch.no_grad():
                     self.updateWeights(dw)
-            return s,dw,dsdt
+            return s,dw,dsdtdata
         else:
             return s,dsdt
         #**************************************************************#
@@ -212,7 +212,7 @@ class SNN(nn.Module):
                 gradw_bias.append(None)
         return gradw, gradw_bias
 
-    def computeGradients(self, data, s, seq, trace, spike):
+    def computeGradients(self, s, seq, trace, spike):
         gradw = []
         gradw_bias = []
         batch_size = s[0].size(0)
