@@ -139,9 +139,9 @@ class SNN(nn.Module):
 
     # def forward(self, data, s, spike, **kwargs):
     def forward(self, data, s, spike,  beta = 0, target = None, record=False, **state):
-        error = state['error']
-        trace = state['trace']
-        seq = state['seq']
+        #error = state['error']
+        #trace = state['trace']
+        #seq = state['seq']
 
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         if beta==0:
