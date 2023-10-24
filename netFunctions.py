@@ -30,7 +30,7 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
         trace = net.initHidden(data.size(0))
         spike = net.initHidden(data.size(0))
-        if net.spike_method == 'accumulator':
+        if 1 or net.spike_method == 'accumulator':
             error = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
 
@@ -129,17 +129,13 @@ def train(net, train_loader, epoch, learning_rule):
                 seq = []
                 for i in range(len(s)): seq.append(s[i].clone())
 
-<<<<<<< HEAD
                 beta = net.beta
 
                 if record:
                     s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
                 else:
                     s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
-=======
-                beta = net.betacuda
-                s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
->>>>>>> simple
+
                 #***********************************************************************************************#
 
                 if record:
@@ -185,7 +181,7 @@ def evaluate(net, test_loader, learning_rule=None):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
             spike = net.initHidden(data.size(0))
-            if net.spike_method == 'accumulator':
+            if net.spike_method == 'accumulator' or 1:
                 error = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
