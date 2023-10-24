@@ -211,8 +211,8 @@ batch_size=20
 
 for omega in {1,10,100,1000,10000,100000}
 do
-nonspiking_cep_acc_dir=nonspiking_cep_accumulator_'$omega'
-nonspiking_skewsym_acc_dir=nonspiking_skewsym_accumulator_'$omega'
+nonspiking_cep_acc_dir=nonspiking_cep_accumulator_"$omega"
+nonspiking_skewsym_acc_dir=nonspiking_skewsym_accumulator_"$omega"
 
 mkdir -p $nonspiking_cep_acc_dir
 mkdir -p $nonspiking_skewsym_acc_dir
