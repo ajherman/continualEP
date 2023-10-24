@@ -129,12 +129,17 @@ def train(net, train_loader, epoch, learning_rule):
                 seq = []
                 for i in range(len(s)): seq.append(s[i].clone())
 
+<<<<<<< HEAD
                 beta = net.beta
 
                 if record:
                     s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
                 else:
                     s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
+=======
+                beta = net.betacuda
+                s, Dw = net.forward(data, s, trace=trace, target=targets, beta=beta, method='nograd')
+>>>>>>> simple
                 #***********************************************************************************************#
 
                 if record:
