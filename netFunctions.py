@@ -32,8 +32,10 @@ def train(net, train_loader, epoch, learning_rule):
             spike = net.initHidden(data.size(0))
             if net.spike_method == 'accumulator':
                 error = net.initHidden(data.size(0))
+
             else:
                 error = None
+
         data, targets = data.to(net.device), targets.to(net.device)
 
         for i in range(net.ns+1):
