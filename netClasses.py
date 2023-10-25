@@ -68,8 +68,7 @@ class SNN(nn.Module):
         dsdt = []
         trace_decay = self.trace_decay
 
-        # Output layer
-        # spike_method = 'poisson'
+        # Calculate dsdt
         if self.spiking:
             dsdt.append(-s[0] + self.w[0](spike[1]))
             if np.abs(beta) > 0:
@@ -77,23 +76,21 @@ class SNN(nn.Module):
             for i in range(1, self.ns):
                 dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
         else:
-            dsdt.append(-s[0] + self.w[0](self.spike_height*rho(s[1])))
+            dsdt.append(-s[0] + self.w[0](rho(s[1])))
             if np.abs(beta) > 0:
-                dsdt[0] = dsdt[0] + beta*(target-self.spike_height*rho(s[0])) #was spike[0]... # CHANGED
+                dsdt[0] = dsdt[0] + beta*(target-rho(s[0]))
             for i in range(1, self.ns):
-                dsdt.append(-s[i] + self.w[2*i](self.spike_height*rho(s[i+1])) + self.w[2*i-1](self.spike_height*rho(s[i-1])))
+                dsdt.append(-s[i] + self.w[2*i](rho(s[i+1])) + self.w[2*i-1](rho(s[i-1])))
 
+        # Save old s
         s_old = []
         for ind, s_temp in enumerate(s):
             s_old.append(s_temp.clone())
 
-        # If using LIF method, reset membrane potential after spike
-        if self.spike_method == 'lif':
-            for i in range(self.ns+1):
-                s[i] = s[i]*(1.0-spike[i])
-        # elif self.spike_method == 'accumulator':
+        # Update s
+        # if self.spike_method == 'lif':
         #     for i in range(self.ns+1):
-        #         s[i] += error[i]
+        #         s[i] = s[i]*(1.0-spike[i])
 
         if self.no_clamp:
             for i in range(self.ns):
@@ -109,23 +106,17 @@ class SNN(nn.Module):
                 trace[i] = self.trace_decay*(trace[i]+spike[i])
 
         # If update rule is stdp or nonspiking stdp, then record spikes
-        if self.update_rule == 'stdp' or self.spiking:
-            for i in range(self.ns+1):
-                if self.spike_method == 'poisson':
-                    spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
-                elif self.spike_method == 'lif':
-                    spike[i] = self.spike_height*(s[i]>0.005).float()
-                elif self.spike_method == 'accumulator':
-                    omega = self.omega
-                    spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
-                    error[i] = rho(s[i])+error[i]-spike[i]
-        elif self.update_rule == 'nonspikingstdp':
-            for i in range(self.ns+1):
-                spike[i] = rho(s[i])*self.spike_height
+        for i in range(self.ns+1):
+            if self.spike_method == 'poisson':
+                spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
+            # elif self.spike_method == 'lif':
+            #     spike[i] = self.spike_height*(s[i]>0.005).float()
+            elif self.spike_method == 'accumulator':
+                omega = self.omega
+                spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
+                error[i] = rho(s[i])+error[i]-spike[i]
 
-
-        #*****************************C-EP*****************************#
-
+        # CEP
         if (np.abs(beta) > 0):
             dw = self.computeGradients(data, s, s_old, trace, spike)
             if self.cep:
