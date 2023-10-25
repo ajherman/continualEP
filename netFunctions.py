@@ -26,33 +26,37 @@ def train(net, train_loader, epoch, learning_rule):
     deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
     for batch_idx, (data, targets) in enumerate(train_loader):
-        if not net.no_reset or batch_idx == 0:
-            s = net.initHidden(data.size(0))
-        trace = net.initHidden(data.size(0))
-        spike = net.initHidden(data.size(0))
+        state={ 's':net.initHidden(data.size(0)), 'spike':net.initHidden(data.size(0)) }
+        if net.update_rule == 'stdp':
+            state['trace'] = net.initHidden(data.size(0))
         if net.spike_method == 'accumulator':
-            error = net.initHidden(data.size(0))
+            state['error'] = net.initHidden(data.size(0))
+        # if not net.no_reset or batch_idx == 0:
+        #     s = net.initHidden(data.size(0))
+        # trace = net.initHidden(data.size(0))
+        # spike = net.initHidden(data.size(0))
+        # if net.spike_method == 'accumulator':
+        #     error = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
 
         if learning_rule == 'stdp':
-            for i in range(net.ns+1):
-                s[i] = s[i].to(net.device)
-                trace[i] = trace[i].to(net.device)
-                spike[i] = spike[i].to(net.device)
-                error[i] = error[i].to(net.device)
-        else:
-            for i in range(net.ns):
-                s[i] = s[i].to(net.device)
-                trace[i] = trace[i].to(net.device)
-                spike[i] = spike[i].to(net.device)
-                error[i] = error[i].to(net.device)
+            for state_var in state.values():
+                for i in range(net.ns+1):
+                    state_var[i] = state_var[i].to(net.device)
+
+        # else:
+        #     for i in range(net.ns):
+        #         s[i] = s[i].to(net.device)
+        #         trace[i] = trace[i].to(net.device)
+        #         spike[i] = spike[i].to(net.device)
+        #         error[i] = error[i].to(net.device)
 
         # New!
         for i in range(net.ns+1):
             if net.spiking:
-                spike[i] = net.spike_height*(torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q/net.spike_height)).float()
+                state[spike][i] = net.spike_height*(torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q/net.spike_height)).float()
             else:
-                spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
+                state[spike][i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
         # if learning_rule == 'ep':
         #     with torch.no_grad():
@@ -119,9 +123,9 @@ def train(net, train_loader, epoch, learning_rule):
                 record=batch_idx%500==0
 
                 if record:
-                    s,deltas1, mps1 = net.forward(data, s=s, spike=spike,error=error,record=True)
+                    s,deltas1, mps1 = net.forward(data,record=True,**state)
                 else:
-                    s = net.forward(data,s=s,spike=spike,error=error)
+                    s = net.forward(data,**state)
 
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
@@ -132,9 +136,9 @@ def train(net, train_loader, epoch, learning_rule):
                 beta = net.beta
 
                 if record:
-                    s, Dw, deltas2, mps2 = net.forward(data, s=s, spike=spike, error=error,trace=trace, target=targets, beta=beta,record=True)
+                    s, Dw, deltas2, mps2 = net.forward(data, target=targets, beta=beta,record=True,**state)
                 else:
-                    s,Dw = net.forward(data,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta)
+                    s,Dw = net.forward(data,target=targets,beta=beta,**state)
                 #***********************************************************************************************#
 
                 if record:
