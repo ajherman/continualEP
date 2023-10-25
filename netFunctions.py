@@ -32,7 +32,6 @@ def train(net, train_loader, epoch, learning_rule):
             spike = net.initHidden(data.size(0))
             if net.spike_method == 'accumulator':
                 error = net.initHidden(data.size(0))
-
             else:
                 error = None
 
@@ -175,6 +174,7 @@ def evaluate(net, test_loader, learning_rule=None):
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
+                trace = net.initHidden(data.size(0))
                 spike = net.initHidden(data.size(0))
                 if net.spike_method == 'accumulator':
                     error = net.initHidden(data.size(0))
