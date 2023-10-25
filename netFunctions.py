@@ -40,7 +40,7 @@ def train(net, train_loader, epoch, learning_rule):
 
         for i in range(net.ns+1):
             s[i] = s[i].to(net.device)
-            if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp'
+            if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
                 trace[i] = trace[i].to(net.device)
             spike[i] = spike[i].to(net.device)
             if net.spike_method == 'accumulator':
@@ -48,7 +48,7 @@ def train(net, train_loader, epoch, learning_rule):
 
         for i in range(net.ns+1):
             if net.spiking:
-                spike[i] = net.spike_height*(torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q/net.spike_height)).float()
+                spike[i] = (torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q)).float()
             else:
                 spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
@@ -192,7 +192,7 @@ def evaluate(net, test_loader, learning_rule=None):
             # New!
             for i in range(net.ns+1):
                 if net.spiking:
-                    spike[i] = net.spike_height*(torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q/net.spike_height)).float()
+                    spike[i] = (torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q)).float()
                 else:
                     spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
