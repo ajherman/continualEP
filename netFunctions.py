@@ -28,10 +28,7 @@ def train(net, train_loader, epoch, learning_rule):
     for batch_idx, (data, targets) in enumerate(train_loader):
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
-            if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
-                trace = net.initHidden(data.size(0))
-            else:
-                trace = None
+            trace = net.initHidden(data.size(0))
             spike = net.initHidden(data.size(0))
             if net.spike_method == 'accumulator':
                 error = net.initHidden(data.size(0))
