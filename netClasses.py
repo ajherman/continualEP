@@ -97,12 +97,13 @@ class SNN(nn.Module):
                 dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
         # Traces
-        if self.update_rule == 'stdp':
-            for i in range(self.ns+1):
-                trace[i] = self.trace_decay*(trace[i]+spike[i])
-        elif self.update_rule == 'nonspikingstdp':
-            for i in range(self.ns+1):
-                trace[i] = self.trace_decay(trace[i]+rho(s[i]))
+        if trace != None:
+            if self.update_rule == 'stdp':
+                for i in range(self.ns+1):
+                    trace[i] = self.trace_decay*(trace[i]+spike[i])
+            elif self.update_rule == 'nonspikingstdp':
+                for i in range(self.ns+1):
+                    trace[i] = self.trace_decay(trace[i]+rho(s[i]))
 
         # Get spikes
         for i in range(self.ns+1):
