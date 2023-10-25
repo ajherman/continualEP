@@ -28,7 +28,7 @@ def train(net, train_loader, epoch, learning_rule):
     for batch_idx, (data, targets) in enumerate(train_loader):
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
-            if net.update_rule == 'stdp':
+            if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
                 trace = net.initHidden(data.size(0))
             spike = net.initHidden(data.size(0))
             if net.spike_method == 'accumulator':
@@ -37,9 +37,11 @@ def train(net, train_loader, epoch, learning_rule):
 
         for i in range(net.ns+1):
             s[i] = s[i].to(net.device)
-            trace[i] = trace[i].to(net.device)
+            if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp'
+                trace[i] = trace[i].to(net.device)
             spike[i] = spike[i].to(net.device)
-            error[i] = error[i].to(net.device)
+            if net.spike_method == 'accumulator':
+                error[i] = error[i].to(net.device)
 
         for i in range(net.ns+1):
             if net.spiking:
@@ -178,8 +180,8 @@ def evaluate(net, test_loader, learning_rule=None):
                 for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
                     spike[i] = spike[i].to(net.device)
-                    error[i] = error[i].to(net.device)
-            # if learning_rule == 'stdp':
+                    if net.spike_method == 'accumulator':
+                        error[i] = error[i].to(net.device)
             s[net.ns] = data
 
             # New!
