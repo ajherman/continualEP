@@ -119,9 +119,9 @@ def train(net, train_loader, epoch, learning_rule):
                 record=batch_idx%500==0
 
                 if record:
-                    s,deltas1, mps1 = net.forward(data, s, spike,error=error,record=True)
+                    s,deltas1, mps1 = net.forward(data, s=s, spike=spike,error=error,record=True)
                 else:
-                    s = net.forward(data,s,spike,error=error)
+                    s = net.forward(data,s=s,spike=spike,error=error)
 
                 pred = s[0].data.max(1, keepdim=True)[1]
                 loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
@@ -132,9 +132,9 @@ def train(net, train_loader, epoch, learning_rule):
                 beta = net.beta
 
                 if record:
-                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, error=error,trace=trace, target=targets, beta=beta,record=True)
+                    s, Dw, deltas2, mps2 = net.forward(data, s=s, spike=spike, error=error,trace=trace, target=targets, beta=beta,record=True)
                 else:
-                    s,Dw = net.forward(data,s,spike,error=error,trace=trace,target=targets,beta=beta)
+                    s,Dw = net.forward(data,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta)
                 #***********************************************************************************************#
 
                 if record:

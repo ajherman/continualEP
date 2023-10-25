@@ -47,7 +47,7 @@ class SNN(nn.Module):
         self.spike_method = args.spike_method
         self.omega = args.omega
         #*********RANDOM BETA*********#
-        self.randbeta = args.randbeta
+        # self.randbeta = args.randbeta
         #*****************************#
 
         w = nn.ModuleList([])
@@ -64,7 +64,7 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, s, spike, target=None, beta=0, return_derivatives=False,**state):
+    def stepper(self, target=None, beta=0, return_derivatives=False,**state):
         dsdt = []
         trace_decay = self.trace_decay
 
@@ -140,7 +140,7 @@ class SNN(nn.Module):
 
 
     # def forward(self, data, s, spike, **kwargs):
-    def forward(self, data, s, spike,  beta = 0, target = None, record=False, **state):
+    def forward(self, data,  beta = 0, target = None, record=False, **state):
         #error = state['error']
         #trace = state['trace']
         #seq = state['seq']
@@ -157,7 +157,7 @@ class SNN(nn.Module):
         if beta == 0:
             deltas = []
             for t in range(N1):
-                s,dsdt = self.stepper(s,spike,**state)
+                s,dsdt = self.stepper(**state)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
@@ -174,7 +174,7 @@ class SNN(nn.Module):
             Dw = self.initGrad()
             deltas = []
             for t in range(N2):
-                s, dw, dsdt = self.stepper(s, spike, target, beta,**state)
+                s, dw, dsdt = self.stepper(target, beta,**state)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
