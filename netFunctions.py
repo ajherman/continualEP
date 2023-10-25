@@ -30,9 +30,13 @@ def train(net, train_loader, epoch, learning_rule):
             s = net.initHidden(data.size(0))
             if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
                 trace = net.initHidden(data.size(0))
+            else:
+                trace = None
             spike = net.initHidden(data.size(0))
             if net.spike_method == 'accumulator':
                 error = net.initHidden(data.size(0))
+            else:
+                error = None
         data, targets = data.to(net.device), targets.to(net.device)
 
         for i in range(net.ns+1):
@@ -175,6 +179,8 @@ def evaluate(net, test_loader, learning_rule=None):
                 spike = net.initHidden(data.size(0))
                 if net.spike_method == 'accumulator':
                     error = net.initHidden(data.size(0))
+                else:
+                    error = None
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns+1):
