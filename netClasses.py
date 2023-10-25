@@ -9,6 +9,24 @@ import torch.nn.functional as F
 
 from main import rho, rhop
 
+class State():
+    def __init__(self,net):
+        self.s = None
+        self.spike = None
+        self.error = None
+        self.trace = None
+
+    def moveToDevice(self,device):
+        for i in range(net.ns+1):
+            if self.s != None:
+                self.s[i] = self.s[i].to(net.device)
+            if self.spike != None:
+                self.spike[i] = self.spike[i].to(net.device)
+            if self.error != None:
+                self.error[i] = self.error[i].to(net.device)
+            if self.trace != None:
+                self.trace[i] = self.trace[i].to(net.device)
+
 class SNN(nn.Module):
 
     def __init__(self, args):
@@ -64,83 +82,74 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, target=None, beta=0, return_derivatives=False,**state):
+    def stepper(self,x, target=None, beta=0, return_derivatives=False):
         dsdt = []
         trace_decay = self.trace_decay
-        s = state['s']
 
         # Output layer
-        # spike_method = 'poisson'
+
+        # Get deltas
         if self.spiking:
-            spike = state['spike']
-            dsdt.append(-s[0] + self.w[0](spike[1]))
+            # spike = state['spike']
+            dsdt.append(-x.s[0] + self.w[0](x.spike[1]))
             if np.abs(beta) > 0:
                 dsdt[0] = dsdt[0] + beta*(target-spike[0])
             for i in range(1, self.ns):
-                dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
-        else:
-            dsdt.append(-s[0] + self.w[0](self.spike_height*rho(s[1])))
-            if np.abs(beta) > 0:
-                dsdt[0] = dsdt[0] + beta*(target-self.spike_height*rho(s[0])) #was spike[0]... # CHANGED
-            for i in range(1, self.ns):
-                dsdt.append(-s[i] + self.w[2*i](self.spike_height*rho(s[i+1])) + self.w[2*i-1](self.spike_height*rho(s[i-1])))
+                dsdt.append(-x.s[i] + self.w[2*i](x.spike[i+1]) + self.w[2*i-1](x.spike[i-1]))
 
+        else:
+            dsdt.append(-x.s[0] + self.w[0](self.spike_height*rho(x.s[1])))
+            if np.abs(beta) > 0:
+                dsdt[0] = dsdt[0] + beta*(target-self.spike_height*rho(x.s[0])) #was spike[0]... # CHANGED
+            for i in range(1, self.ns):
+                dsdt.append(-x.s[i] + self.w[2*i](self.spike_height*rho(x.s[i+1])) + self.w[2*i-1](self.spike_height*rho(x.s[i-1])))
+
+        # Save old state
         s_old = []
         for ind, s_temp in enumerate(s):
             s_old.append(s_temp.clone())
 
-        # If using LIF method, reset membrane potential after spike
+        # Update state
         if self.spike_method == 'lif':
             for i in range(self.ns+1):
-                s[i] = s[i]*(1.0-spike[i])
-        # elif self.spike_method == 'accumulator':
-        #     for i in range(self.ns+1):
-        #         s[i] += error[i]
-
+                x.s[i] = x.s[i]*(1.0-x.spike[i])
         if self.no_clamp:
             for i in range(self.ns):
-                s[i] = s[i] + self.dt*dsdt[i]
+                x.s[i] = x.s[i] + self.dt*dsdt[i]
         else:
             for i in range(self.ns):
-                s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
-                dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
-
-        # Traces
-        if 'trace' in state:
-            trace = state['trace']
+                x.s[i] = (x.s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
+                dsdt[i] = torch.where((x.s[i] == 0)|(x.s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
+        if x.trace != None:
             for i in range(self.ns+1):
-                trace[i] = self.trace_decay*(trace[i]+spike[i])
-
-        # If update rule is stdp or nonspiking stdp, then record spikes
+                x.trace[i] = self.trace_decay*(x.trace[i]+x.spike[i])
         if self.update_rule == 'stdp' or self.spiking:
             for i in range(self.ns+1):
                 if self.spike_method == 'poisson':
-                    spike[i] = self.spike_height*(torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
+                    x.spike[i] = self.spike_height*(torch.rand(x.s[i].size(),device=self.device)<rho(x.s[i])).float()
                 elif self.spike_method == 'lif':
-                    spike[i] = self.spike_height*(s[i]>0.005).float()
+                    x.spike[i] = self.spike_height*(x.s[i]>0.005).float()
                 elif self.spike_method == 'accumulator':
-                    error = state['error']
+                    error = x.state['error']
                     omega = self.omega
-                    spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
-                    error[i] = rho(s[i])+error[i]-spike[i]
+                    x.spike[i] = torch.ceil(omega*(rho(x.s[i])+x.error[i]))/omega
+                    x.error[i] = rho(x.s[i])+x.error[i]-x.spike[i]
         elif self.update_rule == 'nonspikingstdp':
             for i in range(self.ns+1):
-                spike[i] = rho(s[i])*self.spike_height
+                x.spike[i] = rho(x.s[i])*self.spike_height
 
-
-        #*****************************C-EP*****************************#
-
+        # CEP
         if (np.abs(beta) > 0):
-            if 'trace' in state.keys():
-                trace=state['trace']
-            else:
-                trace=None
-            if 'spike' in state.keys():
-                spike = state['spike']
-            else:
-                spike =None
+            # if 'trace' in state.keys():
+            #     trace=state['trace']
+            # else:
+            #     trace=None
+            # if 'spike' in state.keys():
+            #     spike = state['spike']
+            # else:
+            #     spike=None
             s = state['s']
-            dw = self.computeGradients(s, s_old, trace, spike)
+            dw = self.computeGradients(x.s, s_old, x.trace, x.spike)
             if self.cep:
                 with torch.no_grad():
                     self.updateWeights(dw)
@@ -151,16 +160,17 @@ class SNN(nn.Module):
 
 
     # def forward(self, data, s, spike, **kwargs):
-    def forward(self, data,  beta = 0, target = None, record=False, **state):
+    def forward(self, data,  state, beta = 0, target = None, record=False):
         #error = state['error']
         #trace = state['trace']
         #seq = state['seq']
+        state.s[net.ns] = data
 
-        node_list = [(0,4),(1,25),(1,40),(2,16)]
-        if beta==0:
-            mps = [[] for i in range(len(node_list))]
-        else:
-            mps = [[] for i in range(len(node_list))]
+        # node_list = [(0,4),(1,25),(1,40),(2,16)]
+        # if beta==0:
+        #     mps = [[] for i in range(len(node_list))]
+        # else:
+        #     mps = [[] for i in range(len(node_list))]
 
         N1 = self.N1
         N2 = self.N2
@@ -168,49 +178,83 @@ class SNN(nn.Module):
         if beta == 0:
             deltas = []
             for t in range(N1):
-                s,dsdt = self.stepper(**state)
-                if record:
-                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-                    deltas.append(delta)
-                    for i in range(len(node_list)):
-                        layer,node = node_list[i]
-                        mps[i].append(s[layer][0,node].detach().cpu().numpy())
-            mps = np.array(mps)
+                s,dsdt = self.stepper(state)
 
-            if record:
-                return s, deltas, mps
-            else:
-                return s
+            #     if record:
+            #         delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+            #         deltas.append(delta)
+            #         for i in range(len(node_list)):
+            #             layer,node = node_list[i]
+            #             mps[i].append(s[layer][0,node].detach().cpu().numpy())
+            # mps = np.array(mps)
+            #
+            # if record:
+            #     return s, deltas, mps
+            # else:
+            #     return s
+            return s
+
         else:
-            Dw = self.initGrad()
-            deltas = []
+            # Dw = self.initGrad()
+            # deltas = []
             for t in range(N2):
-                s, dw, dsdt = self.stepper(target, beta,**state)
-                if record:
-                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-                    deltas.append(delta)
-                    for i in range(len(node_list)):
-                        layer,node = node_list[i]
-                        mps[i].append(s[layer][0,node].detach().cpu().numpy())
-
-                with torch.no_grad():
-                    for ind_type, dw_temp in enumerate(dw):
-                        for ind, dw_temp_layer in enumerate(dw_temp):
-                            if dw_temp_layer is not None:
-                                Dw[ind_type][ind] += dw_temp_layer
-            mps = np.array(mps)
-
-            # Plot plot deltas
-            if record:
-                return s, Dw, deltas, mps
-            else:
-                return s, Dw
+                s, dw, dsdt = self.stepper(state,target, beta)
+            #     if record:
+            #         delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+            #         deltas.append(delta)
+            #         for i in range(len(node_list)):
+            #             layer,node = node_list[i]
+            #             mps[i].append(s[layer][0,node].detach().cpu().numpy())
+            #
+            #     with torch.no_grad():
+            #         for ind_type, dw_temp in enumerate(dw):
+            #             for ind, dw_temp_layer in enumerate(dw_temp):
+            #                 if dw_temp_layer is not None:
+            #                     Dw[ind_type][ind] += dw_temp_layer
+            # mps = np.array(mps)
+            #
+            # # Plot plot deltas
+            # if record:
+            #     return s, Dw, deltas, mps
+            # else:
+            #     return s, Dw
+            return s
 
     def initHidden(self, batch_size):
         s = []
         for i in range(self.ns+1):
             s.append(torch.zeros(batch_size, self.size_tab[i], requires_grad = True))
         return s
+
+    def initState(self): # Create dictionary containing all state variables
+        state=State()
+        state.s = net.initHidden(data.size(0))
+        state.spike = net.initHidden(data.size(0))
+        if net.update_rule == 'stdp':
+            state.trace = net.initHidden(data.size(0))
+        if net.spike_method == 'accumulator':
+            state.error = net.initHidden(data.size(0))
+
+        for i in range(net.ns+1):
+            if net.spiking:
+                state.spike[i] = net.spike_height*(torch.rand(state.s[i].size(),device=net.device)<(rho(state.s[i])*net.max_Q/net.spike_height)).float()
+            else:
+                state.spike = rho(state.s[i])*net.max_Q # Get Poisson spikes
+        return state
+
+    # def initStateDict(self): # Create dictionary containing all state variables
+    #     state={ 's':net.initHidden(data.size(0)), 'spike':net.initHidden(data.size(0)) }
+    #     if net.update_rule == 'stdp':
+    #         state['trace'] = net.initHidden(data.size(0))
+    #     if net.spike_method == 'accumulator':
+    #         state['error'] = net.initHidden(data.size(0))
+    #
+    #     for i in range(net.ns+1):
+    #         if net.spiking:
+    #             state['spike'][i] = net.spike_height*(torch.rand(state['s'][i].size(),device=net.device)<(rho(state['s'][i])*net.max_Q/net.spike_height)).float()
+    #         else:
+    #             state['spike'][i] = rho(state['s'][i])*net.max_Q # Get Poisson spikes
+    #     return state
 
     def initGrad(self):
         gradw = []
