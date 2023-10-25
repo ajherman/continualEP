@@ -67,10 +67,12 @@ class SNN(nn.Module):
     def stepper(self, target=None, beta=0, return_derivatives=False,**state):
         dsdt = []
         trace_decay = self.trace_decay
+        s = state['s']
 
         # Output layer
         # spike_method = 'poisson'
         if self.spiking:
+            spike = state['spike']
             dsdt.append(-s[0] + self.w[0](spike[1]))
             if np.abs(beta) > 0:
                 dsdt[0] = dsdt[0] + beta*(target-spike[0])
