@@ -131,7 +131,7 @@ class SNN(nn.Module):
         #*****************************C-EP*****************************#
 
         if (np.abs(beta) > 0):
-            dw = self.computeGradients(s, s_old, trace, spike)
+            dw = self.computeGradients(state['s'], s_old, state['trace'], state['spike'])
             if self.cep:
                 with torch.no_grad():
                     self.updateWeights(dw)

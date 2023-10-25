@@ -54,9 +54,9 @@ def train(net, train_loader, epoch, learning_rule):
         # New!
         for i in range(net.ns+1):
             if net.spiking:
-                state[spike][i] = net.spike_height*(torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q/net.spike_height)).float()
+                state['spike'][i] = net.spike_height*(torch.rand(state['s'][i].size(),device=net.device)<(rho(state['s'][i])*net.max_Q/net.spike_height)).float()
             else:
-                state[spike][i] = rho(s[i])*net.max_Q # Get Poisson spikes
+                state['spike'][i] = rho(state['s'][i])*net.max_Q # Get Poisson spikes
 
         # if learning_rule == 'ep':
         #     with torch.no_grad():
@@ -118,7 +118,7 @@ def train(net, train_loader, epoch, learning_rule):
 
         if learning_rule == 'stdp':
             with torch.no_grad():
-                s[net.ns] = data
+                state['s'][net.ns] = data
 
                 record=batch_idx%500==0
 
