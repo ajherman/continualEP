@@ -28,128 +28,118 @@ def train(net, train_loader, epoch, learning_rule):
     for batch_idx, (data, targets) in enumerate(train_loader):
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
-        trace = net.initHidden(data.size(0))
-        spike = net.initHidden(data.size(0))
-        if net.spike_method == 'accumulator':
-            error = net.initHidden(data.size(0))
+            trace = net.initHidden(data.size(0))
+            spike = net.initHidden(data.size(0))
+            if net.spike_method == 'accumulator':
+                error = net.initHidden(data.size(0))
         data, targets = data.to(net.device), targets.to(net.device)
 
-        if learning_rule == 'stdp':
-            for i in range(net.ns+1):
-                s[i] = s[i].to(net.device)
-                trace[i] = trace[i].to(net.device)
-                spike[i] = spike[i].to(net.device)
-                error[i] = error[i].to(net.device)
-        else:
-            for i in range(net.ns):
-                s[i] = s[i].to(net.device)
-                trace[i] = trace[i].to(net.device)
-                spike[i] = spike[i].to(net.device)
-                error[i] = error[i].to(net.device)
+        for i in range(net.ns+1):
+            s[i] = s[i].to(net.device)
+            trace[i] = trace[i].to(net.device)
+            spike[i] = spike[i].to(net.device)
+            error[i] = error[i].to(net.device)
 
-        # New!
         for i in range(net.ns+1):
             if net.spiking:
                 spike[i] = net.spike_height*(torch.rand(s[i].size(),device=net.device)<(rho(s[i])*net.max_Q/net.spike_height)).float()
             else:
                 spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
-        if learning_rule == 'ep':
-            with torch.no_grad():
-                s = net.forward(data, s)
-                pred = s[0].data.max(1, keepdim=True)[1]
-                loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
-                #************************************ EQPROP *******************************************#
-                seq = []
-                for i in range(len(s)): seq.append(s[i].clone())
+        # if learning_rule == 'ep':
+        #     with torch.no_grad():
+        #         s = net.forward(data, s)
+        #         pred = s[0].data.max(1, keepdim=True)[1]
+        #         loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+        #         #************************************ EQPROP *******************************************#
+        #         seq = []
+        #         for i in range(len(s)): seq.append(s[i].clone())
+        #
+        #         if not net.debug_cep:
+        #             if net.randbeta > 0:
+        #                 signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
+        #                 beta = signbeta*net.beta
+        #             else:
+        #                 beta = net.beta
+        #
+        #             s = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
+        #             if not net.cep:
+        #                 Dw = net.computeGradients(data, s, seq, beta)
+        #                 net.updateWeights(Dw)
+        #         else:
+        #             s, Dw = net.forward(data, s, target = targets, beta = net.beta, method = 'nograd')
+        #             with torch.no_grad():
+        #                 for ind, w_temp in enumerate(net.w):
+        #                     if w_temp is not None:
+        #                         w_temp.weight -= net.lr_tab_debug[int(np.floor(ind/2))]*Dw[0][ind]
+        #                         w_temp.bias -= net.lr_tab_debug[int(np.floor(ind/2))]*Dw[1][ind]
+        #
+        #             net.updateWeights(Dw)
+        #         #***********************************************************************************#
+        #
+        # elif learning_rule == 'vf':
+        #     with torch.no_grad():
+        #         s = net.forward(data, s)
+        #         pred = s[0].data.max(1, keepdim=True)[1]
+        #         loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+        #         #*******************************************VF-EQPROP ******************************************#
+        #         seq = []
+        #         for i in range(len(s)): seq.append(s[i].clone())
+        #
+        #         #******************************************FORMER C-VF******************************************#
+        #         if net.randbeta > 0:
+        #             signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
+        #             beta = signbeta*net.beta
+        #         else:
+        #             beta = net.beta
+        #
+        #         s, Dw = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
+        #         #***********************************************************************************************#
+        #
+        #         if not net.cep:
+        #             if not net.former:
+        #                 net.updateWeights(Dw)
+        #             else:
+        #                 Dw_former = net.computeGradients(data, s, seq, beta)
+        #                 net.updateWeights(Dw_former)
+        #         #########################################################################################
+        #
+        # elif learning_rule == 'stdp':
+        with torch.no_grad():
+            s[net.ns] = data
 
-                if not net.debug_cep:
-                    if net.randbeta > 0:
-                        signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-                        beta = signbeta*net.beta
-                    else:
-                        beta = net.beta
+            if batch_idx%500==0:
+                s,deltas1, mps1 = net.forward(data, s, spike,error,record=True)
+            else:
+                s = net.forward(data,s,spike,error)
 
-                    s = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
-                    if not net.cep:
-                        Dw = net.computeGradients(data, s, seq, beta)
-                        net.updateWeights(Dw)
-                else:
-                    s, Dw = net.forward(data, s, target = targets, beta = net.beta, method = 'nograd')
-                    with torch.no_grad():
-                        for ind, w_temp in enumerate(net.w):
-                            if w_temp is not None:
-                                w_temp.weight -= net.lr_tab_debug[int(np.floor(ind/2))]*Dw[0][ind]
-                                w_temp.bias -= net.lr_tab_debug[int(np.floor(ind/2))]*Dw[1][ind]
+            pred = s[0].data.max(1, keepdim=True)[1]
+            loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+            #*******************************************VF-EQPROP ******************************************#
+            seq = []
+            for i in range(len(s)): seq.append(s[i].clone())
 
-                    net.updateWeights(Dw)
-                #***********************************************************************************#
+            beta = net.beta
 
-        elif learning_rule == 'vf':
-            with torch.no_grad():
-                s = net.forward(data, s)
-                pred = s[0].data.max(1, keepdim=True)[1]
-                loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
-                #*******************************************VF-EQPROP ******************************************#
-                seq = []
-                for i in range(len(s)): seq.append(s[i].clone())
+            if batch_idx%500==0:
+                s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
+            else:
+                s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
+            #***********************************************************************************************#
 
-                #******************************************FORMER C-VF******************************************#
-                if net.randbeta > 0:
-                    signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-                    beta = signbeta*net.beta
-                else:
-                    beta = net.beta
+            if batch_idx%500==0:
+                mps=np.concatenate((mps1,mps2),axis=1)
+                deltas=np.concatenate((deltas1,deltas2),axis=0)
+                mps_li.append(mps)
+                deltas_li.append(deltas)
 
-                s, Dw = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
-                #***********************************************************************************************#
-
-                if not net.cep:
-                    if not net.former:
-                        net.updateWeights(Dw)
-                    else:
-                        Dw_former = net.computeGradients(data, s, seq, beta)
-                        net.updateWeights(Dw_former)
-                #########################################################################################
-
-        elif learning_rule == 'stdp':
-            with torch.no_grad():
-                s[net.ns] = data
-
-                record=batch_idx%500==0
-
-                if record:
-                    s,deltas1, mps1 = net.forward(data, s, spike,error,record=True)
-                else:
-                    s = net.forward(data,s,spike,error)
-
-                pred = s[0].data.max(1, keepdim=True)[1]
-                loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
-                #*******************************************VF-EQPROP ******************************************#
-                seq = []
-                for i in range(len(s)): seq.append(s[i].clone())
-
-                beta = net.beta
-
-                if record:
-                    s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
-                else:
-                    s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
-                #***********************************************************************************************#
-
-                if record:
-                    mps=np.concatenate((mps1,mps2),axis=1)
-                    deltas=np.concatenate((deltas1,deltas2),axis=0)
-                    mps_li.append(mps)
-                    deltas_li.append(deltas)
-
-                if not net.cep:
-                    if not net.former:
-                        net.updateWeights(Dw)
-                    else:
-                        Dw_former = net.computeGradients(data, s, seq, beta)
-                        net.updateWeights(Dw_former)
-                #########################################################################################
+            # if not net.cep:
+            #     if not net.former:
+            #         net.updateWeights(Dw)
+            #     else:
+            #         Dw_former = net.computeGradients(data, s, seq, beta)
+            #         net.updateWeights(Dw_former)
+            # #########################################################################################
 
         loss_tot += loss
         targets_temp = targets.data.max(1, keepdim=True)[1]
@@ -179,17 +169,17 @@ def evaluate(net, test_loader, learning_rule=None):
         for batch_idx, (data, targets) in enumerate(test_loader):
             if not net.no_reset or batch_idx==0:
                 s = net.initHidden(data.size(0))
-            spike = net.initHidden(data.size(0))
-            if net.spike_method == 'accumulator':
-                error = net.initHidden(data.size(0))
+                spike = net.initHidden(data.size(0))
+                if net.spike_method == 'accumulator':
+                    error = net.initHidden(data.size(0))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns+1):
                     s[i] = s[i].to(net.device)
                     spike[i] = spike[i].to(net.device)
                     error[i] = error[i].to(net.device)
-            if learning_rule == 'stdp':
-                s[net.ns] = data
+            # if learning_rule == 'stdp':
+            s[net.ns] = data
 
             # New!
             for i in range(net.ns+1):
