@@ -136,7 +136,7 @@ def evaluate(net, test_loader, learning_rule=None):
                 else:
                     spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
-            s = net.forward(data, s, spike,net.N1,error=error)
+            s,_ = net.forward(data, s, spike,net.N1,error=error)
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
