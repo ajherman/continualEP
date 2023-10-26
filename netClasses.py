@@ -64,7 +64,7 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, data, s, spike, error=None, trace=None, target=None, beta=0, return_derivatives=False):
+    def stepper(self, data, s=s, spike=spike, error=None, trace=None, target=None, beta=0, return_derivatives=False):
         dsdt = []
         trace_decay = self.trace_decay
 
@@ -82,10 +82,6 @@ class SNN(nn.Module):
             for i in range(1, self.ns):
                 dsdt.append(-s[i] + self.w[2*i](rho(s[i+1])) + self.w[2*i-1](rho(s[i-1])))
 
-        # # Save old s
-        # s_old = []
-        # for ind, s_temp in enumerate(s):
-        #     s_old.append(s_temp.clone())
         s_old = [x.clone() for x in s]
 
         # Update s
@@ -104,7 +100,7 @@ class SNN(nn.Module):
                     trace[i] = self.trace_decay*(trace[i]+spike[i])
             elif self.update_rule == 'nonspikingstdp':
                 for i in range(self.ns+1):
-                    trace[i] = self.trace_decay(trace[i]+rho(s[i]))
+                    trace[i] = self.trace_decay*(trace[i]+rho(s[i]))
 
         # Get spikes
         for i in range(self.ns+1):
@@ -132,13 +128,13 @@ class SNN(nn.Module):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         mps = [[] for i in range(len(node_list))]
 
-        N1 = self.N1
-        N2 = self.N2
+        # N1 = self.N1
+        # N2 = self.N2
 
         if beta == 0:
             deltas = []
             for t in range(N):
-                s,dsdt = self.stepper(data, s,spike,error)
+                s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)
@@ -155,7 +151,7 @@ class SNN(nn.Module):
             Dw = self.initGrad()
             deltas = []
             for t in range(N):
-                s, dw, dsdt = self.stepper(data, s, spike, error, trace, target, beta)
+                s, dw, dsdt = self.stepper(data, s=s, spike=spike, error=error, trace=trace, target=target, beta=beta)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                     deltas.append(delta)

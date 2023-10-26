@@ -51,65 +51,6 @@ def train(net, train_loader, epoch, learning_rule):
             else:
                 spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
-        # if learning_rule == 'ep':
-        #     with torch.no_grad():
-        #         s = net.forward(data, s)
-        #         pred = s[0].data.max(1, keepdim=True)[1]
-        #         loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
-        #         #************************************ EQPROP *******************************************#
-        #         seq = []
-        #         for i in range(len(s)): seq.append(s[i].clone())
-        #
-        #         if not net.debug_cep:
-        #             if net.randbeta > 0:
-        #                 signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-        #                 beta = signbeta*net.beta
-        #             else:
-        #                 beta = net.beta
-        #
-        #             s = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
-        #             if not net.cep:
-        #                 Dw = net.computeGradients(data, s, seq, beta)
-        #                 net.updateWeights(Dw)
-        #         else:
-        #             s, Dw = net.forward(data, s, target = targets, beta = net.beta, method = 'nograd')
-        #             with torch.no_grad():
-        #                 for ind, w_temp in enumerate(net.w):
-        #                     if w_temp is not None:
-        #                         w_temp.weight -= net.lr_tab_debug[int(np.floor(ind/2))]*Dw[0][ind]
-        #                         w_temp.bias -= net.lr_tab_debug[int(np.floor(ind/2))]*Dw[1][ind]
-        #
-        #             net.updateWeights(Dw)
-        #         #***********************************************************************************#
-        #
-        # elif learning_rule == 'vf':
-        #     with torch.no_grad():
-        #         s = net.forward(data, s)
-        #         pred = s[0].data.max(1, keepdim=True)[1]
-        #         loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
-        #         #*******************************************VF-EQPROP ******************************************#
-        #         seq = []
-        #         for i in range(len(s)): seq.append(s[i].clone())
-        #
-        #         #******************************************FORMER C-VF******************************************#
-        #         if net.randbeta > 0:
-        #             signbeta = 2*np.random.binomial(1, net.randbeta, 1).item() - 1
-        #             beta = signbeta*net.beta
-        #         else:
-        #             beta = net.beta
-        #
-        #         s, Dw = net.forward(data, s, target = targets, beta = beta, method = 'nograd')
-        #         #***********************************************************************************************#
-        #
-        #         if not net.cep:
-        #             if not net.former:
-        #                 net.updateWeights(Dw)
-        #             else:
-        #                 Dw_former = net.computeGradients(data, s, seq, beta)
-        #                 net.updateWeights(Dw_former)
-        #         #########################################################################################
-        #
-        # elif learning_rule == 'stdp':
         with torch.no_grad():
             s[net.ns] = data
 
@@ -120,9 +61,10 @@ def train(net, train_loader, epoch, learning_rule):
 
             pred = s[0].data.max(1, keepdim=True)[1]
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
-            #*******************************************VF-EQPROP ******************************************#
-            seq = []
-            for i in range(len(s)): seq.append(s[i].clone())
+            # #*******************************************VF-EQPROP ******************************************#
+            # seq = []
+            # for i in range(len(s)): seq.append(s[i].clone())
+            seq = [x.clone() for x in s]
 
             beta = net.beta
 
@@ -137,14 +79,6 @@ def train(net, train_loader, epoch, learning_rule):
                 deltas=np.concatenate((deltas1,deltas2),axis=0)
                 mps_li.append(mps)
                 deltas_li.append(deltas)
-
-            # if not net.cep:
-            #     if not net.former:
-            #         net.updateWeights(Dw)
-            #     else:
-            #         Dw_former = net.computeGradients(data, s, seq, beta)
-            #         net.updateWeights(Dw_former)
-            # #########################################################################################
 
         loss_tot += loss
         targets_temp = targets.data.max(1, keepdim=True)[1]
