@@ -127,9 +127,7 @@ class SNN(nn.Module):
     def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, **kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         mps = [[] for i in range(len(node_list))]
-
-        # N1 = self.N1
-        # N2 = self.N2
+        info = {'mps':None,'deltas':None,'dw':None}
 
         if beta == 0:
             deltas = []
@@ -142,11 +140,10 @@ class SNN(nn.Module):
                         layer,node = node_list[i]
                         mps[i].append(s[layer][0,node].detach().cpu().numpy())
             mps = np.array(mps)
+            info['mps'] = mps
+            info['deltas'] = deltas
 
-            if record:
-                return s, deltas, mps
-            else:
-                return s
+            # return s,info
         else:
             Dw = self.initGrad()
             deltas = []
@@ -165,12 +162,11 @@ class SNN(nn.Module):
                             if dw_temp_layer is not None:
                                 Dw[ind_type][ind] += dw_temp_layer
             mps = np.array(mps)
-
+            info['mps'] = mps
+            info['deltas'] = deltas
+            info['dw'] = dW
             # Plot plot deltas
-            if record:
-                return s, Dw, deltas, mps
-            else:
-                return s, Dw
+        return s,info
 
     def initHidden(self, batch_size):
         s = []
