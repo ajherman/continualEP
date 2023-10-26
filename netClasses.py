@@ -118,54 +118,68 @@ class SNN(nn.Module):
             dw = self.computeGradients(data, s, s_old, trace, spike)
             with torch.no_grad():
                 self.updateWeights(dw)
-            return s,dw,dsdt
-        else:
-            return s,dsdt
+        #     return s,dw,dsdt
+        # else:
+        #     return s,dsdt
+        return s,dsdt
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, **kwargs):
+    def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weight=False **kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         mps = [[] for i in range(len(node_list))]
         info = {'mps':None,'deltas':None,'dw':None}
 
-        if beta == 0:
-            deltas = []
-            for t in range(N):
-                s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta)
-                if record:
-                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-                    deltas.append(delta)
-                    for i in range(len(node_list)):
-                        layer,node = node_list[i]
-                        mps[i].append(s[layer][0,node].detach().cpu().numpy())
-            mps = np.array(mps)
-            info['mps'] = mps
-            info['deltas'] = deltas
+        deltas = []
+        for t in range(N):
+            s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta)
+            if record:
+                delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+                deltas.append(delta)
+                for i in range(len(node_list)):
+                    layer,node = node_list[i]
+                    mps[i].append(s[layer][0,node].detach().cpu().numpy())
+        mps = np.array(mps)
+        info['mps'] = mps
+        info['deltas'] = deltas
 
-            # return s,info
-        else:
-            Dw = self.initGrad()
-            deltas = []
-            for t in range(N):
-                s, dw, dsdt = self.stepper(data, s=s, spike=spike, error=error, trace=trace, target=target, beta=beta)
-                if record:
-                    delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-                    deltas.append(delta)
-                    for i in range(len(node_list)):
-                        layer,node = node_list[i]
-                        mps[i].append(s[layer][0,node].detach().cpu().numpy())
-
-                with torch.no_grad():
-                    for ind_type, dw_temp in enumerate(dw):
-                        for ind, dw_temp_layer in enumerate(dw_temp):
-                            if dw_temp_layer is not None:
-                                Dw[ind_type][ind] += dw_temp_layer
-            mps = np.array(mps)
-            info['mps'] = mps
-            info['deltas'] = deltas
-            info['dw'] = Dw
-            # Plot plot deltas
+        # if beta == 0:
+        #     deltas = []
+        #     for t in range(N):
+        #         s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta)
+        #         if record:
+        #             delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+        #             deltas.append(delta)
+        #             for i in range(len(node_list)):
+        #                 layer,node = node_list[i]
+        #                 mps[i].append(s[layer][0,node].detach().cpu().numpy())
+        #     mps = np.array(mps)
+        #     info['mps'] = mps
+        #     info['deltas'] = deltas
+        #
+        #     # return s,info
+        # else:
+        #     Dw = self.initGrad()
+        #     deltas = []
+        #     for t in range(N):
+        #         s, dw, dsdt = self.stepper(data, s=s, spike=spike, error=error, trace=trace, target=target, beta=beta)
+        #         if record:
+        #             delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+        #             deltas.append(delta)
+        #             for i in range(len(node_list)):
+        #                 layer,node = node_list[i]
+        #                 mps[i].append(s[layer][0,node].detach().cpu().numpy())
+        #
+        #         with torch.no_grad():
+        #             for ind_type, dw_temp in enumerate(dw):
+        #                 for ind, dw_temp_layer in enumerate(dw_temp):
+        #                     if dw_temp_layer is not None:
+        #                         Dw[ind_type][ind] += dw_temp_layer
+        #     mps = np.array(mps)
+        #     info['mps'] = mps
+        #     info['deltas'] = deltas
+        #     info['dw'] = Dw
+        #     # Plot plot deltas
         return s,info
 
     def initHidden(self, batch_size):
