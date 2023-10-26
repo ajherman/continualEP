@@ -164,7 +164,7 @@ class SNN(nn.Module):
             mps = np.array(mps)
             info['mps'] = mps
             info['deltas'] = deltas
-            info['dw'] = dW
+            info['dw'] = Dw
             # Plot plot deltas
         return s,info
 

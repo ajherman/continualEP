@@ -77,7 +77,7 @@ def train(net, train_loader, epoch, learning_rule):
                 mps2 = info['mps']
             else:
                 s,info = net.forward(data,s,spike,net.N2,error,trace=trace,target=targets,beta=beta,method='nograd')
-                dW = info['dw']
+                Dw = info['dw']
             #***********************************************************************************************#
 
             if batch_idx%500==0:
