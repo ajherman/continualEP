@@ -128,19 +128,16 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, **kwargs):
+    def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, **kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
-        if beta==0:
-            mps = [[] for i in range(len(node_list))]
-        else:
-            mps = [[] for i in range(len(node_list))]
+        mps = [[] for i in range(len(node_list))]
 
         N1 = self.N1
         N2 = self.N2
 
         if beta == 0:
             deltas = []
-            for t in range(N1):
+            for t in range(N):
                 s,dsdt = self.stepper(data, s,spike,error)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
@@ -157,7 +154,7 @@ class SNN(nn.Module):
         else:
             Dw = self.initGrad()
             deltas = []
-            for t in range(N2):
+            for t in range(N):
                 s, dw, dsdt = self.stepper(data, s, spike, error, trace, target, beta)
                 if record:
                     delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]

@@ -114,9 +114,9 @@ def train(net, train_loader, epoch, learning_rule):
             s[net.ns] = data
 
             if batch_idx%500==0:
-                s,deltas1, mps1 = net.forward(data, s, spike,error,record=True)
+                s,deltas1, mps1 = net.forward(data, s, spike,net.N1,error,record=True)
             else:
-                s = net.forward(data,s,spike,error)
+                s = net.forward(data,s,spike,net.N1,error)
 
             pred = s[0].data.max(1, keepdim=True)[1]
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
@@ -127,9 +127,9 @@ def train(net, train_loader, epoch, learning_rule):
             beta = net.beta
 
             if batch_idx%500==0:
-                s, Dw, deltas2, mps2 = net.forward(data, s, spike, error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
+                s, Dw, deltas2, mps2 = net.forward(data, s, spike, net.N2,error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
             else:
-                s,Dw = net.forward(data,s,spike,error,trace=trace,target=targets,beta=beta,method='nograd')
+                s,Dw = net.forward(data,s,spike,net.N2,error,trace=trace,target=targets,beta=beta,method='nograd')
             #***********************************************************************************************#
 
             if batch_idx%500==0:
@@ -196,7 +196,7 @@ def evaluate(net, test_loader, learning_rule=None):
                 else:
                     spike[i] = rho(s[i])*net.max_Q # Get Poisson spikes
 
-            s = net.forward(data, s,error, spike,method = 'nograd')
+            s = net.forward(data, s, spike,net.N1,error=error)
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
             pred = s[0].data.max(1, keepdim = True)[1]
