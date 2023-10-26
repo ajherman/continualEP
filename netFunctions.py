@@ -59,7 +59,7 @@ def train(net, train_loader, epoch, learning_rule):
                 deltas1 = info['deltas']
                 mps1 = info['mps']
             else:
-                s = net.forward(data,s,spike,net.N1,error)
+                s,_ = net.forward(data,s,spike,net.N1,error)
 
             pred = s[0].data.max(1, keepdim=True)[1]
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
