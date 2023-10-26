@@ -71,12 +71,12 @@ def train(net, train_loader, epoch, learning_rule):
             beta = net.beta
 
             if batch_idx%500==0:
-                s, info = net.forward(data, s, spike, net.N2,error,trace=trace, target=targets, beta=beta, method='nograd',record=True)
+                s, info = net.forward(data, s, spike, net.N2,error,trace=trace, target=targets, beta=beta,record=True)
                 # Dw = info['dw']
                 deltas2 = info['deltas']
                 mps2 = info['mps']
             else:
-                s,info = net.forward(data,s,spike,net.N2,error,trace=trace,target=targets,beta=beta,method='nograd')
+                s,info = net.forward(data,s,spike,net.N2,error,trace=trace,target=targets,beta=beta)
                 # Dw = info['dw']
             #***********************************************************************************************#
 
