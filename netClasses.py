@@ -82,10 +82,11 @@ class SNN(nn.Module):
             for i in range(1, self.ns):
                 dsdt.append(-s[i] + self.w[2*i](rho(s[i+1])) + self.w[2*i-1](rho(s[i-1])))
 
-        # Save old s
-        s_old = []
-        for ind, s_temp in enumerate(s):
-            s_old.append(s_temp.clone())
+        # # Save old s
+        # s_old = []
+        # for ind, s_temp in enumerate(s):
+        #     s_old.append(s_temp.clone())
+        s_old = [x.clone() for x in s]
 
         # Update s
         if self.no_clamp:
@@ -127,7 +128,7 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, error=None, trace = None, seq = None, method = 'nograd',  beta = 0, target = None, record=False, **kwargs):
+    def forward(self, data, s, spike, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, **kwargs):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         if beta==0:
             mps = [[] for i in range(len(node_list))]
