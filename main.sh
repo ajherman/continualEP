@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 5
+#SBATCH -N 16
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -197,34 +197,55 @@ batch_size=20
 # done
 
 # Accumulator test
-beta=0.5
-T1=5
-T2=1
+# beta=0.5
+# T1=5
+# T2=1
+# hidden_size=256
 # tau_dynamic=0.02
-max_fr=1
-# Was 0.2,0.02 for both
+# step=0.05
+
+beta=0.2
+T1=8
+T2=3
 hidden_size=256
-tau_dynamic=0.02
+tau_dynamic=0.2
 step=0.05
-batch_size=20
 
-
-for omega in {1,10,100,1000,10000,100000}
+for batch_size in {20,200}
 do
-nonspiking_cep_acc_dir=nonspiking_cep_accumulator_"$omega"
-nonspiking_skewsym_acc_dir=nonspiking_skewsym_accumulator_"$omega"
-nonspiking_stdp_acc_dir=nonspiking_stdp_accumulator_"$omega"
+
+nonspiking_cep_poi_dir=nonspiking_cep_poisson_"$batch_size"
+nonspiking_skewsym_poi_dir=nonspiking_skewsym_poisson_"$batch_size"
+nonspiking_stdp_poi_dir=nonspiking_stdp_poisson_"$batch_size"
+spiking_stdp_poi_dir=spiking_stdp_poisson_"$batch_size"
+
+mkdir -p $nonspiking_cep_poi_dir
+mkdir -p $nonspiking_skewsym_poi_dir
+mkdir -p $nonspiking_stdp_poi_dir
+mkdir -p $spiking_stdp_poi_dir
+
+srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
+srun -N 1 -n 1 -c $cores -o "$spiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+
+
+for omega in {1,2,4,16,2048}
+do
+
+nonspiking_cep_acc_dir=nonspiking_cep_accumulator_"$omega"_"$batch_size"
+nonspiking_skewsym_acc_dir=nonspiking_skewsym_accumulator_"$omega"_"$batch_size"
+nonspiking_stdp_acc_dir=nonspiking_stdp_accumulator_"$omega"_"$batch_size"
+spiking_stdp_acc_dir=spiking_stdp_accumulator_"$omega"_"$batch_size"
 
 mkdir -p $nonspiking_cep_acc_dir
 mkdir -p $nonspiking_skewsym_acc_dir
 mkdir -p $nonspiking_stdp_acc_dir
+mkdir -p $spiking_stdp_acc_dir
 
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_acc_dir --omega $omega --step $step --spike-method accumulator --max-fr $max_fr --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_acc_dir --omega $omega --step $step --spike-method accumulator --max-fr $max_fr --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --max-fr $max_fr --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
+srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_acc_dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_acc_dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
+srun -N 1 -n 1 -c $cores -o "$spiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 done
-
-
-
-
+done

@@ -34,7 +34,7 @@ class SNN(nn.Module):
         # self.spike_height = args.spike_height
         self.step = args.step
         self.max_fr = args.max_fr
-        self.max_Q = args.max_Q
+        # self.max_Q = args.max_Q
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
             self.cuda = True
@@ -113,17 +113,12 @@ class SNN(nn.Module):
             elif self.spike_method == 'nonspiking':
                 spike[i] = rho(s[i])
 
-        # # CEP
-        # if (np.abs(beta) > 0):
+        # CEP
         if update_weights:
             dw = self.computeGradients(data, s, s_old, trace, spike)
             with torch.no_grad():
                 self.updateWeights(dw)
-            #return s,dw,dsdt
-        # else:
-        #     return s,dsdt
         return s,dsdt
-        #**************************************************************#
 
 
     def forward(self, data, N, s=None, spike=None, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weights=False):
@@ -133,7 +128,7 @@ class SNN(nn.Module):
 
         deltas = []
         for t in range(N):
-            s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
+            s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 
             if record:
                 delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
@@ -145,43 +140,6 @@ class SNN(nn.Module):
         info['mps'] = mps
         info['deltas'] = deltas
 
-        # if beta == 0:
-        #     deltas = []
-        #     for t in range(N):
-        #         s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta)
-        #         if record:
-        #             delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-        #             deltas.append(delta)
-        #             for i in range(len(node_list)):
-        #                 layer,node = node_list[i]
-        #                 mps[i].append(s[layer][0,node].detach().cpu().numpy())
-        #     mps = np.array(mps)
-        #     info['mps'] = mps
-        #     info['deltas'] = deltas
-        #
-        #     # return s,info
-        # else:
-        #     Dw = self.initGrad()
-        #     deltas = []
-        #     for t in range(N):
-        #         s, dw, dsdt = self.stepper(data, s=s, spike=spike, error=error, trace=trace, target=target, beta=beta)
-        #         if record:
-        #             delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-        #             deltas.append(delta)
-        #             for i in range(len(node_list)):
-        #                 layer,node = node_list[i]
-        #                 mps[i].append(s[layer][0,node].detach().cpu().numpy())
-        #
-        #         with torch.no_grad():
-        #             for ind_type, dw_temp in enumerate(dw):
-        #                 for ind, dw_temp_layer in enumerate(dw_temp):
-        #                     if dw_temp_layer is not None:
-        #                         Dw[ind_type][ind] += dw_temp_layer
-        #     mps = np.array(mps)
-        #     info['mps'] = mps
-        #     info['deltas'] = deltas
-        #     info['dw'] = Dw
-        #     # Plot plot deltas
         return s,info
 
     def initHidden(self, batch_size):
@@ -190,16 +148,16 @@ class SNN(nn.Module):
             s.append(torch.zeros(batch_size, self.size_tab[i], requires_grad = True))
         return s
 
-    def initGrad(self):
-        gradw = []
-        gradw_bias =[]
-        for ind, w_temp in enumerate(self.w):
-            gradw.append(torch.zeros_like(w_temp.weight))
-            if w_temp.bias is not None:
-                gradw_bias.append(torch.zeros_like(w_temp.bias))
-            else:
-                gradw_bias.append(None)
-        return gradw, gradw_bias
+    # def initGrad(self):
+    #     gradw = []
+    #     gradw_bias =[]
+    #     for ind, w_temp in enumerate(self.w):
+    #         gradw.append(torch.zeros_like(w_temp.weight))
+    #         if w_temp.bias is not None:
+    #             gradw_bias.append(torch.zeros_like(w_temp.bias))
+    #         else:
+    #             gradw_bias.append(None)
+    #     return gradw, gradw_bias
 
     def computeGradients(self, data, s, seq, trace, spike):
         gradw = []
