@@ -2,15 +2,15 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 16
+#SBATCH -N 12
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
-hidden_size=512
+#hidden_size=512
 cores=8
-batch_size=20
+#batch_size=20
 
 # # One layer
 # i=0
@@ -210,9 +210,7 @@ T2=3
 hidden_size=256
 tau_dynamic=0.2
 step=0.05
-
-for batch_size in {20,200}
-do
+batch_size=20
 
 nonspiking_cep_poi_dir=nonspiking_cep_poisson_"$batch_size"
 nonspiking_skewsym_poi_dir=nonspiking_skewsym_poisson_"$batch_size"
@@ -230,7 +228,7 @@ srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_poi_dir".out --open-mode=append ./
 srun -N 1 -n 1 -c $cores -o "$spiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 
 
-for omega in {1,2,4,16,2048}
+for omega in {1,2,4,2048}
 do
 
 nonspiking_cep_acc_dir=nonspiking_cep_accumulator_"$omega"_"$batch_size"
@@ -248,4 +246,4 @@ srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_acc_dir".out --open-mode=append
 srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
 srun -N 1 -n 1 -c $cores -o "$spiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 done
-done
+
