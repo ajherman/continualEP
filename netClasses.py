@@ -64,7 +64,7 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, data, s=None, spike=None, error=None, trace=None, target=None, beta=0, return_derivatives=False):
+    def stepper(self, data, s=None, spike=None, error=None, trace=None, target=None, beta=0, return_derivatives=False, update_weights=False):
         dsdt = []
         trace_decay = self.trace_decay
 
@@ -113,26 +113,28 @@ class SNN(nn.Module):
             elif self.spike_method == 'nonspiking':
                 spike[i] = rho(s[i])
 
-        # CEP
-        if (np.abs(beta) > 0):
+        # # CEP
+        # if (np.abs(beta) > 0):
+        if update_weights:
             dw = self.computeGradients(data, s, s_old, trace, spike)
             with torch.no_grad():
                 self.updateWeights(dw)
-        #     return s,dw,dsdt
+            return s,dw,dsdt
         # else:
         #     return s,dsdt
         return s,dsdt
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weight=False):
+    def forward(self, data, N, s=None, spike=None, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weights=False):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         mps = [[] for i in range(len(node_list))]
         info = {'mps':None,'deltas':None,'dw':None}
 
         deltas = []
         for t in range(N):
-            s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta)
+            s,dsdt = self.stepper(data, s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
+
             if record:
                 delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
                 deltas.append(delta)
