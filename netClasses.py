@@ -125,7 +125,7 @@ class SNN(nn.Module):
         #**************************************************************#
 
 
-    def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weight=False **kwargs):
+    def forward(self, data, s, spike, N, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weight=False):
         node_list = [(0,4),(1,25),(1,40),(2,16)]
         mps = [[] for i in range(len(node_list))]
         info = {'mps':None,'deltas':None,'dw':None}
