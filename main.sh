@@ -204,48 +204,49 @@ cores=8
 # tau_dynamic=0.02
 # step=0.05
 
-beta=0.2
-T1=8
-T2=3
-hidden_size=256
-tau_dynamic=0.2
-step=0.05
-batch_size=20
-
-nonspiking_cep_poi_dir=nonspiking_cep_poisson_"$batch_size"
-nonspiking_skewsym_poi_dir=nonspiking_skewsym_poisson_"$batch_size"
-nonspiking_stdp_poi_dir=nonspiking_stdp_poisson_"$batch_size"
-spiking_stdp_poi_dir=spiking_stdp_poisson_"$batch_size"
-
-mkdir -p $nonspiking_cep_poi_dir
-mkdir -p $nonspiking_skewsym_poi_dir
-mkdir -p $nonspiking_stdp_poi_dir
-mkdir -p $spiking_stdp_poi_dir
-
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
-srun -N 1 -n 1 -c $cores -o "$spiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-
-
-for omega in {1,2,4,2048}
-do
-
-nonspiking_cep_acc_dir=nonspiking_cep_accumulator_"$omega"_"$batch_size"
-nonspiking_skewsym_acc_dir=nonspiking_skewsym_accumulator_"$omega"_"$batch_size"
-nonspiking_stdp_acc_dir=nonspiking_stdp_accumulator_"$omega"_"$batch_size"
-spiking_stdp_acc_dir=spiking_stdp_accumulator_"$omega"_"$batch_size"
-
-mkdir -p $nonspiking_cep_acc_dir
-mkdir -p $nonspiking_skewsym_acc_dir
-mkdir -p $nonspiking_stdp_acc_dir
-mkdir -p $spiking_stdp_acc_dir
-
-srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_acc_dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_acc_dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
-srun -N 1 -n 1 -c $cores -o "$spiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-done
+# 10/26
+# beta=0.2
+# T1=8
+# T2=3
+# hidden_size=256
+# tau_dynamic=0.2
+# step=0.05
+# batch_size=20
+#
+# nonspiking_cep_poi_dir=nonspiking_cep_poisson_"$batch_size"
+# nonspiking_skewsym_poi_dir=nonspiking_skewsym_poisson_"$batch_size"
+# nonspiking_stdp_poi_dir=nonspiking_stdp_poisson_"$batch_size"
+# spiking_stdp_poi_dir=spiking_stdp_poisson_"$batch_size"
+#
+# mkdir -p $nonspiking_cep_poi_dir
+# mkdir -p $nonspiking_skewsym_poi_dir
+# mkdir -p $nonspiking_stdp_poi_dir
+# mkdir -p $spiking_stdp_poi_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
+# srun -N 1 -n 1 -c $cores -o "$spiking_stdp_poi_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_poi_dir --step $step --spike-method poisson --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+#
+#
+# for omega in {1,2,4,2048}
+# do
+#
+# nonspiking_cep_acc_dir=nonspiking_cep_accumulator_"$omega"_"$batch_size"
+# nonspiking_skewsym_acc_dir=nonspiking_skewsym_accumulator_"$omega"_"$batch_size"
+# nonspiking_stdp_acc_dir=nonspiking_stdp_accumulator_"$omega"_"$batch_size"
+# spiking_stdp_acc_dir=spiking_stdp_accumulator_"$omega"_"$batch_size"
+#
+# mkdir -p $nonspiking_cep_acc_dir
+# mkdir -p $nonspiking_skewsym_acc_dir
+# mkdir -p $nonspiking_stdp_acc_dir
+# mkdir -p $spiking_stdp_acc_dir
+#
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_cep_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_cep_acc_dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_skewsym_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_skewsym_acc_dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+# srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $nonspiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule nonspikingstdp &
+# srun -N 1 -n 1 -c $cores -o "$spiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+# done
 
 
 # Compare difference methods of spike generation
