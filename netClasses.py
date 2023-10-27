@@ -119,7 +119,7 @@ class SNN(nn.Module):
             dw = self.computeGradients(data, s, s_old, trace, spike)
             with torch.no_grad():
                 self.updateWeights(dw)
-            return s,dw,dsdt
+            #return s,dw,dsdt
         # else:
         #     return s,dsdt
         return s,dsdt

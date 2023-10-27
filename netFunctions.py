@@ -55,7 +55,7 @@ def train(net, train_loader, epoch, learning_rule):
             s[net.ns] = data
 
             if batch_idx%500==0:
-                s,info = net.forward(data, net.N1 s=s, spike=spike,error=error,record=True)
+                s,info = net.forward(data, net.N1, s=s, spike=spike,error=error,record=True)
                 deltas1 = info['deltas']
                 mps1 = info['mps']
             else:
@@ -71,7 +71,7 @@ def train(net, train_loader, epoch, learning_rule):
             beta = net.beta
 
             if batch_idx%500==0:
-                s, info = net.forward(data,net.N2 s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+                s, info = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
                 # Dw = info['dw']
                 deltas2 = info['deltas']
                 mps2 = info['mps']
