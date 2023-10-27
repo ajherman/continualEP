@@ -247,3 +247,36 @@ srun -N 1 -n 1 -c $cores -o "$nonspiking_stdp_acc_dir".out --open-mode=append ./
 srun -N 1 -n 1 -c $cores -o "$spiking_stdp_acc_dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $spiking_stdp_acc_dir --step $step --spike-method accumulator --omega $omega --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --tau-trace 0.02  --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1  --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 done
 
+
+# Compare difference methods of spike generation
+
+beta=0.2
+T1=8
+T2=3
+hidden_size=256
+tau_dynamic=0.2
+step=0.025
+batch_size=200
+tau_trace=0.5
+
+i=0
+for update_rule in {'cep','skewsym','nonspikingstdp','stdp'}
+do
+for spike_method in {'none','poisson'}
+do
+dir=compare_spike_methods_"$update_rule"_"$spike_method"
+i=$((i+1))
+mkdir -p $dir
+srun -N 1 -n 1 -c $cores -o "$dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $dir --step $step --spike-method $spike_method --tau-dynamic $tau_dynamic --tau-trace $tau_trace --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
+done
+spike_method='accumulator'
+for omega in {1,2,4}
+do
+dir=compare_spike_methods_"$update_rule"_"$spike_method"
+i=$((i+1))
+mkdir -p $dir
+srun -N 1 -n 1 -c $cores -o "$dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $dir --omega $omega --step $step --spike-method accumulator --tau-dynamic $tau_dynamic --tau-trace $tau_trace --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
+done
+done
+
+dir=compare_spike_method_"$i"

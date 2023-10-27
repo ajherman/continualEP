@@ -34,31 +34,27 @@ parser.add_argument(
 args = parser.parse_args()
 
 param_list = ['N1','N2','dt','size_tab','lr_tab','use_bias','no_reset','no_rhop','plain_data','update_rule','trace_decay','spiking','step','no_clamp','beta']
-'''
-fixed: N1,N2,step,archi
-variable:
-same graph:
-'''
+
 
 def getFiles(root_dir):
     file_dict = {}
-    for x in os.walk(root_dir):
-        dir = x[0]
-        param_path = os.path.join(dir,"params.txt")
-        if os.path.isfile(param_path):
-            with open(param_path,'rb') as f:
-                param_dict = json.load(f)
-            results_file = os.path.join(dir,"results.csv")
-            if os.path.isfile(results_file):
-                with open(results_file,'r',newline='') as csv_file:
-                    csv_reader = csv.reader(csv_file)
-                    train_error,test_error = np.array(list(csv_reader)).astype('float').T
-                file_dict[dir] = {'param_dict':param_dict,'train_error':train_error,'test_error':test_error}
+    for relative_dir in os.listdir(root_dir):
+        dir = os.path.join(root_dir,relative_dir)
+        if os.path.isdir(dir):
+            param_path = os.path.join(dir,"params.txt")
+            if os.path.isfile(param_path):
+                with open(param_path,'rb') as f:
+                    param_dict = json.load(f)
+                results_file = os.path.join(dir,"results.csv")
+                if os.path.isfile(results_file):
+                    with open(results_file,'r',newline='') as csv_file:
+                        csv_reader = csv.reader(csv_file)
+                        train_error,test_error = np.array(list(csv_reader)).astype('float').T
+                    file_dict[dir] = {'param_dict':param_dict,'train_error':train_error,'test_error':test_error}
     return file_dict
 
-
-
 pairs = getFiles(args.directory)
+print(pairs)
 
 
 # fig, ax = plt.subplots(figsize=(40,40))
@@ -77,18 +73,32 @@ pairs = getFiles(args.directory)
 # fig.legend(layers, loc='lower right', ncol=len(layers), bbox_transform=fig.transFigure,fontsize=30)
 # fig.savefig(args.directory+"/deltas.png",bbox_inches="tight")
 
-update_rule='cep'
+update_rule='stdp'
 fig, ax = plt.subplots(figsize=(40,40))
+ax.grid(axis='y')
+ax.set_ylim([0,20])
+ax.set_xlabel('Epoch',fontsize=50)
+ax.set_ylabel('Test error rate (%)',fontsize=50)
+
 for key in pairs.keys():
     file_dict = pairs[key]
     params = file_dict['param_dict']
+    test_error = file_dict['test_error']
     if params['update_rule'] == update_rule:
-        if params['spike_method'] == 'poisson':
-            ax.plot(params['test_error'])
-            ax.set_title('poisson')
-        elif params['spike_method'] == 'accumulator':
-            ax.set_title('accumulator: omega='+str(omega))
-fig.suptitle(update_rule)
+        if 'spike_method' in params.keys():
+            if params['spike_method'] == 'poisson':
+                ax.plot(test_error,label="poisson",linewidth=5)
+                # ax.set_title('poisson')
+            elif params['spike_method'] == 'accumulator':
+                ax.plot(test_error,label='accumulator: omega='+str(params['omega']),linewidth=5)
+                # ax.set_title('accumulator: omega='+str(params['omega']))
+leg = plt.legend(loc='upper center',fontsize=50)
+title = ""
+title += "\nUpdate rule: "+update_rule
+title += "\nArchitecture: "+str(params['size_tab'])
+# print(key)
+# title += "\nSpiking: "+update_rule
+fig.suptitle(title,fontsize=80)
 fig.savefig(args.directory+"/test.png",bbox_inches="tight")
 
 # for key in pairs.keys():
