@@ -73,50 +73,31 @@ print(pairs)
 # fig.legend(layers, loc='lower right', ncol=len(layers), bbox_transform=fig.transFigure,fontsize=30)
 # fig.savefig(args.directory+"/deltas.png",bbox_inches="tight")
 
-update_rule='stdp'
-fig, ax = plt.subplots(figsize=(40,40))
-ax.grid(axis='y')
-ax.set_ylim([0,20])
-ax.set_xlabel('Epoch',fontsize=50)
-ax.set_ylabel('Test error rate (%)',fontsize=50)
 
-for key in pairs.keys():
-    file_dict = pairs[key]
-    params = file_dict['param_dict']
-    test_error = file_dict['test_error']
-    if params['update_rule'] == update_rule:
-        if 'spike_method' in params.keys():
-            if params['spike_method'] == 'poisson':
-                ax.plot(test_error,label="poisson",linewidth=5)
-                # ax.set_title('poisson')
-            elif params['spike_method'] == 'accumulator':
-                ax.plot(test_error,label='accumulator: omega='+str(params['omega']),linewidth=5)
-                # ax.set_title('accumulator: omega='+str(params['omega']))
-leg = plt.legend(loc='upper center',fontsize=50)
-title = ""
-title += "\nUpdate rule: "+update_rule
-title += "\nArchitecture: "+str(params['size_tab'])
-# print(key)
-# title += "\nSpiking: "+update_rule
-fig.suptitle(title,fontsize=80)
-fig.savefig(args.directory+"/test.png",bbox_inches="tight")
+fig, ax = plt.subplots(2,2,figsize=(40,40))
+for idx,update_rule in enumerate(['cep','skewsym','stdp','nonspikingstdp']):
+    ax[idx//2,idx%2].grid(axis='y')
+    ax[idx//2,idx%2].set_ylim([0,20])
+    ax[idx//2,idx%2].set_xlabel('Epoch',fontsize=50)
+    ax[idx//2,idx%2].set_ylabel('Test error rate (%)',fontsize=50)
+    ax[idx//2,idx%2].set_title('Update rule: '+update_rule,fontsize=40)
+    color = iter(colormap(np.linspace(0,1,12)))
 
-# for key in pairs.keys():
-#     print("Key: ",key,"\n",pairs[key],"\n")
-#
-# def findFixedParams(file_dict):
-#     fixed = {}
-#     for param ['N1','N2','size_tab','update_rule','spiking']:
-#         param_list = []
-#         for file in file_dict:
-#             val = file_dict[file]['param_dict'][param]
-#             param_list.append(val)
-#         if all(x==param_list[0] for x in param_list):
-#             fixed[param] = val
-#     return fixed
-#
-# print(findFixedParams(pairs))
-#
-# for dir in file_dict.keys():
-#     data_dict = file_dict[dir]
-#     param_dict,train_error,test_error = data_dict['param_dict'],data_dict['train_error'],data_dict['test_error']
+    for key in pairs.keys():
+        file_dict = pairs[key]
+        params = file_dict['param_dict']
+        test_error = file_dict['test_error']
+        if params['update_rule'] == update_rule:
+            if 'spike_method' in params.keys():
+                if params['spike_method'] == 'poisson':
+                    ax[idx//2,idx%2].plot(test_error,label="poisson",linewidth=5,c='blue')
+                elif params['spike_method'] == 'accumulator':
+                    ax[idx//2,idx%2].plot(test_error,label='accumulator: omega='+str(params['omega']),linewidth=5)
+    leg = plt.legend(loc='upper center',fontsize=50)
+    title = ""
+    # title += "\nUpdate rule: "+update_rule
+    title += "\nArchitecture: "+str(params['size_tab'])
+    # print(key)
+    # title += "\nSpiking: "+update_rule
+    fig.suptitle(title,fontsize=80)
+    fig.savefig(args.directory+"/test.png",bbox_inches="tight")
