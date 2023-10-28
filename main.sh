@@ -271,7 +271,7 @@ mkdir -p $dir
 srun -N 1 -n 1 -c $cores -o "$dir".out --open-mode=append ./main_wrapper.sh --spiking --load --use-time-variables --directory $dir --step $step --spike-method $spike_method --tau-dynamic $tau_dynamic --tau-trace $tau_trace --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule $update_rule &
 done
 spike_method='accumulator'
-for omega in {1,2,4}
+for omega in {1,2,4,8,16,32,64}
 do
 dir=compare_spike_methods_"$update_rule"_"$spike_method"_"$omega"
 i=$((i+1))
