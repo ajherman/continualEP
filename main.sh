@@ -9,7 +9,7 @@
 
 epochs=100
 #hidden_size=512
-cores=8
+cores=6
 #batch_size=20
 
 # # One layer
@@ -285,11 +285,11 @@ beta=0.2
 T1=8
 T2=3
 hidden_size=256
-tau_dynamic=0.2
-step=0.02
-batch_size=500
+tau_dynamic=0.5
+step=0.05
+batch_size=200
 
-for omega in {1,4,16,64,256,1024,4096,8192}
+for omega in {1,4,16,64,256,1024}
 do
 cep_dir=compare_cep_omega_"$omega"
 skewsym_dir=compare_skewsym_omega_"$omega"
