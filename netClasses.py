@@ -109,7 +109,7 @@ class SNN(nn.Module):
             elif self.spike_method == 'accumulator':
                 omega = self.omega
                 spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
-                error[i] = rho(s[i])+error[i]-spike[i]
+                error[i] += rho(s[i])-spike[i]
             elif self.spike_method == 'nonspiking':
                 spike[i] = rho(s[i])
 

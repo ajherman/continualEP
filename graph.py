@@ -54,26 +54,11 @@ def getFiles(root_dir):
     return file_dict
 
 pairs = getFiles(args.directory)
-print(pairs)
+# print(pairs)
 
 
-# fig, ax = plt.subplots(figsize=(40,40))
-# n_steps,n_layers = np.shape(deltas)
-# color = iter(colormap(np.linspace(0,1,12)))
-# layers=[i for i in range(n_layers)]
-# for layer in layers:
-#     ax.plot(deltas[:,layer],c=next(color),linewidth=1)
-#     ax.set_xlabel('Step')
-#     ax.set_ylabel('Test error rate (%)')
-#     # ax.set_xlim([0,120])
-#     # ax.set_ylim([0,1])
-#     ax.grid(axis='y')
-#     ax.set_title('L2 norm of layer diffs',fontsize=40)
-# fig.suptitle(args.directory,fontsize=50)
-# fig.legend(layers, loc='lower right', ncol=len(layers), bbox_transform=fig.transFigure,fontsize=30)
-# fig.savefig(args.directory+"/deltas.png",bbox_inches="tight")
 
-
+'''
 fig, ax = plt.subplots(2,2,figsize=(40,40))
 for idx,update_rule in enumerate(['cep','skewsym','stdp','nonspikingstdp']):
     ax[idx//2,idx%2].grid(axis='y')
@@ -101,3 +86,29 @@ for idx,update_rule in enumerate(['cep','skewsym','stdp','nonspikingstdp']):
     # title += "\nSpiking: "+update_rule
     fig.suptitle(title,fontsize=80)
     fig.savefig(args.directory+"/test.png",bbox_inches="tight")
+'''
+
+fig, ax = plt.subplots(2,2,figsize=(40,40))
+rules = ['cep','skewsym','stdp','nonspikingstdp']
+spike_methods = ['none','poisson','accumulator_1','accumulator_2','accumulator_4','accumulator_8','accumulator_16','accumulator_32']
+# spike_methods = ['none','poisson','accumulator_1','accumulator_4','accumulator_16']
+
+for idx,update_rule in enumerate(rules):
+    ax[idx//2,idx%2].grid(axis='y')
+    ax[idx//2,idx%2].set_ylim([0,100])
+    ax[idx//2,idx%2].set_xlabel('Epoch',fontsize=40)
+    ax[idx//2,idx%2].set_ylabel('Test error rate (%)',fontsize=40)
+    ax[idx//2,idx%2].set_title('Update rule: '+update_rule,fontsize=50)
+    colors = iter(colormap(np.linspace(0,1,len(spike_methods))))
+    for spike_method in spike_methods:
+        train_error,test_error=[0],[0]
+        results_file = args.directory+"/compare_spike_methods_"+update_rule+"_"+spike_method+"/results.csv"
+        train_error,test_error=[],[] # So it will increment the color even if it can't find the file
+        with open(results_file,'r',newline='') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            train_error,test_error = np.array(list(csv_reader)).astype('float').T
+        ax[idx//2,idx%2].plot(test_error,linewidth=3,color=next(colors))
+title = "Error over time"
+fig.suptitle(title,fontsize=80)
+fig.legend(spike_methods, loc='lower center', ncol=len(spike_methods)//2, bbox_transform=fig.transFigure,fontsize=40)
+fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
