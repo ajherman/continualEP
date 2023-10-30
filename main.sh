@@ -256,7 +256,7 @@ T1=8
 T2=3
 hidden_size=256
 tau_dynamic=0.2
-step=0.05
+step=0.02
 batch_size=200
 tau_trace=0.5
 
