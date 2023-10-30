@@ -285,7 +285,7 @@ beta=0.2
 T1=8
 T2=3
 hidden_size=256
-tau_dynamic=0.5
+tau_dynamic=0.2
 step=0.05
 batch_size=200
 
