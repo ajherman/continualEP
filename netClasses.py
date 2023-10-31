@@ -5,6 +5,7 @@ import torch.nn as nn
 import torchvision
 import torch.optim as optim
 import torch.nn.functional as F
+import pickle
 
 
 from main import rho, rhop
@@ -130,7 +131,6 @@ class SNN(nn.Module):
                 save_data_dict['spike'].append(spike.copy())
                 if beta>0:
                     save_data_dict['w'].append(self.w.copy())
-
             s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 
         #     if record:
