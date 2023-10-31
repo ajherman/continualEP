@@ -127,10 +127,10 @@ class SNN(nn.Module):
 
         for t in range(N):
             if record: # Store data
-                save_data_dict['s'].append(s.copy())
-                save_data_dict['spike'].append(spike.copy())
+                save_data_dict['s'].append([si.copy() for si in s)
+                save_data_dict['spike'].append(spikei.copy() for spikei in spike)
                 if beta>0:
-                    save_data_dict['w'].append(self.w.copy())
+                    save_data_dict['w'].append(wi.copy() for wi in self.w)
             s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 
         #     if record:
