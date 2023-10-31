@@ -122,25 +122,28 @@ class SNN(nn.Module):
 
 
     def forward(self, data, N, s=None, spike=None, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weights=False):
-        node_list = [(0,4),(1,25),(1,40),(2,16)]
-        mps = [[] for i in range(len(node_list))]
-        info = {'mps':None,'deltas':None,'dw':None}
+        save_data_dict = {'s':[],'spike':[],'w':[]}
 
-        deltas = []
         for t in range(N):
+            if record: # Store data
+                save_data_dict['s'].append(s.copy())
+                save_data_dict['spike'].append(spike.copy())
+                if beta>0:
+                    save_data_dict['w'].append(self.w.copy())
+
             s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 
-            if record:
-                delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-                deltas.append(delta)
-                for i in range(len(node_list)):
-                    layer,node = node_list[i]
-                    mps[i].append(s[layer][0,node].detach().cpu().numpy())
-        mps = np.array(mps)
-        info['mps'] = mps
-        info['deltas'] = deltas
+        #     if record:
+        #         delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
+        #         deltas.append(delta)
+        #         for i in range(len(node_list)):
+        #             layer,node = node_list[i]
+        #             mps[i].append(s[layer][0,node].detach().cpu().numpy())
+        # mps = np.array(mps)
+        # info['mps'] = mps
+        # info['deltas'] = deltas
 
-        return s,info
+        return s,save_data_dict
 
     def initHidden(self, batch_size):
         s = []
