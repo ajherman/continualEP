@@ -55,7 +55,7 @@ def train(net, train_loader, epoch, learning_rule):
         with torch.no_grad():
             s[net.ns] = data
 
-            if batch_idx%500==0:
+            if batch_idx==0:
                 s,info = net.forward(data, net.N1, s=s, spike=spike,error=error,record=True)
                 with open('phase1_data.pkl', 'wb') as f:
                     pickle.dump(info,f)
