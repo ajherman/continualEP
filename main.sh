@@ -286,7 +286,7 @@ T1=8
 T2=3
 hidden_size=256
 tau_dynamic=0.2
-step=0.05
+step=0.1 #0.05
 batch_size=20
 
 for omega in {1,4,16,64,256,1024}
