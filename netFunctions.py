@@ -80,11 +80,11 @@ def train(net, train_loader, epoch, learning_rule):
                 # Dw = info['dw']
             #***********************************************************************************************#
 
-            if batch_idx%500==0:
-                mps=np.concatenate((mps1,mps2),axis=1)
-                deltas=np.concatenate((deltas1,deltas2),axis=0)
-                mps_li.append(mps)
-                deltas_li.append(deltas)
+            # if batch_idx%500==0:
+            #     mps=np.concatenate((mps1,mps2),axis=1)
+            #     deltas=np.concatenate((deltas1,deltas2),axis=0)
+            #     mps_li.append(mps)
+            #     deltas_li.append(deltas)
 
         loss_tot += loss
         targets_temp = targets.data.max(1, keepdim=True)[1]
