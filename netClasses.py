@@ -135,7 +135,7 @@ class SNN(nn.Module):
                 for key in save_data_dict.keys():
                     for x in save_data_dict[key]:
                         for y in x:
-                            print(type(x))
+                            print(type(y))
 
             s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 
