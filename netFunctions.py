@@ -57,7 +57,7 @@ def train(net, train_loader, epoch, learning_rule):
 
             if batch_idx==0:
                 s,info = net.forward(data, net.N1, s=s, spike=spike,error=error,record=True)
-                with open(net.directory+'/phase1_data.pkl', 'wb') as f:
+                with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
                     pickle.dump(info,f)
             else:
                 s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
@@ -73,7 +73,7 @@ def train(net, train_loader, epoch, learning_rule):
 
             if batch_idx%500==0:
                 s, info = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
-                with open(net.directory+'/phase2_data.pkl', 'wb') as f:
+                with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
                     pickle.dump(info,f)
             else:
                 s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
