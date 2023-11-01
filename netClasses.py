@@ -29,7 +29,7 @@ class SNN(nn.Module):
         self.plain_data = args.plain_data
         self.update_rule = args.update_rule
         self.trace_decay = args.trace_decay
-        # self.directory = args.directory
+        self.directory = args.directory
         self.current_epoch = 0
         self.spiking = args.spiking
         # self.spike_height = args.spike_height
