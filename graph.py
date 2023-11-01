@@ -137,7 +137,7 @@ for idx,omega in enumerate(omegas):
         with open(results_file,'r',newline='') as csv_file:
             csv_reader = csv.reader(csv_file)
             train_error,test_error = np.array(list(csv_reader)).astype('float').T
-        ax[idx//2,idx%2].plot(test_error,linewidth=1,color=next(colors))
+        ax[idx//2,idx%2].plot(train_error,linewidth=1,color=next(colors))
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
 fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
