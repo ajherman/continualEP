@@ -56,9 +56,9 @@ def train(net, train_loader, epoch, learning_rule):
             s[net.ns] = data
 
             if batch_idx==0:
-                s,info = net.forward(data, net.N1, s=s, spike=spike,error=error,record=True)
-                with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
-                    pickle.dump(info,f)
+                s,phase1_data = net.forward(data, net.N1, s=s, spike=spike,error=error,record=True)
+                # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
+                #     pickle.dump(info,f)
             else:
                 s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
@@ -71,10 +71,10 @@ def train(net, train_loader, epoch, learning_rule):
 
             beta = net.beta
 
-            if batch_idx%500==0:
-                s, info = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
-                with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
-                    pickle.dump(info,f)
+            if batch_idx==0:
+                s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+                # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
+                #     pickle.dump(info,f)
             else:
                 s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
                 # Dw = info['dw']
@@ -103,7 +103,7 @@ def train(net, train_loader, epoch, learning_rule):
        loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
        ))
 
-    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset)
+    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset),{'phase1':phase1_data,'phase2':phase2_data}
 
 def evaluate(net, test_loader, learning_rule=None):
     net.eval()
