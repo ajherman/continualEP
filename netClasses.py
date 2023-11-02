@@ -122,7 +122,7 @@ class SNN(nn.Module):
         return s,dsdt
 
 
-    def forward(self, data, N, s=None, spike=None, error=None, trace = None, seq = None,  beta = 0, target = None, record=False, update_weights=False):
+    def forward(self, data, N, s=None, spike=None, error=None, trace=None, seq=None,  beta=0, target=None, record=False, update_weights=False):
         save_data_dict = {'s':[],'spike':[],'w':[]}
 
         for t in range(N):
@@ -132,10 +132,10 @@ class SNN(nn.Module):
                 if beta>0:
                     save_data_dict['w'].append([wi.weight.detach().cpu().numpy().copy() for wi in self.w])
 
-                for key in save_data_dict.keys():
-                    for x in save_data_dict[key]:
-                        for y in x:
-                            print(type(y))
+                # for key in save_data_dict.keys():
+                #     for x in save_data_dict[key]:
+                #         for y in x:
+                #             print(type(x))
 
             s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 

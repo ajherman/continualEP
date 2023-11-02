@@ -121,7 +121,7 @@ spike_methods = ['none','poisson','accumulator_1','accumulator_2','accumulator_4
 '''
 
 fig, ax = plt.subplots(3,2,figsize=(40,40))
-omegas=[1,4,16,64,256,1024]
+omegas=[1,4,16,64,17,1024]
 rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
 for idx,omega in enumerate(omegas):
     ax[idx//2,idx%2].grid(axis='y')
