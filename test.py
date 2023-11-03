@@ -9,4 +9,4 @@ def f(omega,epoch):
 
 x=f(1024,10)
 y=x['phase1']['s']
-print(y)
+print(len(y))
