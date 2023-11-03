@@ -40,14 +40,6 @@ def getInfo(data_dict,node1,node2):
     #print(np.shape(w[0][w_idx]))
     return s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr
 
-for pos1 in range(200):
-    for pos2 in range(10):
-        node1=(1,pos1)
-        node2=(0,pos2)
-        s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
-        if np.std(w_arr)>5e-5:
-            plot(data_dict,node1,node2,'weight_updates.png')
-
 def plot(data_dict,node1,node2,fname):
     s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr=getInfo(data_dict,node1,node2)
     fig, ax = plt.subplots(figsize=(40,40))
@@ -55,6 +47,14 @@ def plot(data_dict,node1,node2,fname):
     ax.plot(spike2_arr)
     ax.plot(w_arr)
     fig.savefig(fname)
+
+for pos1 in range(200):
+    for pos2 in range(10):
+        node1=(1,pos1)
+        node2=(0,pos2)
+        s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
+        if np.std(w_arr)>5e-5:
+            plot(data_dict,node1,node2,'weight_updates.png')
 
 
 #print(s1_arr)
