@@ -1,5 +1,6 @@
 import numpy as np
 import pickle as pkl
+from matplotlib import pyplot as plt
 
 def f(omega,epoch):
     path = 'compare_stdp2_omega_'+str(omega)+'/data_'+str(epoch)+'.pkl'
