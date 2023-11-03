@@ -120,8 +120,9 @@ spike_methods = ['none','poisson','accumulator_1','accumulator_2','accumulator_4
 # spike_methods = ['none','poisson','accumulator_1','accumulator_4','accumulator_16']
 '''
 
-fig, ax = plt.subplots(3,2,figsize=(40,40))
-omegas=[1,4,16,64,17,1024]
+fig, ax = plt.subplots(4,2,figsize=(40,40))
+omegas=[1,4,16,64,256,1024]
+# omegas=[14,15,16,17,18,63,64,65]
 rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
 for idx,omega in enumerate(omegas):
     ax[idx//2,idx%2].grid(axis='y')
@@ -137,7 +138,7 @@ for idx,omega in enumerate(omegas):
         with open(results_file,'r',newline='') as csv_file:
             csv_reader = csv.reader(csv_file)
             train_error,test_error = np.array(list(csv_reader)).astype('float').T
-        ax[idx//2,idx%2].plot(train_error,linewidth=1,color=next(colors))
+        ax[idx//2,idx%2].plot(test_error,linewidth=1,color=next(colors))
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
 fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)

@@ -287,11 +287,12 @@ T2=3
 hidden_size=256
 tau_dynamic=0.2
 
-step=0.02
+step=0.01
 batch_size=20
 
 # for omega in {1,4,16,64,256,1024}
-for omega in {14,15,17,18,63,65}
+# for omega in {14,15,17,18,63,65}
+for omega in {0.5,1,3,4,15,16,63,64,2048}
 do
 cep_dir=compare_cep_omega_"$omega"
 skewsym_dir=compare_skewsym_omega_"$omega"

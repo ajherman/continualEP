@@ -269,7 +269,7 @@ parser.add_argument(
     help='rule for generating spikes')
 parser.add_argument(
     '--omega',
-    type=int,
+    type=float,
     default=100000,
     help='omega for accumulator neuron')
 
