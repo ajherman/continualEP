@@ -109,7 +109,7 @@ class SNN(nn.Module):
                 spike[i] = (torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
             elif self.spike_method == 'accumulator':
                 omega = self.omega
-                spike[i] = torch.ceil(omega*(rho(s[i])+error[i]))/omega
+                spike[i] = torch.floor(omega*(rho(s[i])+error[i]))/omega
                 error[i] += rho(s[i])-spike[i]
             elif self.spike_method == 'nonspiking':
                 spike[i] = rho(s[i])
