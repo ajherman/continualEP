@@ -46,12 +46,17 @@ for pos1 in range(200):
         node2=(0,pos2)
         s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
         if np.std(w_arr)>5e-5:
-            print("\n\n")
-            print(w_arr)
+            plot(data_dict,node1,node2,'weight_updates.png')
 
-def plot(data_dict,node1,node2):
+def plot(data_dict,node1,node2,fname):
     s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr=getInfo(data_dict,node1,node2)
-    
+    fig, ax = plt.subplots(figsize=(40,40))
+    ax.plot(spike1_arr)
+    ax.plot(spike2_arr)
+    ax.plot(w_arr)
+    fig.savefig(fname)
+
+
 #print(s1_arr)
 #print(s2_arr)
 #print(spike1_arr)
