@@ -150,4 +150,5 @@ for idx,omega in enumerate(omegas):
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
 fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
-fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
+# fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
+fig.savefig(args.directory+"/accumulator.png",bbox_inches="tight")

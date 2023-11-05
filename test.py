@@ -49,13 +49,17 @@ def plot(data_dict,node1,node2,fname):
     ax.plot(w_arr)
     fig.savefig(fname)
 
+max_num_plots=10
+k = 0
 for pos1 in range(200):
     for pos2 in range(10):
         node1=(1,pos1)
         node2=(0,pos2)
-        s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
-        if np.std(w_arr)>5e-5:
-            plot(data_dict,node1,node2,'weight_updates.png')
+        if k<max_num_plots:
+            s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
+            if np.std(w_arr)>3e-5:
+                plot(data_dict,node1,node2,'weight_updates_'+str(pos1)+'_'+str(pos2)+'.png')
+                k+=1
 
 
 #print(s1_arr)
