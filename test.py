@@ -1,9 +1,40 @@
 import numpy as np
 import pickle as pkl
 from matplotlib import pyplot as plt
+import argparse
 
-def f(omega,epoch):
-    path = 'compare_stdp2_omega_'+str(omega)+'/data_'+str(epoch)+'.pkl'
+parser = argparse.ArgumentParser(description='graphing')
+
+parser.add_argument(
+    '--directory',
+    type=str,
+    default='compare_stdp2_omega_16',
+    help='choose file')
+
+parser.add_argument(
+    '--node1',
+    nargs='+',
+    default=[1,0],
+    help='node 1')
+
+parser.add_argument(
+    '--node2',
+    nargs='+',
+    default=[0,0],
+    help='node 2')
+
+args = parser.parse_args()
+
+
+# def f(omega,epoch):
+#     path = 'compare_stdp2_omega_'+str(omega)+'/data_'+str(epoch)+'.pkl'
+#     with open(path,'rb') as f:
+#         x=pkl.load(f)
+#     return x
+
+def f(dir,epoch):
+    # path = 'compare_stdp2_omega_'+str(omega)+'/data_'+str(epoch)+'.pkl'
+    path = dir+'/data_'+str(epoch)+'.pkl'
     with open(path,'rb') as f:
         x=pkl.load(f)
     return x
@@ -20,10 +51,12 @@ def g(x,phase,layer,batch,node):
         pass
     return vals,spikes
 
-node1 = (1,7)
-node2 = (0,7)
+# node1 = (1,7)
+# node2 = (0,7)
+node1 = tuple(args.node1)
+node2 = tuple(args.node2)
 
-data_dict=f(16,0)
+data_dict=f(args.directory,0)
 
 def getInfo(data_dict,node1,node2):
     layer1,pos1 = node1

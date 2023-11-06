@@ -120,12 +120,15 @@ spike_methods = ['none','poisson','accumulator_1','accumulator_2','accumulator_4
 # spike_methods = ['none','poisson','accumulator_1','accumulator_4','accumulator_16']
 '''
 
-fig, ax = plt.subplots(4,2,figsize=(40,40))
-omegas=[1,4,16,64,256,1024]
+fig, ax = plt.subplots(5,2,figsize=(40,100))
+# omegas=[1,4,16,64,256,1024]
+# omegas=[0.8,1,2,3,15,63,255,1023]
 # omegas=[14,15,16,17,18,63,64,65]
+omegas=[1,2,3,4,15,16,63,64,1023,1024]
 rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
 for idx,omega in enumerate(omegas):
     ax[idx//2,idx%2].grid(axis='y')
+    ax[idx//2,idx%2].set_xlim([0,12])
     ax[idx//2,idx%2].set_ylim([0,20])
     ax[idx//2,idx%2].set_xlabel('Epoch',fontsize=40)
     ax[idx//2,idx%2].set_ylabel('Test error rate (%)',fontsize=40)

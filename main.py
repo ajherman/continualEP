@@ -300,7 +300,7 @@ print('spike height ',args.spike_height)
 print('step ', args.step)
 print('n trace ', args.n_trace)
 print('n dynamic ', args.n_dynamic)
-print('dt ', args.dt)
+# print('dt ', args.dt)
 
 if args.dt==None:
     args.dt = 1-np.exp(-1./args.n_dynamic)
@@ -436,9 +436,9 @@ if __name__ == '__main__':
             error_train,data = train(net, train_loader, epoch, args.learning_rule)
 
             # Pickle data
-
-            with open(args.directory+'/data_'+str(epoch)+'.pkl', 'wb') as f:
-                pickle.dump(data,f)
+            if epoch%5==0:
+                with open(args.directory+'/data_'+str(epoch)+'.pkl', 'wb') as f:
+                    pickle.dump(data,f)
 
             # with open(args.directory+'/deltas.csv', 'w', newline='') as f:
             #     writer = csv.writer(f)
