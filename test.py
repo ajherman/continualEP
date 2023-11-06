@@ -46,7 +46,9 @@ def g(x,phase,layer,batch,node):
 #batch=0
 #node=73
     vals = np.array([z[layer][batch,node] for z in y])
-    spikes = np.array([z[layer][batch,node] for z in w])
+    # spikes = np.array([z[layer][batch,node] for z in w])
+    spikes = vals
+
     if phase == 2:
         pass
     return vals,spikes
@@ -90,6 +92,8 @@ for pos1 in range(200):
         node2=(0,pos2)
         if k<max_num_plots:
             s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
+            print(np.shape(w_arr))
+            assert(0)
             if np.std(w_arr)>3e-5:
                 plot(data_dict,node1,node2,'weight_updates_'+str(pos1)+'_'+str(pos2)+'.png')
                 k+=1
