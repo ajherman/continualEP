@@ -46,8 +46,8 @@ def g(x,phase,layer,batch,node):
 #batch=0
 #node=73
     vals = np.array([z[layer][batch,node] for z in y])
-    # spikes = np.array([z[layer][batch,node] for z in w])
-    spikes = vals
+    spikes = np.array([z[layer][batch,node] for z in w])
+    #spikes = vals
 
     if phase == 2:
         pass
