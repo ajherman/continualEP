@@ -76,12 +76,12 @@ def getInfo(data_dict,node1,node2):
     #print(np.shape(w[0][w_idx]))
     return s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr
 
-def plot(data_dict,node1,node2,fname):
+def plot(data_dict,node1,node2,fname,weight_scale=100):
     s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr=getInfo(data_dict,node1,node2)
     fig, ax = plt.subplots(figsize=(40,40))
     ax.plot(spike1_arr)
     ax.plot(spike2_arr)
-    ax.plot(w_arr)
+    ax.plot(w_arr*weight_scale)
     fig.savefig(fname)
 
 max_num_plots=10
@@ -92,9 +92,10 @@ for pos1 in range(200):
         node2=(0,pos2)
         if k<max_num_plots:
             s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr = getInfo(data_dict,node1,node2)
-            print(np.shape(w_arr))
-            assert(0)
-            if np.std(w_arr)>3e-5:
+            #print(np.shape(w_arr))
+            delta=np.abs(w_arr[-1]-w_arr[0])
+            #print(delta)
+            if delta>3e-5:
                 plot(data_dict,node1,node2,'weight_updates_'+str(pos1)+'_'+str(pos2)+'.png')
                 k+=1
 
