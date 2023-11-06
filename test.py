@@ -76,12 +76,12 @@ def getInfo(data_dict,node1,node2):
     #print(np.shape(w[0][w_idx]))
     return s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr
 
-def plot(data_dict,node1,node2,fname,weight_scale=100):
+def plot(data_dict,node1,node2,fname,weight_scale=2000):
     s1_arr,s2_arr,spike1_arr,spike2_arr,w_arr=getInfo(data_dict,node1,node2)
     fig, ax = plt.subplots(figsize=(40,40))
     ax.plot(spike1_arr)
     ax.plot(spike2_arr)
-    ax.plot(w_arr*weight_scale)
+    ax.plot((w_arr-w_arr[0])*weight_scale)
     fig.savefig(fname)
 
 max_num_plots=10
