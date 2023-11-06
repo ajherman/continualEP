@@ -96,7 +96,7 @@ for pos1 in range(200):
             delta=np.abs(w_arr[-1]-w_arr[0])
             #print(delta)
             if delta>3e-5:
-                plot(data_dict,node1,node2,'weight_updates_'+str(pos1)+'_'+str(pos2)+'.png')
+                plot(data_dict,node1,node2,args.directory+'/weight_updates_'+str(pos1)+'_'+str(pos2)+'.png')
                 k+=1
 
 
