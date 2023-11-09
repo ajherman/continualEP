@@ -435,17 +435,10 @@ if __name__ == '__main__':
             epoch=net.current_epoch
             error_train,data = train(net, train_loader, epoch, args.learning_rule)
 
-            # Pickle data
-            if epoch%5==0:
-                with open(args.directory+'/data_'+str(epoch)+'.pkl', 'wb') as f:
-                    pickle.dump(data,f)
-
-            # with open(args.directory+'/deltas.csv', 'w', newline='') as f:
-            #     writer = csv.writer(f)
-            #     writer.writerows(deltas_li[0])
-            # with open(args.directory+'/mps.csv', 'w', newline='') as f:
-            #     writer = csv.writer(f)
-            #     writer.writerows(mps_li[0])
+            # # Pickle data
+            # if epoch%5==0:
+            #     with open(args.directory+'/data_'+str(epoch)+'.pkl', 'wb') as f:
+            #         pickle.dump(data,f)
 
             error_train_tab.append(error_train)
 
