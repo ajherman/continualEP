@@ -21,7 +21,7 @@ step=0.01
 batch_size=20
 
 # for omega in {1,4,16,64,256,1024}
-for tau_dynamic in {0.025,0.5,0.1,0.2}
+for tau_dynamic in {0.025,0.05,0.1,0.2}
 do
 for omega in {1,4}
 # for omega in {14,15,17,18,63,65}
