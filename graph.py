@@ -120,38 +120,81 @@ spike_methods = ['none','poisson','accumulator_1','accumulator_2','accumulator_4
 # spike_methods = ['none','poisson','accumulator_1','accumulator_4','accumulator_16']
 '''
 
-fig, ax = plt.subplots(5,2,figsize=(40,100))
+
+fig, ax = plt.subplots(3,3,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
 # omegas=[0.8,1,2,3,15,63,255,1023]
 # omegas=[14,15,16,17,18,63,64,65]
-omegas=[1,2,3,4,15,16,63,64,1023,1024]
+omegas=[1,2,4]
+taus=[0.1,0.2,0.4]
 rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
-for idx,omega in enumerate(omegas):
-    ax[idx//2,idx%2].grid(axis='y')
-    ax[idx//2,idx%2].set_xlim([0,12])
-    ax[idx//2,idx%2].set_ylim([0,20])
-    ax[idx//2,idx%2].set_xlabel('Epoch',fontsize=40)
-    ax[idx//2,idx%2].set_ylabel('Test error rate (%)',fontsize=40)
-    ax[idx//2,idx%2].set_title('Accumulator omega: '+str(omega),fontsize=50)
-    colors = iter(colormap(np.linspace(0,1,len(rules))))
-    for rule in rules:
-        train_error,test_error=[0],[0]
+for idx1,omega in enumerate(omegas):
+    for idx2,tau in enumerate(taus):
+        ax[idx1,idx2].grid(axis='y')
+        ax[idx1,idx2].set_xlim([0,12])
+        ax[idx1,idx2].set_ylim([0,20])
+        ax[idx1,idx2].set_xlabel('Epoch',fontsize=40)
+        ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
+        ax[idx1,idx2].set_title(r'Accumulator $\omega$='+str(omega)+r', $\tau=$'+str(tau),fontsize=50)
+        colors = iter(colormap(np.linspace(0,1,len(rules))))
+        for rule in rules:
+            subdir="compare_"+rule+"_omega_"+str(omega)+"_tau_"+str(tau)
+            train_error,test_error=[0],[0]
 
-        results_file = args.directory+"/compare_"+rule+"_omega_"+str(omega)+"/results.csv"
-        train_error,test_error=[],[] # So it will increment the color even if it can't find the file
-        with open(results_file,'r',newline='') as csv_file:
-            csv_reader = csv.reader(csv_file)
-            train_error,test_error = np.array(list(csv_reader)).astype('float').T
-        ax[idx//2,idx%2].plot(test_error,linewidth=1,color=next(colors))
+            results_file = args.directory+"/"+subdir+"/results.csv"
+            train_error,test_error=[],[] # So it will increment the color even if it can't find the file
+            if os.path.isfile(results_file):
+                with open(results_file,'r',newline='') as csv_file:
+                    csv_reader = csv.reader(csv_file)
+                    train_error,test_error = np.array(list(csv_reader)).astype('float').T
+            ax[idx1,idx2].plot(test_error,linewidth=1,color=next(colors))
 
-        params_file = args.directory+"/compare_"+rule+"_omega_"+str(omega)+"/params.txt"
-        if os.path.isfile(params_file):
-            with open(params_file,'rb') as f:
-                param_dict = json.load(f)
-        tau_dynamic = -param_dict['step']/np.log(1-param_dict['dt'])
-        tail_str = 'tau'+str(int(tau_dynamic*10))+'_step'+str(int(param_dict['step']*100))
+            params_file = args.directory+"/"+subdir+"/params.txt"
+            if os.path.isfile(params_file):
+                with open(params_file,'rb') as f:
+                    param_dict = json.load(f)
+            tau_dynamic = -param_dict['step']/np.log(1-param_dict['dt'])
+            tail_str = 'tau'+str(int(tau_dynamic*10))+'_step'+str(int(param_dict['step']*100))
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
 fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
 # fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
 fig.savefig(args.directory+"/accumulator.png",bbox_inches="tight")
+
+
+#
+# fig, ax = plt.subplots(5,2,figsize=(40,100))
+# # omegas=[1,4,16,64,256,1024]
+# # omegas=[0.8,1,2,3,15,63,255,1023]
+# # omegas=[14,15,16,17,18,63,64,65]
+# omegas=[1,2,3,4,15,16,63,64,1023,1024]
+# rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
+# for idx,omega in enumerate(omegas):
+#     ax[idx//2,idx%2].grid(axis='y')
+#     ax[idx//2,idx%2].set_xlim([0,12])
+#     ax[idx//2,idx%2].set_ylim([0,20])
+#     ax[idx//2,idx%2].set_xlabel('Epoch',fontsize=40)
+#     ax[idx//2,idx%2].set_ylabel('Test error rate (%)',fontsize=40)
+#     ax[idx//2,idx%2].set_title('Accumulator omega: '+str(omega),fontsize=50)
+#     colors = iter(colormap(np.linspace(0,1,len(rules))))
+#     for rule in rules:
+#         train_error,test_error=[0],[0]
+#
+#         results_file = args.directory+"/compare_"+rule+"_omega_"+str(omega)+"/results.csv"
+#         train_error,test_error=[],[] # So it will increment the color even if it can't find the file
+#         with open(results_file,'r',newline='') as csv_file:
+#             csv_reader = csv.reader(csv_file)
+#             train_error,test_error = np.array(list(csv_reader)).astype('float').T
+#         ax[idx//2,idx%2].plot(test_error,linewidth=1,color=next(colors))
+#
+#         params_file = args.directory+"/compare_"+rule+"_omega_"+str(omega)+"/params.txt"
+#         if os.path.isfile(params_file):
+#             with open(params_file,'rb') as f:
+#                 param_dict = json.load(f)
+#         tau_dynamic = -param_dict['step']/np.log(1-param_dict['dt'])
+#         tail_str = 'tau'+str(int(tau_dynamic*10))+'_step'+str(int(param_dict['step']*100))
+# title = "Error over time"
+# fig.suptitle(title,fontsize=80)
+# fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
+# # fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
+# fig.savefig(args.directory+"/accumulator.png",bbox_inches="tight")
