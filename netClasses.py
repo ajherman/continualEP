@@ -50,13 +50,14 @@ class SNN(nn.Module):
         #*********RANDOM BETA*********#
         self.randbeta = args.randbeta
         #*****************************#
+        self.M = args.M
 
         w = nn.ModuleList([])
 
         for i in range(self.ns - 1):
-            w.append(nn.Linear(args.size_tab[i + 1], args.size_tab[i], bias = self.use_bias))
-            w.append(nn.Linear(args.size_tab[i], args.size_tab[i + 1], bias = False)) # Why default bias = False???
-        w.append(nn.Linear(args.size_tab[-1], args.size_tab[-2]))
+            w.append(nn.Linear(self.M*args.size_tab[i + 1], self.M*args.size_tab[i], bias = self.use_bias))
+            w.append(nn.Linear(self.M*args.size_tab[i], self.M*args.size_tab[i + 1], bias = False)) # Why default bias = False???
+        w.append(nn.Linear(self.M*args.size_tab[-1], self.M*args.size_tab[-2]))
 
         #By default, reciprocal weights have the same initial values
         for i in range(self.ns - 1):
@@ -65,7 +66,7 @@ class SNN(nn.Module):
         self.w = w
         self = self.to(device)
 
-    def stepper(self, data, s=None, spike=None, error=None, trace=None, target=None, beta=0, return_derivatives=False, update_weights=False):
+    def stepper(self, s=None, spike=None, error=None, trace=None, target=None, beta=0, return_derivatives=False, update_weights=False):
         dsdt = []
         trace_decay = self.trace_decay
 
@@ -116,13 +117,13 @@ class SNN(nn.Module):
 
         # CEP
         if update_weights:
-            dw = self.computeGradients(data, s, s_old, trace, spike)
+            dw = self.computeGradients(s, s_old, trace, spike)
             with torch.no_grad():
                 self.updateWeights(dw)
         return s,dsdt
 
 
-    def forward(self, data, N, s=None, spike=None, error=None, trace=None, seq=None,  beta=0, target=None, record=False, update_weights=False):
+    def forward(self, N, s=None, spike=None, error=None, trace=None, seq=None,  beta=0, target=None, record=False, update_weights=False):
         save_data_dict = {'s':[],'spike':[],'w':[]}
 
         for t in range(N):
@@ -157,7 +158,7 @@ class SNN(nn.Module):
             s.append(torch.zeros(batch_size, self.size_tab[i], requires_grad = True))
         return s
 
-    def computeGradients(self, data, s, seq, trace, spike):
+    def computeGradients(self, s, seq, trace, spike):
         gradw = []
         gradw_bias = []
         batch_size = s[0].size(0)

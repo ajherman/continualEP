@@ -272,6 +272,11 @@ parser.add_argument(
     type=float,
     default=100000,
     help='omega for accumulator neuron')
+parser.add_argument(
+    '--M',
+    type=int,
+    default=1,
+    help='multiplier for layer size')
 
 
 args = parser.parse_args()

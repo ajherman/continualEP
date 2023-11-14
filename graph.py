@@ -121,12 +121,12 @@ spike_methods = ['none','poisson','accumulator_1','accumulator_2','accumulator_4
 '''
 
 
-fig, ax = plt.subplots(3,3,figsize=(60,60))
+fig, ax = plt.subplots(2,4,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
 # omegas=[0.8,1,2,3,15,63,255,1023]
 # omegas=[14,15,16,17,18,63,64,65]
-omegas=[1,2,4]
-taus=[0.1,0.2,0.4]
+omegas=[1,4]
+taus=[0.025,0.05,0.1,0.2]
 rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
 for idx1,omega in enumerate(omegas):
     for idx2,tau in enumerate(taus):
@@ -147,14 +147,14 @@ for idx1,omega in enumerate(omegas):
                 with open(results_file,'r',newline='') as csv_file:
                     csv_reader = csv.reader(csv_file)
                     train_error,test_error = np.array(list(csv_reader)).astype('float').T
-            ax[idx1,idx2].plot(test_error,linewidth=1,color=next(colors))
+            ax[idx1,idx2].plot(test_error,linewidth=2,color=next(colors))
 
             params_file = args.directory+"/"+subdir+"/params.txt"
             if os.path.isfile(params_file):
                 with open(params_file,'rb') as f:
                     param_dict = json.load(f)
-            tau_dynamic = -param_dict['step']/np.log(1-param_dict['dt'])
-            tail_str = 'tau'+str(int(tau_dynamic*10))+'_step'+str(int(param_dict['step']*100))
+                    tau_dynamic = -param_dict['step']/np.log(1-param_dict['dt'])
+                    tail_str = 'tau'+str(int(tau_dynamic*10))+'_step'+str(int(param_dict['step']*100))
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
 fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)

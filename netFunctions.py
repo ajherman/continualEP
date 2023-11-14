@@ -36,6 +36,7 @@ def train(net, train_loader, epoch, learning_rule):
             else:
                 error = None
 
+        data,targets = np.repmat(data,self.M),np.repmat(targets,self.M)
         data, targets = data.to(net.device), targets.to(net.device)
 
         for i in range(net.ns+1):
@@ -56,11 +57,11 @@ def train(net, train_loader, epoch, learning_rule):
             s[net.ns] = data
 
             if batch_idx==0:
-                s,phase1_data = net.forward(data, net.N1, s=s, spike=spike,error=error,record=True)
+                s,phase1_data = net.forward(net.N1, s=s, spike=spike,error=error,record=True)
                 # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
                 #     pickle.dump(info,f)
             else:
-                s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
+                s,_ = net.forward(net.N1,s=s,spike=spike,error=error)
 
             pred = s[0].data.max(1, keepdim=True)[1]
             loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
@@ -72,11 +73,11 @@ def train(net, train_loader, epoch, learning_rule):
             beta = net.beta
 
             if batch_idx==0:
-                s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+                s, phase2_data = net.forward(net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
                 # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
                 #     pickle.dump(info,f)
             else:
-                s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
+                s,info = net.forward(net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
                 # Dw = info['dw']
             #***********************************************************************************************#
 
