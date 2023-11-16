@@ -138,7 +138,7 @@ class SNN(nn.Module):
                 #         for y in x:
                 #             print(type(x))
 
-            s,dsdt = self.stepper(data,s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
+            s,dsdt = self.stepper(s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
 
         #     if record:
         #         delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]

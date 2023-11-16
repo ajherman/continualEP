@@ -36,7 +36,7 @@ def train(net, train_loader, epoch, learning_rule):
             else:
                 error = None
 
-        data,targets = torch.tile(data,net.M),torch.tile(targets,net.M)
+        data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
         data, targets = data.to(net.device), targets.to(net.device)
 
         for i in range(net.ns+1):
