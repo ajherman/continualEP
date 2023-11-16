@@ -155,7 +155,7 @@ class SNN(nn.Module):
     def initHidden(self, batch_size):
         s = []
         for i in range(self.ns+1):
-            s.append(torch.zeros(batch_size, self.size_tab[i], requires_grad = True))
+            s.append(torch.zeros(batch_size, self.M*self.size_tab[i], requires_grad = True))
         return s
 
     def computeGradients(self, s, seq, trace, spike):
