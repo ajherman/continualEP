@@ -26,73 +26,74 @@ def train(net, train_loader, epoch, learning_rule):
     mps_li = []
     deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
-    for batch_idx, (data, targets) in enumerate(train_loader):
+    with torch.no_grad():
+        for batch_idx, (data, targets) in enumerate(train_loader):
 
-        # Init arrays
-        if not net.no_reset or batch_idx == 0:
-            s = net.initHidden(data.size(0))
-            trace = net.initHidden(data.size(0))
-            spike = net.initHidden(data.size(0))
-            if net.spike_method == 'accumulator':
-                error = net.initHidden(data.size(0))
+            # Init arrays
+            if not net.no_reset or batch_idx == 0:
+                s = net.initHidden(data.size(0))
+                trace = net.initHidden(data.size(0))
+                spike = net.initHidden(data.size(0))
+                if net.spike_method == 'accumulator':
+                    error = net.initHidden(data.size(0))
+                else:
+                    error = None
+
+            # Change data size/shape to increase population
+            # Try torch.repeat too
+            # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
+            data, targets = data.to(net.device), targets.to(net.device)
+            #expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
+
+            # Put arrays on gpu
+            for i in range(net.ns+1):
+                s[i] = s[i].to(net.device)
+                if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
+                    trace[i] = trace[i].to(net.device)
+                spike[i] = spike[i].to(net.device)
+                if net.spike_method == 'accumulator':
+                    error[i] = error[i].to(net.device)
+
+            if batch_idx==0:
+                out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
+                # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
+                #     pickle.dump(info,f)
             else:
-                error = None
+                out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
-        # Change data size/shape to increase population
-        # Try torch.repeat too
-        # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
-        data, targets = data.to(net.device), targets.to(net.device)
-        #expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
+            # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+            pred = out.data.max(1, keepdim=True)[1]
+            loss = (1/(2*out.size(0)))*criterion(out, targets)
+            # #*******************************************VF-EQPROP ******************************************#
+            # seq = []
+            # for i in range(len(s)): seq.append(s[i].clone())
+            seq = [x.clone() for x in s]
 
-        # Put arrays on gpu
-        for i in range(net.ns+1):
-            s[i] = s[i].to(net.device)
-            if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
-                trace[i] = trace[i].to(net.device)
-            spike[i] = spike[i].to(net.device)
-            if net.spike_method == 'accumulator':
-                error[i] = error[i].to(net.device)
+            beta = net.beta
 
-        if batch_idx==0:
-            out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
-            # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
-            #     pickle.dump(info,f)
-        else:
-            out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
+            if batch_idx==0:
+                out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+                # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
+                #     pickle.dump(info,f)
+            else:
+                out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
+                # Dw = info['dw']
+                #***********************************************************************************************#
 
-        # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
-        pred = out.data.max(1, keepdim=True)[1]
-        loss = (1/(2*out.size(0)))*criterion(out, targets)
-        # #*******************************************VF-EQPROP ******************************************#
-        # seq = []
-        # for i in range(len(s)): seq.append(s[i].clone())
-        seq = [x.clone() for x in s]
+                # if batch_idx%500==0:
+                #     mps=np.concatenate((mps1,mps2),axis=1)
+                #     deltas=np.concatenate((deltas1,deltas2),axis=0)
+                #     mps_li.append(mps)
+                #     deltas_li.append(deltas)
 
-        beta = net.beta
+            loss_tot += loss
+            targets_temp = targets.data.max(1, keepdim=True)[1]
+            correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
 
-        if batch_idx==0:
-            out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
-            # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
-            #     pickle.dump(info,f)
-        else:
-            out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
-            # Dw = info['dw']
-            #***********************************************************************************************#
-
-            # if batch_idx%500==0:
-            #     mps=np.concatenate((mps1,mps2),axis=1)
-            #     deltas=np.concatenate((deltas1,deltas2),axis=0)
-            #     mps_li.append(mps)
-            #     deltas_li.append(deltas)
-
-        loss_tot += loss
-        targets_temp = targets.data.max(1, keepdim=True)[1]
-        correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
-
-        if (batch_idx + 1)% 100 == 0:
-           print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-               epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
-               100. * (batch_idx + 1) / len(train_loader), loss.data))
+            if (batch_idx + 1)% 100 == 0:
+               print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                   epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
+                   100. * (batch_idx + 1) / len(train_loader), loss.data))
 
 
     loss_tot /= len(train_loader.dataset)
