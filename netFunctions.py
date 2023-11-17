@@ -42,6 +42,7 @@ def train(net, train_loader, epoch, learning_rule):
         # Try torch.repeat too
         # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
         data, targets = data.to(net.device), targets.to(net.device)
+        expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
 
         # Put arrays on gpu
         for i in range(net.ns+1):
@@ -52,24 +53,14 @@ def train(net, train_loader, epoch, learning_rule):
             if net.spike_method == 'accumulator':
                 error[i] = error[i].to(net.device)
 
-        # Set init values for arrays
-        for i in range(net.ns+1):
-            if net.spiking:
-                spike[i] = (torch.rand(s[i].size(),device=net.device)<(rho(s[i]))).float()
-            else:
-                spike[i] = rho(s[i]) # Get Poisson spikes
-
-        with torch.no_grad():
-            s[net.ns] = torch.tile(data,(1,net.M))
-
             if batch_idx==0:
-                s,phase1_data = net.forward(net.N1, s=s, spike=spike,error=error,record=True)
+                out,s,phase1_data = net.forward(data,net.N1, s=s, spike=spike,error=error,record=True)
                 # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
                 #     pickle.dump(info,f)
             else:
-                s,_ = net.forward(net.N1,s=s,spike=spike,error=error)
+                out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
-            out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+            # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
             pred = out.data.max(1, keepdim=True)[1]
             loss = (1/(2*out.size(0)))*criterion(out, targets)
             # #*******************************************VF-EQPROP ******************************************#
@@ -80,11 +71,11 @@ def train(net, train_loader, epoch, learning_rule):
             beta = net.beta
 
             if batch_idx==0:
-                s, phase2_data = net.forward(net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+                out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
                 # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
                 #     pickle.dump(info,f)
             else:
-                s,info = net.forward(net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
+                out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
                 # Dw = info['dw']
             #***********************************************************************************************#
 
@@ -136,17 +127,17 @@ def evaluate(net, test_loader, learning_rule=None):
                     spike[i] = spike[i].to(net.device)
                     if net.spike_method == 'accumulator':
                         error[i] = error[i].to(net.device)
-            s[net.ns] = torch.tile(data,(1,net.M))
+            # s[net.ns] = torch.tile(data,(1,net.M))
+            #
+            # # New!
+            # for i in range(net.ns+1):
+            #     if net.spiking:
+            #         spike[i] = (torch.rand(s[i].size(),device=net.device)<(rho(s[i]))).float()
+            #     else:
+            #         spike[i] = rho(s[i]) # Get Poisson spikes
 
-            # New!
-            for i in range(net.ns+1):
-                if net.spiking:
-                    spike[i] = (torch.rand(s[i].size(),device=net.device)<(rho(s[i]))).float()
-                else:
-                    spike[i] = rho(s[i]) # Get Poisson spikes
-
-            s,_ = net.forward(net.N1, s=s, spike=spike,error=error)
-            out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+            out,s,_ = net.forward(data,net.N1, s=s, spike=spike,error=error)
+            # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
 
             loss = (1/(2*out.size(0)))*criterion(out, targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()

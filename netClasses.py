@@ -123,8 +123,22 @@ class SNN(nn.Module):
         return s,dsdt
 
 
-    def forward(self, N, s=None, spike=None, error=None, trace=None, seq=None,  beta=0, target=None, record=False, update_weights=False):
+    def forward(self, data, N, s=None, spike=None, error=None, trace=None, seq=None,  beta=0, target=None, record=False, update_weights=False):
         save_data_dict = {'s':[],'spike':[],'w':[]}
+
+        # Create expanded arrays for data and target
+        expand_data = torch.tile(data,(1,self.M))
+        if target != None:
+            expand_target = torch.tile(target,(1,self.M))
+
+        # Set init values for arrays
+        for i in range(net.ns+1):
+            if net.spiking:
+                spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
+            else:
+                spike[i] = rho(s[i]) # Get Poisson spikes
+        with torch.no_grad():
+            s[net.ns] = expand_data
 
         for t in range(N):
             if record: # Store data
@@ -133,24 +147,12 @@ class SNN(nn.Module):
                 if beta>0:
                     save_data_dict['w'].append([wi.weight.detach().cpu().numpy().copy() for wi in self.w])
 
-                # for key in save_data_dict.keys():
-                #     for x in save_data_dict[key]:
-                #         for y in x:
-                #             print(type(x))
 
-            s,dsdt = self.stepper(s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
+            # s,dsdt = self.stepper(s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
+            s,dsdt = self.stepper(s=s,spike=spike,error=error,trace=trace,target=expand_target,beta=beta,update_weights=update_weights)
 
-        #     if record:
-        #         delta = [torch.sqrt(torch.mean(dsdt_i**2)).detach().cpu().numpy() for dsdt_i in dsdt]
-        #         deltas.append(delta)
-        #         for i in range(len(node_list)):
-        #             layer,node = node_list[i]
-        #             mps[i].append(s[layer][0,node].detach().cpu().numpy())
-        # mps = np.array(mps)
-        # info['mps'] = mps
-        # info['deltas'] = deltas
-
-        return s,save_data_dict
+        out = torch.mean(torch.reshape(s[0],(s[0].size(0),self.M,-1)),axis=1)
+        return out,s,save_data_dict
 
     def initHidden(self, batch_size):
         s = []
