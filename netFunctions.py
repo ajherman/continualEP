@@ -53,12 +53,12 @@ def train(net, train_loader, epoch, learning_rule):
             if net.spike_method == 'accumulator':
                 error[i] = error[i].to(net.device)
 
-            if batch_idx==0:
-                out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
-                # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
-                #     pickle.dump(info,f)
-            else:
-                out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
+        if batch_idx==0:
+            out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
+            # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
+            #     pickle.dump(info,f)
+        else:
+            out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
             # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
             pred = out.data.max(1, keepdim=True)[1]
