@@ -136,7 +136,6 @@ class SNN(nn.Module):
         # Set init values for arrays
         for i in range(self.ns+1):
             if self.spiking:
-                print(s[i].get_device())
                 spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
             else:
                 spike[i] = rho(s[i]) # Get Poisson spikes
