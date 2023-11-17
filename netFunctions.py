@@ -42,7 +42,7 @@ def train(net, train_loader, epoch, learning_rule):
         # Try torch.repeat too
         # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
         data, targets = data.to(net.device), targets.to(net.device)
-        expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
+        #expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
 
         # Put arrays on gpu
         for i in range(net.ns+1):
