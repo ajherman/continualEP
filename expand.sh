@@ -21,18 +21,18 @@ hidden_size=256
 step=0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
-omega=1024
+omega=1
 # for omega in {1,4,16,64,256,1024}
 for M in {1,2,4}
 do
-cep_dir=compare_cep_omega_M_"$M"
-skewsym_dir=compare_skewsym_omega_M_"$M"
-stdp0_dir=compare_stdp0_omega_M_"$M"
-stdp1_dir=compare_stdp1_omega_M_"$M"
-stdp2_dir=compare_stdp2_omega_M_"$M"
-stdp3_dir=compare_stdp3_omega_M_"$M"
-stdp4_dir=compare_stdp4_omega_M_"$M"
-stdp5_dir=compare_stdp5_omega_M_"$M"
+cep_dir=compare_cep_M_"$M"
+skewsym_dir=compare_skewsym_M_"$M"
+stdp0_dir=compare_stdp0_M_"$M"
+stdp1_dir=compare_stdp1_M_"$M"
+stdp2_dir=compare_stdp2_M_"$M"
+stdp3_dir=compare_stdp3_M_"$M"
+stdp4_dir=compare_stdp4_M_"$M"
+stdp5_dir=compare_stdp5_M_"$M"
 
 mkdir -p $cep_dir
 mkdir -p $skewsym_dir
