@@ -130,6 +130,8 @@ class SNN(nn.Module):
         expand_data = torch.tile(data,(1,self.M))
         if target != None:
             expand_target = torch.tile(target,(1,self.M))
+        else:
+            expand_target = None
 
         # Set init values for arrays
         for i in range(self.ns+1):
