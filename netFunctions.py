@@ -54,7 +54,7 @@ def train(net, train_loader, epoch, learning_rule):
                 error[i] = error[i].to(net.device)
 
             if batch_idx==0:
-                out,s,phase1_data = net.forward(data,net.N1, s=s, spike=spike,error=error,record=True)
+                out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
                 # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
                 #     pickle.dump(info,f)
             else:
