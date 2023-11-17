@@ -27,6 +27,8 @@ def train(net, train_loader, epoch, learning_rule):
     deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
     for batch_idx, (data, targets) in enumerate(train_loader):
+
+        # Init arrays
         if not net.no_reset or batch_idx == 0:
             s = net.initHidden(data.size(0))
             trace = net.initHidden(data.size(0))
@@ -36,9 +38,12 @@ def train(net, train_loader, epoch, learning_rule):
             else:
                 error = None
 
-        data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
+        # Change data size/shape to increase population
+        # Try torch.repeat too
+        # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
         data, targets = data.to(net.device), targets.to(net.device)
 
+        # Put arrays on gpu
         for i in range(net.ns+1):
             s[i] = s[i].to(net.device)
             if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
@@ -47,6 +52,7 @@ def train(net, train_loader, epoch, learning_rule):
             if net.spike_method == 'accumulator':
                 error[i] = error[i].to(net.device)
 
+        # Set init values for arrays
         for i in range(net.ns+1):
             if net.spiking:
                 spike[i] = (torch.rand(s[i].size(),device=net.device)<(rho(s[i]))).float()
@@ -54,7 +60,7 @@ def train(net, train_loader, epoch, learning_rule):
                 spike[i] = rho(s[i]) # Get Poisson spikes
 
         with torch.no_grad():
-            s[net.ns] = data
+            s[net.ns] = torch.tile(data,(1,net.M))
 
             if batch_idx==0:
                 s,phase1_data = net.forward(net.N1, s=s, spike=spike,error=error,record=True)
@@ -63,8 +69,9 @@ def train(net, train_loader, epoch, learning_rule):
             else:
                 s,_ = net.forward(net.N1,s=s,spike=spike,error=error)
 
-            pred = s[0].data.max(1, keepdim=True)[1]
-            loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+            out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+            pred = out.data.max(1, keepdim=True)[1]
+            loss = (1/(2*out.size(0)))*criterion(out, targets)
             # #*******************************************VF-EQPROP ******************************************#
             # seq = []
             # for i in range(len(s)): seq.append(s[i].clone())
@@ -121,6 +128,7 @@ def evaluate(net, test_loader, learning_rule=None):
                     error = net.initHidden(data.size(0))
                 else:
                     error = None
+            # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
             if net.cuda:
                 data, targets = data.to(net.device), targets.to(net.device)
                 for i in range(net.ns+1):
@@ -128,7 +136,7 @@ def evaluate(net, test_loader, learning_rule=None):
                     spike[i] = spike[i].to(net.device)
                     if net.spike_method == 'accumulator':
                         error[i] = error[i].to(net.device)
-            s[net.ns] = data
+            s[net.ns] = torch.tile(data,(1,net.M))
 
             # New!
             for i in range(net.ns+1):
@@ -138,9 +146,11 @@ def evaluate(net, test_loader, learning_rule=None):
                     spike[i] = rho(s[i]) # Get Poisson spikes
 
             s,_ = net.forward(net.N1, s=s, spike=spike,error=error)
-            loss = (1/(2*s[0].size(0)))*criterion(s[0], targets)
+            out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+
+            loss = (1/(2*out.size(0)))*criterion(out, targets)
             loss_tot_test += loss #(1/2)*((s[0]-targets)**2).sum()
-            pred = s[0].data.max(1, keepdim = True)[1]
+            pred = out.data.max(1, keepdim = True)[1]
             targets_temp = targets.data.max(1, keepdim = True)[1]
             correct_test += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
 
