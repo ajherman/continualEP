@@ -132,13 +132,14 @@ class SNN(nn.Module):
             expand_target = torch.tile(target,(1,self.M))
 
         # Set init values for arrays
-        for i in range(net.ns+1):
-            if net.spiking:
+        for i in range(self.ns+1):
+            if self.spiking:
+                print(s[i].get_device())
                 spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
             else:
                 spike[i] = rho(s[i]) # Get Poisson spikes
         with torch.no_grad():
-            s[net.ns] = expand_data
+            s[self.ns] = expand_data
 
         for t in range(N):
             if record: # Store data
