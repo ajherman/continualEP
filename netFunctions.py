@@ -60,23 +60,23 @@ def train(net, train_loader, epoch, learning_rule):
         else:
             out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
-            # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
-            pred = out.data.max(1, keepdim=True)[1]
-            loss = (1/(2*out.size(0)))*criterion(out, targets)
-            # #*******************************************VF-EQPROP ******************************************#
-            # seq = []
-            # for i in range(len(s)): seq.append(s[i].clone())
-            seq = [x.clone() for x in s]
+        # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+        pred = out.data.max(1, keepdim=True)[1]
+        loss = (1/(2*out.size(0)))*criterion(out, targets)
+        # #*******************************************VF-EQPROP ******************************************#
+        # seq = []
+        # for i in range(len(s)): seq.append(s[i].clone())
+        seq = [x.clone() for x in s]
 
-            beta = net.beta
+        beta = net.beta
 
-            if batch_idx==0:
-                out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
-                # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
-                #     pickle.dump(info,f)
-            else:
-                out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
-                # Dw = info['dw']
+        if batch_idx==0:
+            out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+            # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
+            #     pickle.dump(info,f)
+        else:
+            out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
+            # Dw = info['dw']
             #***********************************************************************************************#
 
             # if batch_idx%500==0:
