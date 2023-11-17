@@ -209,7 +209,7 @@ class SNN(nn.Module):
 
     #**************************NEW**************************#
     def updateWeights(self, gradw):
-        lr_tab = self.lr_tab
+        lr_tab = [lr/np.sqrt(self.M) for lr in self.lr_tab] # self.lr_tab
         for i in range(len(self.w)):
             if self.w[i] is not None:
                 self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
