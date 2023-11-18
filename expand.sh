@@ -14,7 +14,7 @@ cores=6
 # Accumulator neuron experiments
 beta=0.2
 T1=8
-T2=2 #3
+T2=3
 hidden_size=256
 #tau_dynamic=0.2
 

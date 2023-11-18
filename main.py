@@ -413,7 +413,7 @@ if __name__ == '__main__':
 
     # Write params to pickle file
     with open(args.directory+'/params.txt', 'w',encoding='utf8') as f:
-        keys = ['N1','N2','dt','size_tab','lr_tab','use_bias','no_reset','no_rhop','plain_data','update_rule','trace_decay','spiking','spike_method','omega','step','no_clamp','beta']
+        keys = ['N1','N2','dt','tau_dynamic','size_tab','lr_tab','use_bias','no_reset','no_rhop','plain_data','update_rule','trace_decay','spiking','spike_method','omega','step','no_clamp','beta']
         param_dict = {key:net.__dict__[key] for key in keys}
         json.dump(param_dict,f)
         print(param_dict)

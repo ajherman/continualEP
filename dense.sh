@@ -25,14 +25,14 @@ omega=1024
 # for omega in {1,4,16,64,256,1024}
 for step in {0.005,0.01,0.02,0.05}
 do
-cep_dir=compare_cep_omega_"$omega"_tau_"$tau_dynamic"
-skewsym_dir=compare_skewsym_omega_"$omega"_tau_"$tau_dynamic"
-stdp0_dir=compare_stdp0_omega_"$omega"_tau_"$tau_dynamic"
-stdp1_dir=compare_stdp1_omega_"$omega"_tau_"$tau_dynamic"
-stdp2_dir=compare_stdp2_omega_"$omega"_tau_"$tau_dynamic"
-stdp3_dir=compare_stdp3_omega_"$omega"_tau_"$tau_dynamic"
-stdp4_dir=compare_stdp4_omega_"$omega"_tau_"$tau_dynamic"
-stdp5_dir=compare_stdp5_omega_"$omega"_tau_"$tau_dynamic"
+cep_dir=compare_cep_omega_step_"$step"
+skewsym_dir=compare_skewsym_omega_"$step"
+stdp0_dir=compare_stdp0_omega_"$step"
+stdp1_dir=compare_stdp1_omega_"$step"
+stdp2_dir=compare_stdp2_omega_"$step"
+stdp3_dir=compare_stdp3_omega_"$step"
+stdp4_dir=compare_stdp4_omega_"$step"
+stdp5_dir=compare_stdp5_omega_"$step"
 
 mkdir -p $cep_dir
 mkdir -p $skewsym_dir
