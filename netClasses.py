@@ -64,6 +64,10 @@ class SNN(nn.Module):
         for i in range(self.ns - 1):
             w[2*i + 1].weight.data = torch.transpose(w[2*i].weight.data.clone(), 0, 1)
 
+        # NEW
+        for weight_array in w:
+            weight_array.weight.data /= np.sqrt(self.M)
+
         self.w = w
         self = self.to(device)
 
@@ -209,7 +213,7 @@ class SNN(nn.Module):
 
     #**************************NEW**************************#
     def updateWeights(self, gradw):
-        lr_tab = [lr/np.sqrt(self.M) for lr in self.lr_tab] # self.lr_tab
+        lr_tab = [lr/self.M for lr in self.lr_tab] # self.lr_tab
         for i in range(len(self.w)):
             if self.w[i] is not None:
                 self.w[i].weight += lr_tab[int(np.floor(i/2))]*gradw[0][i]
