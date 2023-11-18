@@ -114,7 +114,7 @@ fig.legend(spike_methods, loc='lower center', ncol=len(spike_methods)//2, bbox_t
 fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
-'''
+
 fig, ax = plt.subplots(2,4,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
 # omegas=[0.8,1,2,3,15,63,255,1023]
@@ -154,7 +154,7 @@ fig.suptitle(title,fontsize=80)
 fig.legend(Ms, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
 # fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
 fig.savefig(args.directory+"/compare_M.png",bbox_inches="tight")
-'''
+
 
 
 
