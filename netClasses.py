@@ -32,6 +32,7 @@ class SNN(nn.Module):
         self.directory = args.directory
         self.current_epoch = 0
         self.spiking = args.spiking
+        self.tau_dynamic = args.tau_dynamic
         # self.spike_height = args.spike_height
         self.step = args.step
         # self.max_fr = args.max_fr
