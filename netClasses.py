@@ -126,6 +126,7 @@ class SNN(nn.Module):
                 spike[i] = torch.mean(torch.bernouli(expanded),axis=0)
                 print(spike[i])
                 print("\n\n\n\n\n\n")
+                assert(0)
 
         # CEP
         if update_weights:
