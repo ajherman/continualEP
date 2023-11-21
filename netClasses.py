@@ -119,6 +119,11 @@ class SNN(nn.Module):
                 error[i] += rho(s[i])-spike[i]
             elif self.spike_method == 'nonspiking':
                 spike[i] = rho(s[i])
+            elif self.spike_method == 'binomial':
+                omega=self.omega
+                expanded=rho(s[i]).expand(omega,-1,-1)
+                spike[i] = torch.mean(torch.bernouli(expanded),axis=0)
+                
 
         # CEP
         if update_weights:
