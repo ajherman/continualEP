@@ -120,7 +120,8 @@ class SNN(nn.Module):
             elif self.spike_method == 'nonspiking':
                 spike[i] = rho(s[i])
             elif self.spike_method == 'binomial':
-                omega=self.omega
+                assert(omega>=1 and omega-np.floor(omega)<1e-15)
+                omega=int(self.omega)
                 expanded=rho(s[i]).expand(omega,-1,-1)
                 spike[i] = torch.mean(torch.bernouli(expanded),axis=0)
                 print(spike[i])
