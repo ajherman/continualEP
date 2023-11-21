@@ -124,9 +124,9 @@ class SNN(nn.Module):
                 omega=int(self.omega)
                 expanded=rho(s[i]).expand(omega,-1,-1)
                 spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
-                print(spike[i])
-                print("\n\n\n\n\n\n")
-                assert(0)
+                #print(torch.max(torch.abs(spike[i]-rho(s[i]))))
+                #print("\n\n\n\n\n\n")
+                
 
         # CEP
         if update_weights:
