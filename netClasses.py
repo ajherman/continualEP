@@ -124,7 +124,7 @@ class SNN(nn.Module):
                 omega=int(self.omega)
                 expanded=rho(s[i]).expand(omega,-1,-1)
                 spike[i] = torch.mean(torch.bernouli(expanded),axis=0)
-                print(spike[i])
+                print(torch.unique(spike[i]))
                 print("\n\n\n\n\n\n")
 
         # CEP
