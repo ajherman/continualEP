@@ -170,7 +170,7 @@ class SNN(nn.Module):
                 elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                     omega = self.omega
                     out = rho(s[i])
-                    spike[i] = torch.normal(out,0.0)#torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
+                    spike[i] = torch.normal(out,torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
                 # spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
             else:
                 spike[i] = rho(s[i]) # Get Poisson spikes
