@@ -23,14 +23,14 @@ tau_dynamic=0.2
 # omega=1
 for M in {1,2,4,7}
 do
-for omega in {1,4,15,100}
+for omega in {1,4,15,50,2048}
 do
 # cep_dir=compare_cep_M_"$M"_omega_"$omega"
-skewsym_dir=binom_skewsym_M_"$M"_omega_"$omega"
-stdp0_dir=binom_stdp0_M_"$M"_omega_"$omega"
-stdp1_dir=binom_stdp1_M_"$M"_omega_"$omega"
-stdp2_dir=binom_stdp2_M_"$M"_omega_"$omega"
-stdp3_dir=binom_stdp3_M_"$M"_omega_"$omega"
+skewsym_dir=normal_skewsym_M_"$M"_omega_"$omega"
+stdp0_dir=normal_stdp0_M_"$M"_omega_"$omega"
+stdp1_dir=normal_stdp1_M_"$M"_omega_"$omega"
+stdp2_dir=normal_stdp2_M_"$M"_omega_"$omega"
+stdp3_dir=normal_stdp3_M_"$M"_omega_"$omega"
 
 # mkdir -p $cep_dir
 mkdir -p $skewsym_dir
@@ -40,10 +40,10 @@ mkdir -p $stdp2_dir
 mkdir -p $stdp3_dir
 
 
-# srun -N 1 -n 1 -c $cores -o "$cep_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $cep_dir --omega $omega --step $step --spike-method binom --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
-srun -N 1 -n 1 -c $cores -o "$skewsym_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $skewsym_dir --omega $omega --step $step --spike-method binom --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
-srun -N 1 -n 1 -c $cores -o "$stdp0_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp0_dir --omega $omega --step $step --spike-method binom --tau-dynamic $tau_dynamic --tau-trace 0.1 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-srun -N 1 -n 1 -c $cores -o "$stdp1_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp1_dir --omega $omega --step $step --spike-method binom --tau-dynamic $tau_dynamic --tau-trace 0.2 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-srun -N 1 -n 1 -c $cores -o "$stdp2_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp2_dir --omega $omega --step $step --spike-method binom --tau-dynamic $tau_dynamic --tau-trace 0.5 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
-srun -N 1 -n 1 -c $cores -o "$stdp3_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp3_dir --omega $omega --step $step --spike-method binom --tau-dynamic $tau_dynamic --tau-trace 1.0 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+# srun -N 1 -n 1 -c $cores -o "$cep_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $cep_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule cep &
+srun -N 1 -n 1 -c $cores -o "$skewsym_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $skewsym_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule skewsym &
+srun -N 1 -n 1 -c $cores -o "$stdp0_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp0_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --tau-trace 0.1 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+srun -N 1 -n 1 -c $cores -o "$stdp1_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp1_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --tau-trace 0.2 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+srun -N 1 -n 1 -c $cores -o "$stdp2_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp2_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --tau-trace 0.5 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
+srun -N 1 -n 1 -c $cores -o "$stdp3_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp3_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --tau-trace 1.0 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 done
