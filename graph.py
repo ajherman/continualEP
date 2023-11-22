@@ -115,15 +115,16 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
 
-fig, ax = plt.subplots(2,2,figsize=(60,60))
+fig, ax = plt.subplots(2,4,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
 # omegas=[0.8,1,2,3,15,63,255,1023]
 # omegas=[14,15,16,17,18,63,64,65]
 # omegas=[1,4]
 # taus=[0.025,0.05,0.1,0.2]
-rules=['skewsym','stdp1','stdp2','stdp3']
+rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
 # rules=['cep','skewsym','stdp']
-Ms=[1,2,4,7,15]
+# Ms=[1,2,4,7,15]
+omegas=[1,2,4,8,16,1024]
 for idx,rule in enumerate(rules):
     ax[idx%2,idx//2].grid(axis='y')
     ax[idx%2,idx//2].set_xlim([0,30])
@@ -131,9 +132,11 @@ for idx,rule in enumerate(rules):
     ax[idx%2,idx//2].set_xlabel('Epoch',fontsize=40)
     ax[idx%2,idx//2].set_ylabel('Test error rate (%)',fontsize=40)
     ax[idx%2,idx//2].set_title('Rule = '+str(rule),fontsize=50)
-    colors = iter(colormap(np.linspace(0,1,len(Ms))))
-    for M in Ms:
-        subdir="poisson_"+rule+"_M_"+str(M)
+    colors = iter(colormap(np.linspace(0,1,len(omegas))))
+    # for M in Ms:
+    for omega in omegas:
+        # subdir="poisson_"+rule+"_M_"+str(M)
+        subdir="compare_"+rule+"_omega_"+str(omega)+"_tau_0.2"
         train_error,test_error=[0],[0]
 
         results_file = args.directory+"/"+subdir+"/results.csv"
@@ -152,9 +155,9 @@ for idx,rule in enumerate(rules):
         #         tail_str = 'tau'+str(int(tau_dynamic*10))+'_step'+str(int(param_dict['step']*100))
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
-fig.legend(Ms, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
+fig.legend(omegas, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
 # fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
-fig.savefig(args.directory+"/compare_M.png",bbox_inches="tight")
+fig.savefig(args.directory+"/compare_omega.png",bbox_inches="tight")
 
 
 
