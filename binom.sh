@@ -3,7 +3,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 12
+#SBATCH -N 8
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -57,7 +57,7 @@ nonspiking_dir=nonspiking_skewsym
 normal_dir=normal_skewsym
 binom_dir=binom_skewsym
 
-mkdir -p $nonpiking_dir
+mkdir -p $nonspiking_dir
 mkdir -p $normal_dir
 mkdir -p $binom_dir
 
