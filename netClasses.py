@@ -126,7 +126,7 @@ class SNN(nn.Module):
                 spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
             elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                 omega = self.omega
-                spike[i] = torch.normal(rho(s[i]),torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega)))
+                spike[i] = torch.normal(rho(s[i]),torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
                 #print(torch.max(torch.abs(spike[i]-rho(s[i]))))
                 #print("\n\n\n\n\n\n")
 
