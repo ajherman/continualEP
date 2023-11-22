@@ -127,9 +127,9 @@ class SNN(nn.Module):
             elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                 omega = self.omega
                 out = rho(s[i])
-                spike[i] = torch.normal(out,0.0)#torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
-                if torch.max(torch.abs(spike[i]-out))>1e-18:
-                    assert(0)
+                spike[i] = torch.normal(out,torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
+                #if torch.max(torch.abs(spike[i]-out))>1e-7:
+                #    assert(0)
                 #print("\n\n\n\n\n\n")
 
 
