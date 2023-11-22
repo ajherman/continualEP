@@ -154,7 +154,24 @@ class SNN(nn.Module):
         # Set init values for arrays
         for i in range(self.ns+1):
             if self.spiking:
-                spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
+                if self.spike_method == 'poisson':
+                    spike[i] = (torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
+                elif self.spike_method == 'accumulator':
+                    omega = self.omega
+                    spike[i] = torch.floor(omega*(rho(s[i])+error[i]))/omega
+                    error[i] += rho(s[i])-spike[i]
+                elif self.spike_method == 'nonspiking':
+                    spike[i] = rho(s[i])
+                elif self.spike_method == 'binomial':
+                    assert(self.omega>=1 and self.omega-np.floor(self.omega)<1e-15)
+                    omega=int(self.omega)
+                    expanded=rho(s[i]).expand(omega,-1,-1)
+                    spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
+                elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
+                    omega = self.omega
+                    out = rho(s[i])
+                    spike[i] = torch.normal(out,0.0)#torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
+                # spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
             else:
                 spike[i] = rho(s[i]) # Get Poisson spikes
         with torch.no_grad():

@@ -114,6 +114,34 @@ fig.legend(spike_methods, loc='lower center', ncol=len(spike_methods)//2, bbox_t
 fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
+fig, ax = plt.subplots(figsize=(60,60))
+rules=['binom_skewsym','normal_skewsym','nonspiking_skewsym']
+ax.grid(axis='y')
+ax.set_xlim([0,30])
+ax.set_ylim([0,20])
+ax.set_xlabel('Epoch',fontsize=40)
+ax.set_ylabel('Test error rate (%)',fontsize=40)
+# ax.set_title('Rule = '+str(rule),fontsize=50)
+colors = iter(colormap(np.linspace(0,1,len(rules))))
+# for M in Ms:
+for rule in rules:
+    # subdir="poisson_"+rule+"_M_"+str(M)
+    subdir=rule
+    train_error,test_error=[0],[0]
+    results_file = args.directory+"/"+subdir+"/results.csv"
+    train_error,test_error=[],[] # So it will increment the color even if it can't find the file
+    if os.path.isfile(results_file):
+        with open(results_file,'r',newline='') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            train_error,test_error = np.array(list(csv_reader)).astype('float').T
+    ax.plot(test_error,linewidth=2,color=next(colors))
+title = "Error over time"
+fig.suptitle(title,fontsize=80)
+fig.legend(rules, loc='lower center', ncol=len(rules)//2, bbox_transform=fig.transFigure,fontsize=40)
+fig.savefig(args.directory+"/population_avg.png",bbox_inches="tight")
+
+
+
 
 fig, ax = plt.subplots(2,4,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
