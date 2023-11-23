@@ -9,7 +9,7 @@
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
-cores=6
+cores=8
 
 # Accumulator neuron experiments
 beta=0.2
@@ -21,7 +21,7 @@ step=0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
 # omega=1
-for M in {1,3,7}
+for M in {1,4,}
 do
 for omega in {1,7,1e24}
 do
