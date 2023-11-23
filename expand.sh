@@ -21,9 +21,9 @@ step=0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
 # omega=1
-for M in {1,2,4,7}
+for M in {1,3,7}
 do
-for omega in {1,4,15,50,1e24}
+for omega in {1,7,1e24}
 do
 # cep_dir=compare_cep_M_"$M"_omega_"$omega"
 skewsym_dir=normal_skewsym_M_"$M"_omega_"$omega"
