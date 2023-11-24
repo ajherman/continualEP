@@ -115,16 +115,16 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
 
-fig, ax = plt.subplots(2,4,figsize=(60,60))
+fig, ax = plt.subplots(8,3,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
 # omegas=[0.8,1,2,3,15,63,255,1023]
 # omegas=[14,15,16,17,18,63,64,65]
 # omegas=[1,4]
 # taus=[0.025,0.05,0.1,0.2]
-rules=['cep','skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
+rules=['skewsym','stdp0','stdp1','stdp2','stdp3','stdp4','stdp5']
 # rules=['cep','skewsym','stdp']
-Ms=[1,2,4,7]
-omegas=[1,2,4,8,16,1024]
+Ms=[1,4,7]
+omegas=['1','7','1e24']
 for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
         ax[idx1,idx2].grid(axis='y')
@@ -137,7 +137,7 @@ for idx1,rule in enumerate(rules):
         # for M in Ms:
         for M in Ms:
             # subdir="poisson_"+rule+"_M_"+str(M)
-            subdir="compare_"+rule+"_omega_"+str(omega)+"_tau_0.2"
+            subdir="normal_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"
@@ -145,10 +145,13 @@ for idx1,rule in enumerate(rules):
             if os.path.isfile(results_file):
                 with open(results_file,'r',newline='') as csv_file:
                     csv_reader = csv.reader(csv_file)
-                    train_error,test_error = np.array(list(csv_reader)).astype('float').T
+                    try:
+                        train_error,test_error = np.array(list(csv_reader)).astype('float').T
+                    except:
+                        print(results_file)
             c=next(colors)
             ax[idx1,idx2].plot(test_error,linewidth=2,color=c)
-            ax[idx1,idx2].plot(test_error,linewidth=2,color=c,linestyle='dashed')
+            # ax[idx1,idx2].plot(test_error,linewidth=2,color=c,linestyle='dashed')
 
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
