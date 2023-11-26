@@ -155,7 +155,7 @@ for idx1,rule in enumerate(rules):
 
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
-fig.legend(Ms, loc='lower center', ncol=len(Ms)//2, bbox_transform=fig.transFigure,fontsize=40)
+fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 # fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
 fig.savefig(args.directory+"/blowups.png",bbox_inches="tight")
 
