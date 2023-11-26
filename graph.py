@@ -115,13 +115,13 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
 
-fig, ax = plt.subplots(5,3,figsize=(60,60))
+fig, ax = plt.subplots(4,3,figsize=(60,60))
 # omegas=[1,4,16,64,256,1024]
 # omegas=[0.8,1,2,3,15,63,255,1023]
 # omegas=[14,15,16,17,18,63,64,65]
 # omegas=[1,4]
 # taus=[0.025,0.05,0.1,0.2]
-rules=['skewsym','stdp0','stdp1','stdp2','stdp3']
+rules=['skewsym','stdp1','stdp2','stdp3']
 # rules=['cep','skewsym','stdp']
 Ms=[1,4,7]
 omegas=['1','7','1e24']
