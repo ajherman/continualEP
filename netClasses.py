@@ -172,6 +172,9 @@ class SNN(nn.Module):
                     omega = self.omega
                     out = rho(s[i])
                     spike[i] = torch.normal(out,torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
+                else:
+                    print("Invalid spike method")
+                    assert(0)
             else:
                 spike[i] = rho(s[i]) # Get Poisson spikes
         with torch.no_grad():
