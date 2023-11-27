@@ -116,11 +116,7 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 
 
 fig, ax = plt.subplots(4,3,figsize=(60,60))
-# omegas=[1,4,16,64,256,1024]
-# omegas=[0.8,1,2,3,15,63,255,1023]
-# omegas=[14,15,16,17,18,63,64,65]
-# omegas=[1,4]
-# taus=[0.025,0.05,0.1,0.2]
+spike_method = 'normal'
 rules=['skewsym','stdp1','stdp2','stdp3']
 # rules=['cep','skewsym','stdp']
 Ms=[1,4,7]
@@ -137,7 +133,7 @@ for idx1,rule in enumerate(rules):
         # for M in Ms:
         for M in Ms:
             # subdir="poisson_"+rule+"_M_"+str(M)
-            subdir="normal_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
+            subdir=spike_method"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"
@@ -157,7 +153,7 @@ title = "Error over time"
 fig.suptitle(title,fontsize=80)
 fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 # fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
-fig.savefig(args.directory+"/blowups.png",bbox_inches="tight")
+fig.savefig(args.directory+"/"+spike_method+"_blowups.png",bbox_inches="tight")
 
 
 

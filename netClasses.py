@@ -165,13 +165,13 @@ class SNN(nn.Module):
                 elif self.spike_method == 'binomial':
                     assert(self.omega>=1 and self.omega-np.floor(self.omega)<1e-15)
                     omega=int(self.omega)
-                    expanded=rho(s[i]).expand(omega,-1,-1)
-                    spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
+                    # expanded=rho(s[i]).expand(omega,-1,-1)
+                    # spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
+                    spike[i]=torch.distributions.binomial.Binomial(total_cnt=omega,probs=rho(s[i])).sample()/omega
                 elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                     omega = self.omega
                     out = rho(s[i])
                     spike[i] = torch.normal(out,torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
-                # spike[i] = (torch.rand(s[i].size(),device=self.device)<(rho(s[i]))).float()
             else:
                 spike[i] = rho(s[i]) # Get Poisson spikes
         with torch.no_grad():
