@@ -122,8 +122,9 @@ class SNN(nn.Module):
             elif self.spike_method == 'binomial':
                 assert(self.omega>=1 and self.omega-np.floor(self.omega)<1e-15)
                 omega=int(self.omega)
-                expanded=rho(s[i]).expand(omega,-1,-1)
-                spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
+                # expanded=rho(s[i]).expand(omega,-1,-1)
+                # spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
+                spike[i]=torch.distributions.binomial.Binomial(total_count=omega,probs=rho(s[i])).sample()/omega
             elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                 omega = self.omega
                 out = rho(s[i])
