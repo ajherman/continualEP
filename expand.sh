@@ -10,7 +10,7 @@
 
 epochs=100
 cores=14
-
+:'
 # Accumulator neuron experiments
 beta=0.2
 T1=8
@@ -40,7 +40,7 @@ srun -N 1 -n 1 -c $cores -o "$stdp2_dir".out --open-mode=append ./main_wrapper.s
 srun -N 1 -n 1 -c $cores -o "$stdp3_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $stdp3_dir --omega $omega --step $step --spike-method normal --tau-dynamic $tau_dynamic --tau-trace 1.0 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --learning-rule stdp --update-rule stdp &
 done
 done
-
+'
 # Binomial
 # Accumulator neuron experiments
 beta=0.2
@@ -50,7 +50,7 @@ hidden_size=256
 step=0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
-for M in {7,}
+for M in {1,7}
 do
 for omega in {1,7,1e24}
 do
