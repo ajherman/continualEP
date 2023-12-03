@@ -438,7 +438,7 @@ if __name__ == '__main__':
         start_time = datetime.datetime.now()
         while net.current_epoch<args.epochs:
             epoch=net.current_epoch
-            error_train,data = train(net, train_loader, epoch, args.learning_rule)
+            error_train,data = train(net, train_loader, epoch, args.learning_rule,save_interval)
 
             # # Pickle data
             # if epoch%5==0:
