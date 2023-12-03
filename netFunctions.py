@@ -18,7 +18,7 @@ def rho(x):
 def rhop(x):
     return ((x >= 0) & (x <= 1)).float()
 
-def train(net, train_loader, epoch, learning_rule):
+def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
 
     net.train()
     loss_tot = 0
@@ -27,7 +27,10 @@ def train(net, train_loader, epoch, learning_rule):
     deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
     with torch.no_grad():
-        for batch_idx, (data, targets) in enumerate(train_loader):
+        while net.current_batch < len(train_loader):
+            batch_idx = net.current_batch # Rename all instances
+            data,targets = train_loader[batch_idx]
+        # for batch_idx, (data, targets) in enumerate(train_loader):
 
             # Init arrays
             if not net.no_reset or batch_idx == 0:
@@ -73,18 +76,8 @@ def train(net, train_loader, epoch, learning_rule):
 
             if batch_idx==0:
                 out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
-                # with open(net.directory+'/phase2_data_'+str(epoch)+'.pkl', 'wb') as f:
-                #     pickle.dump(info,f)
             else:
                 out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
-                # Dw = info['dw']
-                #***********************************************************************************************#
-
-                # if batch_idx%500==0:
-                #     mps=np.concatenate((mps1,mps2),axis=1)
-                #     deltas=np.concatenate((deltas1,deltas2),axis=0)
-                #     mps_li.append(mps)
-                #     deltas_li.append(deltas)
 
             loss_tot += loss
             targets_temp = targets.data.max(1, keepdim=True)[1]
@@ -95,6 +88,24 @@ def train(net, train_loader, epoch, learning_rule):
                    epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
                    100. * (batch_idx + 1) / len(train_loader), loss.data))
 
+
+            # Moving this into train fn
+            ###########################
+            net.current_batch += 1
+            batch_idx = net.current_batch
+            if batch_idx%save_interval==0:
+                # # Save to csv
+                # csv_path = save_path+"/results.csv"
+                # with open(csv_path,'a+',newline='') as csv_file:
+                #     csv_writer = csv.writer(csv_file)
+                #     csv_writer.writerow([error_train, error_test])
+
+                #  Increment epoch and save network
+                net.current_epoch += 1
+                pkl_path = save_path+'/net'
+                with open(pkl_path,'wb') as pkl_file:
+                    pickle.dump(net,pkl_file)
+            ############################
 
     loss_tot /= len(train_loader.dataset)
 
