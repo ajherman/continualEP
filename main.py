@@ -438,14 +438,7 @@ if __name__ == '__main__':
         start_time = datetime.datetime.now()
         while net.current_epoch<args.epochs:
             epoch=net.current_epoch
-            save_interval=50
-
-            error_train,data = train(net, train_loader, epoch, args.learning_rule,save_interval,args.directory)
-
-            # # Pickle data
-            # if epoch%5==0:
-            #     with open(args.directory+'/data_'+str(epoch)+'.pkl', 'wb') as f:
-            #         pickle.dump(data,f)
+            error_train,data = train(net, train_loader, epoch, args.learning_rule,save_interval)
 
             error_train_tab.append(error_train)
 
@@ -454,15 +447,12 @@ if __name__ == '__main__':
             results_dict = {'error_train_tab' : error_train_tab, 'error_test_tab' : error_test_tab,
                             'elapsed_time': datetime.datetime.now() - start_time}
 
-            # if args.angle_grad:
-                # results_dict.update(results_dict_angle)
-
             with open(csv_path,'a+',newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
                 csv_writer.writerow([error_train, error_test])
 
-            #  Increment epoch and save network
+            # #  Increment epoch and save network
             net.current_epoch += 1
-            pkl_path = args.directory+'/net'
-            with open(pkl_path,'wb') as pkl_file:
-                pickle.dump(net,pkl_file)
+            # pkl_path = args.directory+'/net'
+            # with open(pkl_path,'wb') as pkl_file:
+            #     pickle.dump(net,pkl_file)

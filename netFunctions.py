@@ -29,85 +29,87 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
     if not hasattr(net,'current_batch'):
         net.current_batch=0
     with torch.no_grad():
-        while net.current_batch < len(train_loader):
-            batch_idx = net.current_batch # Rename all instances
-            data,targets = train_loader[batch_idx]
-        # for batch_idx, (data, targets) in enumerate(train_loader):
+        # while net.current_batch < len(train_loader):
+        #     batch_idx = net.current_batch # Rename all instances
+        #     data,targets = train_loader[batch_idx]
+        for batch_idx, (data, targets) in enumerate(train_loader):
+            if batch_idx < net.current_batch:
+                pass # Skip batches until we get to net.current_batch
+            else:
+                # Init arrays
+                if not net.no_reset or batch_idx == 0:
+                    s = net.initHidden(data.size(0))
+                    trace = net.initHidden(data.size(0))
+                    spike = net.initHidden(data.size(0))
+                    if net.spike_method == 'accumulator':
+                        error = net.initHidden(data.size(0))
+                    else:
+                        error = None
 
-            # Init arrays
-            if not net.no_reset or batch_idx == 0:
-                s = net.initHidden(data.size(0))
-                trace = net.initHidden(data.size(0))
-                spike = net.initHidden(data.size(0))
-                if net.spike_method == 'accumulator':
-                    error = net.initHidden(data.size(0))
+                # Change data size/shape to increase population
+                # Try torch.repeat too
+                # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
+                data, targets = data.to(net.device), targets.to(net.device)
+                #expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
+
+                # Put arrays on gpu
+                for i in range(net.ns+1):
+                    s[i] = s[i].to(net.device)
+                    if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
+                        trace[i] = trace[i].to(net.device)
+                    spike[i] = spike[i].to(net.device)
+                    if net.spike_method == 'accumulator':
+                        error[i] = error[i].to(net.device)
+
+                if batch_idx==0:
+                    out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
+                    # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
+                    #     pickle.dump(info,f)
                 else:
-                    error = None
+                    out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
-            # Change data size/shape to increase population
-            # Try torch.repeat too
-            # data,targets = torch.tile(data,(1,net.M)),torch.tile(targets,(1,net.M))
-            data, targets = data.to(net.device), targets.to(net.device)
-            #expand_data, expand_targets = torch.tile(data,(1,self.M)), torch.tile(targets,(1,self.M))
+                # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
+                pred = out.data.max(1, keepdim=True)[1]
+                loss = (1/(2*out.size(0)))*criterion(out, targets)
+                # #*******************************************VF-EQPROP ******************************************#
+                # seq = []
+                # for i in range(len(s)): seq.append(s[i].clone())
+                seq = [x.clone() for x in s]
 
-            # Put arrays on gpu
-            for i in range(net.ns+1):
-                s[i] = s[i].to(net.device)
-                if net.update_rule == 'stdp' or net.update_rule == 'nonspikingstdp':
-                    trace[i] = trace[i].to(net.device)
-                spike[i] = spike[i].to(net.device)
-                if net.spike_method == 'accumulator':
-                    error[i] = error[i].to(net.device)
+                beta = net.beta
 
-            if batch_idx==0:
-                out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
-                # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
-                #     pickle.dump(info,f)
-            else:
-                out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
+                if batch_idx==0:
+                    out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
+                else:
+                    out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
 
-            # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
-            pred = out.data.max(1, keepdim=True)[1]
-            loss = (1/(2*out.size(0)))*criterion(out, targets)
-            # #*******************************************VF-EQPROP ******************************************#
-            # seq = []
-            # for i in range(len(s)): seq.append(s[i].clone())
-            seq = [x.clone() for x in s]
+                loss_tot += loss
+                targets_temp = targets.data.max(1, keepdim=True)[1]
+                correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
 
-            beta = net.beta
-
-            if batch_idx==0:
-                out,s, phase2_data = net.forward(data,net.N2, s=s, spike=spike,error=error,trace=trace, target=targets, beta=beta,record=True,update_weights=True)
-            else:
-                out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
-
-            loss_tot += loss
-            targets_temp = targets.data.max(1, keepdim=True)[1]
-            correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
-
-            if (batch_idx + 1)% 100 == 0:
-               print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                   epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
-                   100. * (batch_idx + 1) / len(train_loader), loss.data))
+                if (batch_idx + 1)% 100 == 0:
+                   print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                       epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
+                       100. * (batch_idx + 1) / len(train_loader), loss.data))
 
 
-            # Moving this into train fn
-            ###########################
-            net.current_batch += 1
-            batch_idx = net.current_batch
-            if batch_idx%save_interval==0:
-                # # Save to csv
-                # csv_path = save_path+"/results.csv"
-                # with open(csv_path,'a+',newline='') as csv_file:
-                #     csv_writer = csv.writer(csv_file)
-                #     csv_writer.writerow([error_train, error_test])
+                # Moving this into train fn
+                ###########################
+                net.current_batch = batch_idx
+                # batch_idx = net.current_batch
+                if batch_idx%save_interval==0:
+                    # # Save to csv
+                    # csv_path = save_path+"/results.csv"
+                    # with open(csv_path,'a+',newline='') as csv_file:
+                    #     csv_writer = csv.writer(csv_file)
+                    #     csv_writer.writerow([error_train, error_test])
 
-                #  Increment epoch and save network
-                net.current_epoch += 1
-                pkl_path = save_path+'/net'
-                with open(pkl_path,'wb') as pkl_file:
-                    pickle.dump(net,pkl_file)
-            ############################
+                    #  Increment epoch and save network
+                    # net.current_epoch += 1
+                    pkl_path = save_path+'/net'
+                    with open(pkl_path,'wb') as pkl_file:
+                        pickle.dump(net,pkl_file)
+                ############################
 
     loss_tot /= len(train_loader.dataset)
 
