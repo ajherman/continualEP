@@ -26,6 +26,8 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
     mps_li = []
     deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
+    if not hasattr(net,'current_batch'):
+        net.current_batch=0
     with torch.no_grad():
         while net.current_batch < len(train_loader):
             batch_idx = net.current_batch # Rename all instances
