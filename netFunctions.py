@@ -118,7 +118,7 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
        loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
        ))
 
-    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset),{'phase1':phase1_data,'phase2':phase2_data}
+    return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset) #,{'phase1':phase1_data,'phase2':phase2_data}
 
 def evaluate(net, test_loader, learning_rule=None):
     net.eval()

@@ -135,12 +135,6 @@ parser.add_argument(
     action='store_true',
     default=False,
     help='continual ep/vf (default: False)')
-# parser.add_argument(
-#     '--angle',
-#     type=float,
-#     default=0,
-#     help='initial angle between forward and backward weights(defaut: 0)')
-
 #other arguments
 parser.add_argument(
     '--action',
@@ -164,11 +158,6 @@ parser.add_argument(
     default=42,
     metavar='SEED',
     help='seed (default: None')
-# parser.add_argument(
-#     '--angle-grad',
-#     action='store_true',
-#     default=False,
-#     help='computes initial angle between EP updates and BPTT gradients (default: False)')
 parser.add_argument(
     '--use-bias',
     action='store_true',
@@ -439,7 +428,7 @@ if __name__ == '__main__':
         while net.current_epoch<args.epochs:
             epoch=net.current_epoch
             save_interval=50
-            error_train,data = train(net, train_loader, epoch, args.learning_rule,save_interval,args.directory)
+            error_train,_ = train(net, train_loader, epoch, args.learning_rule,save_interval,args.directory)
 
             error_train_tab.append(error_train)
 
