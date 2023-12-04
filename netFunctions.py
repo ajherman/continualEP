@@ -23,8 +23,8 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
     net.train()
     # Reset arrays if new epoch
     if True: #net.current_batch==0:
-        loss_tot = []
-        correct = []
+        net.loss_tot = []
+        net.correct = []
     # mps_li = []
     # deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
