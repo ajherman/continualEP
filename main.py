@@ -443,6 +443,7 @@ if __name__ == '__main__':
 
             # #  Increment epoch and save network
             net.current_epoch += 1
+            net.current_batch=0
             # pkl_path = args.directory+'/net'
             # with open(pkl_path,'wb') as pkl_file:
             #     pickle.dump(net,pkl_file)
