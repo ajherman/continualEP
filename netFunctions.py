@@ -22,7 +22,7 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
 
     net.train()
     # Reset arrays if new epoch
-    if True: #net.current_batch==0:
+    if net.current_batch==0:
         net.loss_tot = []
         net.correct = []
     # mps_li = []
@@ -79,10 +79,10 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
                 else:
                     out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
 
-                loss_tot.append(loss)
+                net.loss_tot.append(loss)
 
                 targets_temp = targets.data.max(1, keepdim=True)[1]
-                correct.append(pred.eq(targets_temp.data.view_as(pred)).cpu().sum())
+                net.correct.append(pred.eq(targets_temp.data.view_as(pred)).cpu().sum())
 
                 if (batch_idx + 1)% 100 == 0:
                    print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -109,8 +109,8 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
                 ############################
 
     # loss_tot /= len(train_loader.dataset)
-    mean_loss = torch.mean(torch.stack(loss_tot))
-    correct = torch.sum(torch.stack(correct))
+    mean_loss = torch.mean(torch.stack(net.loss_tot))
+    correct = torch.sum(torch.stack(net.correct))
 
     # print('\nAverage Training loss: {:.4f}, Training Error Rate: {:.2f}% ({}/{})\n'.format(
     #    loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
