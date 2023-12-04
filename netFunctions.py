@@ -14,7 +14,8 @@ import csv
 import pickle
 
 def rho(x):
-    return x.clamp(min = 0).clamp(max = 1)
+    # return x.clamp(min = 0).clamp(max = 1)
+    return x.clamp(min=0,max=1)
 def rhop(x):
     return ((x >= 0) & (x <= 1)).float()
 
@@ -28,8 +29,8 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
     # mps_li = []
     # deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
-    if not hasattr(net,'current_batch'):
-        net.current_batch=0
+    # if not hasattr(net,'current_batch'):
+    #     net.current_batch=0
     with torch.no_grad():
         # while net.current_batch < len(train_loader):
         #     batch_idx = net.current_batch # Rename all instances
@@ -103,7 +104,7 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
 
                     #  Increment epoch and save network
                     # net.current_epoch += 1
-                    pkl_path = save_path+'/net'
+                    pkl_path = save_path+'/net.pt'
                     with open(pkl_path,'wb') as pkl_file:
                         pickle.dump(net,pkl_file)
                 ############################
