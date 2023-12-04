@@ -116,7 +116,7 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 
 
 fig, ax = plt.subplots(4,3,figsize=(60,60))
-spike_method = 'normal'
+spike_method = 'binom'
 rules=['skewsym','stdp1','stdp2','stdp3']
 # rules=['cep','skewsym','stdp']
 Ms=[1,4,7]
@@ -133,7 +133,7 @@ for idx1,rule in enumerate(rules):
         # for M in Ms:
         for M in Ms:
             # subdir="poisson_"+rule+"_M_"+str(M)
-            subdir=spike_method"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
+            subdir=spike_method+"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"

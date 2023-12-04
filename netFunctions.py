@@ -21,10 +21,12 @@ def rhop(x):
 def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
 
     net.train()
-    loss_tot = 0
-    correct = 0
-    mps_li = []
-    deltas_li = []
+    # Reset arrays if new epoch
+    if net.batch_idx==0:
+        loss_tot = []
+        correct = []
+    # mps_li = []
+    # deltas_li = []
     criterion = nn.MSELoss(reduction = 'sum')
     if not hasattr(net,'current_batch'):
         net.current_batch=0
@@ -63,17 +65,11 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
 
                 if batch_idx==0:
                     out,s,phase1_data = net.forward(data,net.N1,s=s,spike=spike,error=error,record=True)
-                    # with open(net.directory+'/phase1_data_'+str(epoch)+'.pkl', 'wb') as f:
-                    #     pickle.dump(info,f)
                 else:
                     out,s,_ = net.forward(data,net.N1,s=s,spike=spike,error=error)
 
-                # out = torch.mean(torch.reshape(s[0],(s[0].size(0),net.M,-1)),axis=1)
                 pred = out.data.max(1, keepdim=True)[1]
                 loss = (1/(2*out.size(0)))*criterion(out, targets)
-                # #*******************************************VF-EQPROP ******************************************#
-                # seq = []
-                # for i in range(len(s)): seq.append(s[i].clone())
                 seq = [x.clone() for x in s]
 
                 beta = net.beta
@@ -83,9 +79,10 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
                 else:
                     out,s,info = net.forward(data,net.N2,s=s,spike=spike,error=error,trace=trace,target=targets,beta=beta,update_weights=True)
 
-                loss_tot += loss
+                loss_tot.append(loss)
+
                 targets_temp = targets.data.max(1, keepdim=True)[1]
-                correct += pred.eq(targets_temp.data.view_as(pred)).cpu().sum()
+                correct.append(pred.eq(targets_temp.data.view_as(pred)).cpu().sum())
 
                 if (batch_idx + 1)% 100 == 0:
                    print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -111,11 +108,16 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
                         pickle.dump(net,pkl_file)
                 ############################
 
-    loss_tot /= len(train_loader.dataset)
+    # loss_tot /= len(train_loader.dataset)
+    mean_loss = torch.mean(torch.stack(loss_tot))
+    correct = torch.sum(torch.stack(correct))
 
+    # print('\nAverage Training loss: {:.4f}, Training Error Rate: {:.2f}% ({}/{})\n'.format(
+    #    loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
+    #    ))
 
     print('\nAverage Training loss: {:.4f}, Training Error Rate: {:.2f}% ({}/{})\n'.format(
-       loss_tot,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
+       mean_loss,100*(len(train_loader.dataset)- correct.item() )/ len(train_loader.dataset), len(train_loader.dataset)-correct.item(), len(train_loader.dataset),
        ))
 
     return 100*(len(train_loader.dataset)- correct.item())/ len(train_loader.dataset) #,{'phase1':phase1_data,'phase2':phase2_data}
@@ -166,6 +168,8 @@ def evaluate(net, test_loader, learning_rule=None):
     print('\nAverage Test loss: {:.4f}, Test Error Rate: {:.2f}% ({}/{})\n'.format(
         loss_tot_test,100. *(len(test_loader.dataset)- correct_test.item() )/ len(test_loader.dataset), len(test_loader.dataset)-correct_test.item(), len(test_loader.dataset)))
     return 100 *(len(test_loader.dataset)- correct_test.item() )/ len(test_loader.dataset)
+
+
 
 def createPath(args):
 
