@@ -364,7 +364,9 @@ if  args.activation_function == 'sigm':
 
 elif args.activation_function == 'hardsigm':
     def rho(x):
-        return x.clamp(min = 0).clamp(max = 1)
+        # return x.clamp(min = 0).clamp(max = 1)
+        return x.clamp(min = 0,max = 1)
+
     def rhop(x):
         return ((x >= 0) & (x <= 1)).float()
 
@@ -379,7 +381,10 @@ if __name__ == '__main__':
     input_size = 28
 
     #Build the net
-    pkl_path = args.directory+'/net'
+    if os.path.exists(args.directory+'/net.pt'):
+        pkl_path = args.directory+'/net.pt'
+    else:
+        pkl_path = args.directory+'/net'
 
     if args.load and os.path.exists(pkl_path):
         with open(pkl_path,'rb') as pkl_file:
