@@ -22,7 +22,7 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
 
     net.train()
     # Reset arrays if new epoch
-    if net.batch_idx==0:
+    if True: #net.current_batch==0:
         loss_tot = []
         correct = []
     # mps_li = []
