@@ -3,13 +3,13 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 12
+#SBATCH -N 6
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
-cores=12
+cores=4
 
 # # Accumulator neuron experiments
 # beta=0.2
@@ -50,7 +50,7 @@ hidden_size=256
 step=0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
-for M in {7,}
+for M in {1,}
 do
 for omega in {1,7,1e15}
 do
