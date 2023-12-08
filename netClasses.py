@@ -36,10 +36,7 @@ class SNN(nn.Module):
         self.correct = []
         self.spiking = args.spiking
         self.tau_dynamic = args.tau_dynamic
-        # self.spike_height = args.spike_height
         self.step = args.step
-        # self.max_fr = args.max_fr
-        # self.max_Q = args.max_Q
         if args.device_label >= 0:
             device = torch.device("cuda:"+str(args.device_label))
             self.cuda = True
@@ -55,6 +52,13 @@ class SNN(nn.Module):
         self.randbeta = args.randbeta
         #*****************************#
         self.M = args.M
+        self.blowup_method = args.blowup_method
+        if self.blowup_method == 'sum':
+            self.act_fn_scl = 1./self.M
+        elif self.blowup_method == 'mean':
+            self.act_fn_scl = 1.0
+        else:
+            assert(0)
 
         w = nn.ModuleList([])
 
@@ -67,12 +71,26 @@ class SNN(nn.Module):
         for i in range(self.ns - 1):
             w[2*i + 1].weight.data = torch.transpose(w[2*i].weight.data.clone(), 0, 1)
 
-        # # NEW
-        # for weight_array in w:
-        #     weight_array.weight.data /= np.sqrt(self.M)
-
         self.w = w
         self = self.to(device)
+        self.apply(self._init_weights) # This will break weight symmetry
+
+    def activation(self, x):
+        return rho(x)*self.act_fn_scl
+
+    def _init_weights(self, module):
+        if isinstance(module, nn.Linear):
+            if self.blowup_method == 'mean':
+                # torch.nn.init.normal_(module.weight, mean=0.0, std=1./torch.sqrt(3*module.weight.size(1))) # Normal version
+                b=1./torch.sqrt(module.weight.size(1))    
+                torch.nn.init.uniform_(module.weight, -b,b)  
+            elif:
+                b=1./torch.sqrt(module.weight.size(1)/self.M)    
+                torch.nn.init.uniform_(module.weight, -b,b) 
+            else:
+                assert(0)
+            if module.bias is not None:
+                torch.nn.init.zeros_(module.bias)
 
     def stepper(self, s=None, spike=None, error=None, trace=None, target=None, beta=0, return_derivatives=False, update_weights=False):
         dsdt = []
@@ -86,11 +104,11 @@ class SNN(nn.Module):
             for i in range(1, self.ns):
                 dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
         else:
-            dsdt.append(-s[0] + self.w[0](rho(s[1])))
+            dsdt.append(-s[0] + self.w[0](self.activation(s[1])))
             if np.abs(beta) > 0:
-                dsdt[0] = dsdt[0] + beta*(target-rho(s[0]))
+                dsdt[0] = dsdt[0] + beta*(target-self.activation(s[0]))
             for i in range(1, self.ns):
-                dsdt.append(-s[i] + self.w[2*i](rho(s[i+1])) + self.w[2*i-1](rho(s[i-1])))
+                dsdt.append(-s[i] + self.w[2*i](self.activation(s[i+1])) + self.w[2*i-1](self.activation(s[i-1])))
 
         s_old = [x.clone() for x in s]
 
@@ -110,32 +128,26 @@ class SNN(nn.Module):
                     trace[i] = self.trace_decay*(trace[i]+spike[i])
             elif self.update_rule == 'nonspikingstdp':
                 for i in range(self.ns+1):
-                    trace[i] = self.trace_decay*(trace[i]+rho(s[i]))
+                    trace[i] = self.trace_decay*(trace[i]+self.activation(s[i]))
 
         # Get spikes
         for i in range(self.ns+1):
             if self.spike_method == 'poisson':
-                spike[i] = (torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
+                spike[i] = (torch.rand(s[i].size(),device=self.device)<self.activation(s[i])).float()
             elif self.spike_method == 'accumulator':
                 omega = self.omega
-                spike[i] = torch.floor(omega*(rho(s[i])+error[i]))/omega
-                error[i] += rho(s[i])-spike[i]
+                spike[i] = torch.floor(omega*(self.activation(s[i])+error[i]))/omega
+                error[i] += self.activation(s[i])-spike[i]
             elif self.spike_method == 'nonspiking':
-                spike[i] = rho(s[i])
+                spike[i] = self.activation(s[i])
             elif self.spike_method == 'binomial':
                 assert(self.omega>=1 and self.omega-np.floor(self.omega)<1e-15)
                 omega=int(self.omega)
-                # expanded=rho(s[i]).expand(omega,-1,-1)
-                # spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
-                spike[i]=torch.distributions.binomial.Binomial(total_count=omega,probs=rho(s[i])).sample()/omega
+                spike[i]=torch.distributions.binomial.Binomial(total_count=omega,probs=self.activation(s[i])).sample()/omega
             elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                 omega = self.omega
-                out = rho(s[i])
-                spike[i] = torch.normal(out,torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
-                #if torch.max(torch.abs(spike[i]-out))>1e-7:
-                #    assert(0)
-                #print("\n\n\n\n\n\n")
-
+                out = self.activation(s[i])
+                spike[i] = torch.normal(out,torch.sqrt(self.activation(s[i])*(1-self.activation(s[i]))/omega))
 
         # CEP
         if update_weights:
@@ -143,7 +155,6 @@ class SNN(nn.Module):
             with torch.no_grad():
                 self.updateWeights(dw)
         return s,dsdt
-
 
     def forward(self, data, N, s=None, spike=None, error=None, trace=None, seq=None,  beta=0, target=None, record=False, update_weights=False):
         save_data_dict = {'s':[],'spike':[],'w':[]}
@@ -159,28 +170,26 @@ class SNN(nn.Module):
         for i in range(self.ns+1):
             if self.spiking:
                 if self.spike_method == 'poisson':
-                    spike[i] = (torch.rand(s[i].size(),device=self.device)<rho(s[i])).float()
+                    spike[i] = (torch.rand(s[i].size(),device=self.device)<self.activation(s[i])).float()
                 elif self.spike_method == 'accumulator':
                     omega = self.omega
-                    spike[i] = torch.floor(omega*(rho(s[i])+error[i]))/omega
-                    error[i] += rho(s[i])-spike[i]
+                    spike[i] = torch.floor(omega*(self.activation(s[i])+error[i]))/omega
+                    error[i] += self.activation(s[i])-spike[i]
                 elif self.spike_method == 'nonspiking':
-                    spike[i] = rho(s[i])
+                    spike[i] = self.activation(s[i])
                 elif self.spike_method == 'binomial':
                     assert(self.omega>=1 and self.omega-np.floor(self.omega)<1e-15)
                     omega=int(self.omega)
-                    # expanded=rho(s[i]).expand(omega,-1,-1)
-                    # spike[i] = torch.mean(torch.bernoulli(expanded),axis=0)
-                    spike[i]=torch.distributions.binomial.Binomial(total_count=omega,probs=rho(s[i])).sample()/omega
+                    spike[i]=torch.distributions.binomial.Binomial(total_count=omega,probs=self.activation(s[i])).sample()/omega
                 elif self.spike_method == 'normal': # This should be approximately the same as binomial for large omega
                     omega = self.omega
-                    out = rho(s[i])
-                    spike[i] = torch.normal(out,torch.sqrt(rho(s[i])*(1-rho(s[i]))/omega))
+                    out = self.activation(s[i])
+                    spike[i] = torch.normal(out,torch.sqrt(self.activation(s[i])*(1-self.activation(s[i]))/omega))
                 else:
                     print("Invalid spike method")
                     assert(0)
             else:
-                spike[i] = rho(s[i]) # Get Poisson spikes
+                spike[i] = self.activation(s[i]) # Get Poisson spikes
         with torch.no_grad():
             s[self.ns] = expand_data
 
@@ -190,7 +199,6 @@ class SNN(nn.Module):
                 save_data_dict['spike'].append([spikei.detach().cpu().numpy().copy() for spikei in spike])
                 if beta>0:
                     save_data_dict['w'].append([wi.weight.detach().cpu().numpy().copy() for wi in self.w])
-
 
             # s,dsdt = self.stepper(s=s,spike=spike,error=error,trace=trace,target=target,beta=beta,update_weights=update_weights)
             s,dsdt = self.stepper(s=s,spike=spike,error=error,trace=trace,target=expand_target,beta=beta,update_weights=update_weights)
@@ -211,26 +219,26 @@ class SNN(nn.Module):
         beta = self.beta
         for i in range(self.ns - 1):
             if self.update_rule == 'asym':
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])))
-                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[i + 1]) - rho(seq[i + 1]), 0, 1), rho(s[i])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(self.activation(s[i]) - self.activation(seq[i]), 0, 1), self.activation(s[i + 1])))
+                gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(self.activation(s[i + 1]) - self.activation(seq[i + 1]), 0, 1), self.activation(s[i])))
             elif self.update_rule == 'skew':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i+1]) - rho(seq[i+1]), 0, 1), rho(s[i])) -  torch.mm(torch.transpose(rho(s[i+1]),0,1),rho(s[i])-rho(seq[i])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(self.activation(s[i]) - self.activation(seq[i]), 0, 1), self.activation(s[i + 1])) -  torch.mm(torch.transpose(self.activation(s[i]),0,1),self.activation(s[i+1])-self.activation(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(self.activation(s[i+1]) - self.activation(seq[i+1]), 0, 1), self.activation(s[i])) -  torch.mm(torch.transpose(self.activation(s[i+1]),0,1),self.activation(s[i])-self.activation(seq[i])) ))
             elif self.update_rule == 'skewsym':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) -  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i+1]), 0, 1), rho(s[i]) - rho(seq[i])) -  torch.mm(torch.transpose(rho(s[i+1])-rho(seq[i+1]),0,1),rho(s[i])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(self.activation(s[i]) - self.activation(seq[i]), 0, 1), self.activation(s[i + 1])) -  torch.mm(torch.transpose(self.activation(s[i]),0,1),self.activation(s[i+1])-self.activation(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(self.activation(s[i+1]), 0, 1), self.activation(s[i]) - self.activation(seq[i])) -  torch.mm(torch.transpose(self.activation(s[i+1])-self.activation(seq[i+1]),0,1),self.activation(s[i])) ))
             elif self.update_rule == 'stdp':
                 gradw.append(((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*( -torch.mm(torch.transpose(trace[i], 0, 1), spike[i + 1]) +  torch.mm(torch.transpose(spike[i],0,1),trace[i+1]) ))
                 gradw.append(((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*( -torch.mm(torch.transpose(spike[i+1], 0, 1), trace[i]) +  torch.mm(torch.transpose(trace[i+1],0,1),spike[i]) ))
             elif self.update_rule == 'nonspikingstdp':
-                gradw.append(((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*( -torch.mm(torch.transpose(trace[i], 0, 1), rho(s[i + 1])) +  torch.mm(torch.transpose(rho(s[i]),0,1),trace[i+1]) ))
-                gradw.append(((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*( -torch.mm(torch.transpose(rho(s[i+1]), 0, 1), trace[i]) +  torch.mm(torch.transpose(trace[i+1],0,1),rho(s[i])) ))
+                gradw.append(((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*( -torch.mm(torch.transpose(trace[i], 0, 1), self.activation(s[i + 1])) +  torch.mm(torch.transpose(self.activation(s[i]),0,1),trace[i+1]) ))
+                gradw.append(((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*( -torch.mm(torch.transpose(self.activation(s[i+1]), 0, 1), trace[i]) +  torch.mm(torch.transpose(trace[i+1],0,1),self.activation(s[i])) ))
             elif self.update_rule == 'cep':
-                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i]), 0, 1), rho(s[i+1])) - torch.mm(torch.transpose(rho(seq[i]), 0, 1), rho(seq[i+1]))))
-                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[i+1]), 0, 1), rho(s[i])) - torch.mm(torch.transpose(rho(seq[i+1]), 0, 1), rho(seq[i]))))
+                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(self.activation(s[i]), 0, 1), self.activation(s[i+1])) - torch.mm(torch.transpose(self.activation(seq[i]), 0, 1), self.activation(seq[i+1]))))
+                gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(self.activation(s[i+1]), 0, 1), self.activation(s[i])) - torch.mm(torch.transpose(self.activation(seq[i+1]), 0, 1), self.activation(seq[i]))))
             elif self.update_rule == 'cepalt':
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i]) - rho(seq[i]), 0, 1), rho(s[i + 1])) +  torch.mm(torch.transpose(rho(s[i]),0,1),rho(s[i+1])-rho(seq[i+1])) ))
-                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(rho(s[i+1]), 0, 1), rho(s[i]) - rho(seq[i])) +  torch.mm(torch.transpose(rho(s[i+1])-rho(seq[i+1]),0,1),rho(s[i])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(self.activation(s[i]) - self.activation(seq[i]), 0, 1), self.activation(s[i + 1])) +  torch.mm(torch.transpose(self.activation(s[i]),0,1),self.activation(s[i+1])-self.activation(seq[i+1])) ))
+                gradw.append((1/(beta*batch_size))*( torch.mm(torch.transpose(self.activation(s[i+1]), 0, 1), self.activation(s[i]) - self.activation(seq[i])) +  torch.mm(torch.transpose(self.activation(s[i+1])-self.activation(seq[i+1]),0,1),self.activation(s[i])) ))
             if self.use_bias:
                 gradw_bias.append((1/(beta*batch_size))*(s[i] - seq[i]).sum(0))
                 gradw_bias.append(None)
@@ -238,11 +246,11 @@ class SNN(nn.Module):
         if self.update_rule == 'stdp':
             gradw.append( ((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*(torch.mm(torch.transpose(spike[-2],0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), spike[-1]) ))
         elif self.update_rule =='nonspikingstdp':
-            gradw.append( ((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*(torch.mm(torch.transpose(rho(s[-2]),0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), rho(s[-1])) ))
+            gradw.append( ((1-self.trace_decay)**2/(self.trace_decay*beta*batch_size))*(torch.mm(torch.transpose(self.activation(s[-2]),0,1),trace[-1]) - torch.mm(torch.transpose(trace[-2],0,1), self.activation(s[-1])) ))
         elif self.update_rule == 'skewsym':
-            gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(rho(s[-2]) - rho(seq[-2]), 0, 1), rho(s[-1])) -  torch.mm(torch.transpose(rho(s[-2]),0,1),rho(s[-1])-rho(seq[-1])) ))
+            gradw.append((1/(beta*batch_size))*(torch.mm(torch.transpose(self.activation(s[-2]) - self.activation(seq[-2]), 0, 1), self.activation(s[-1])) -  torch.mm(torch.transpose(self.activation(s[-2]),0,1),self.activation(s[-1])-self.activation(seq[-1])) ))
         else:
-            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(rho(s[-2]) - rho(seq[-2]), 0, 1), rho(s[-1])))
+            gradw.append((1/(beta*batch_size))*torch.mm(torch.transpose(self.activation(s[-2]) - self.activation(seq[-2]), 0, 1), self.activation(s[-1])))
         if self.use_bias:
             gradw_bias.append((1/(beta*batch_size))*(s[-1] - seq[-1]).sum(0))
 

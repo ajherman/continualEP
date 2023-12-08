@@ -267,7 +267,11 @@ parser.add_argument(
     type=int,
     default=1,
     help='multiplier for layer size')
-
+parser.add_argument(
+    '--blowup-method',
+    type=str,
+    default='mean',
+    help='determines how blowup parameter M gets used')
 
 args = parser.parse_args()
 
@@ -440,5 +444,5 @@ if __name__ == '__main__':
             
             duration = (time.time()-tic)/60
             print(f"Epoch: {net.current_epoch}")
-            print(f"Duration: {duration} minutes elapsed")
+            print(f"Duration: {duration:.2f} minutes elapsed")
             
