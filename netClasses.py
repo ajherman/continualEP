@@ -73,7 +73,7 @@ class SNN(nn.Module):
 
         self.w = w
         self = self.to(device)
-        self.apply(self._init_weights) # This will break weight symmetry
+        # self.apply(self._init_weights) # This will break weight symmetry
 
     def activation(self, x):
         return rho(x)*self.act_fn_scl

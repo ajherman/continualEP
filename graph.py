@@ -130,7 +130,6 @@ for idx1,rule in enumerate(rules):
         ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
         ax[idx1,idx2].set_title('Rule = '+str(rule)+r", $\omega=$"+str(omega),fontsize=50)
         colors = iter(colormap(np.linspace(0,1,len(Ms))))
-        # for M in Ms:
         for M in Ms:
             # subdir="poisson_"+rule+"_M_"+str(M)
             subdir=spike_method+"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
@@ -152,7 +151,7 @@ for idx1,rule in enumerate(rules):
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
 # fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
-fig.legend([1,4,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
+fig.legend([1,4,7,15], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 fig.savefig(args.directory+"/"+spike_method+"_blowups.png",bbox_inches="tight")
 
 
