@@ -420,7 +420,7 @@ if __name__ == '__main__':
         while net.current_epoch<args.epochs:
             tic = time.time()
             epoch=net.current_epoch
-            save_interval=200
+            save_interval=1000
             error_train = train(net, train_loader, epoch, args.learning_rule,save_interval,args.directory)
 
             error_train_tab.append(error_train)
