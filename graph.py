@@ -119,7 +119,7 @@ fig, ax = plt.subplots(4,3,figsize=(60,60))
 spike_method = 'binom'
 rules=['skewsym','stdp1','stdp2','stdp3']
 # rules=['cep','skewsym','stdp']
-Ms=[1,4,7]
+Ms=[1,4,7,15]
 omegas=['1','7','1e15']
 for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
