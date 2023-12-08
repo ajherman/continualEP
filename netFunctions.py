@@ -94,7 +94,6 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
                 # Moving this into train fn
                 ###########################
                 net.current_batch = batch_idx
-                # batch_idx = net.current_batch
                 if batch_idx%save_interval==0:
                     # # Save to csv
                     # csv_path = save_path+"/results.csv"
@@ -103,7 +102,6 @@ def train(net, train_loader, epoch, learning_rule,save_interval,save_path):
                     #     csv_writer.writerow([error_train, error_test])
 
                     #  Increment epoch and save network
-                    # net.current_epoch += 1
                     pkl_path = save_path+'/net.pt'
                     with open(pkl_path,'wb') as pkl_file:
                         pickle.dump(net,pkl_file)

@@ -120,7 +120,7 @@ spike_method = 'binom'
 rules=['skewsym','stdp1','stdp2','stdp3']
 # rules=['cep','skewsym','stdp']
 Ms=[1,4,7]
-omegas=['1','7','1e24']
+omegas=['1','7','1e15']
 for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
         ax[idx1,idx2].grid(axis='y')
@@ -147,12 +147,12 @@ for idx1,rule in enumerate(rules):
                         print(results_file)
             c=next(colors)
             ax[idx1,idx2].plot(test_error,linewidth=2,color=c)
-            ax[idx1,idx2].plot(train_error,linewidth=2,color=c,linestyle='dashed')
+            # ax[idx1,idx2].plot(train_error,linewidth=2,color=c,linestyle='dashed')
 
 title = "Error over time"
 fig.suptitle(title,fontsize=80)
-fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
-# fig.savefig(args.directory+"/accumulator_"+tail_str+".png",bbox_inches="tight")
+# fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
+fig.legend([1,4,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 fig.savefig(args.directory+"/"+spike_method+"_blowups.png",bbox_inches="tight")
 
 

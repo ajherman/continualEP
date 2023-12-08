@@ -10,6 +10,7 @@ from netFunctions import *
 from plotFunctions import *
 import os
 import json
+import time 
 
 def set_seed(seed: int = 42) -> None:
     np.random.seed(seed)
@@ -304,20 +305,6 @@ if args.trace_decay==None:
     args.trace_decay=np.exp(-1./args.n_trace)
     print("trace decay = ",args.trace_decay)
 
-# New this should create consistency as we change the number of steps
-# if args.step==None:
-#     # args.step=12.8/args.N2
-#     args.step=12./args.N2
-
-# Discrete versions of times constants
-
-#
-# if args.max_fr==None:
-#     args.max_fr = 1.0/args.step
-
-
-# if not not args.seed:
-#     torch.manual_seed(args.seed[0])
 set_seed(args.seed)
 
 batch_size = args.batch_size
@@ -431,6 +418,7 @@ if __name__ == '__main__':
 
         start_time = datetime.datetime.now()
         while net.current_epoch<args.epochs:
+            tic = time.time()
             epoch=net.current_epoch
             save_interval=200
             error_train = train(net, train_loader, epoch, args.learning_rule,save_interval,args.directory)
@@ -449,6 +437,8 @@ if __name__ == '__main__':
             # #  Increment epoch and save network
             net.current_epoch += 1
             net.current_batch=0
-            # pkl_path = args.directory+'/net'
-            # with open(pkl_path,'wb') as pkl_file:
-            #     pickle.dump(net,pkl_file)
+            
+            duration = (time.time()-tic)/60
+            print(f"Epoch: {net.current_epoch}")
+            print(f"Duration: {duration} minutes elapsed")
+            
