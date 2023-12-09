@@ -421,6 +421,8 @@ if __name__ == '__main__':
         error_test_tab = []
 
         start_time = datetime.datetime.now()
+        net.act_fn_scl=1.0
+        net.blowup_method='mean'
         while net.current_epoch<args.epochs:
             tic = time.time()
             epoch=net.current_epoch

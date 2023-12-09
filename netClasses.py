@@ -84,7 +84,7 @@ class SNN(nn.Module):
                 # torch.nn.init.normal_(module.weight, mean=0.0, std=1./torch.sqrt(3*module.weight.size(1))) # Normal version
                 b=1./torch.sqrt(module.weight.size(1))    
                 torch.nn.init.uniform_(module.weight, -b,b)  
-            elif:
+            elif self.blowup_method == 'sum':
                 b=1./torch.sqrt(module.weight.size(1)/self.M)    
                 torch.nn.init.uniform_(module.weight, -b,b) 
             else:
