@@ -3,7 +3,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 8
+#SBATCH -N 15
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -50,7 +50,7 @@ hidden_size=256
 step=0.2 #0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
-for M in {1,8,16}
+for M in {1,8,16,40}
 do
 for omega in {1,}
 do
