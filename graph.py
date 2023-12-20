@@ -119,7 +119,8 @@ fig, ax = plt.subplots(4,3,figsize=(60,60))
 spike_method = 'binom'
 rules=['skewsym','stdp1','stdp2','stdp3']
 # rules=['cep','skewsym','stdp']
-Ms=[1,4,7,15]
+# Ms=[1,4,7,15]
+Ms=[1,8,16,40]
 omegas=['1','7','1e15']
 for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
@@ -132,7 +133,7 @@ for idx1,rule in enumerate(rules):
         colors = iter(colormap(np.linspace(0,1,len(Ms))))
         for M in Ms:
             # subdir="poisson_"+rule+"_M_"+str(M)
-            subdir=spike_method+"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
+            subdir="fast_"+spike_method+"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"
@@ -152,7 +153,7 @@ title = "Error over time"
 fig.suptitle(title,fontsize=80)
 # fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 fig.legend([1,4,7,15], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
-fig.savefig(args.directory+"/"+spike_method+"_blowups.png",bbox_inches="tight")
+fig.savefig(args.directory+"/"+spike_method+"_fast_blowups.png",bbox_inches="tight")
 
 
 
