@@ -208,21 +208,26 @@ parser.add_argument(
 # Non-fundamental arguments
 parser.add_argument(
     '--T1',
-    type=float,
+    type=int,
     default=None,
     help='Phase 1 duration')
 parser.add_argument(
     '--T2',
-    type=float,
+    type=int,
     default=None,
     help='Phase 1 duration')
 parser.add_argument(
     '--max-fr',
-    type=float,
-    default=1.0,
-    help='maximum activity / firing rate')
+    type=int,
+    default=20,
+    help='maximum activity / firing rate (same as 1/step)')
 parser.add_argument(
     '--step',
+    type=float,
+    default=1.0,
+    help='time step size')
+parser.add_argument(
+    '--max-f',
     type=float,
     default=1.0,
     help='time step size')
@@ -275,23 +280,18 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-# Keep ration of N2 to n_dynamic fixed
-# args.n_dynamic=0.233*args.N2
-# args.n_trace=0.12*args.N2
-
 
 # Set steps/durations for both phases
 # use_time_variables=True
 print('If dt<<1, we are in the close to smooth dynamics.\n This can be done by making step small or tau_dynamic large.')
 if args.use_time_variables:
     print("Using time variables")
-    args.N1 = round(args.T1/args.step) # step should divide T1
-    args.N2 = round(args.T2/args.step) # step should divide T2
-    # args.max_Q=1.0 #args.max_fr*args.step
-    args.spike_height=1.0 #args.max_fr*args.step
-    args.n_dynamic=args.tau_dynamic/args.step
+    args.N1 = args.T1*args.max_fr #round(args.T1/args.step) # step should divide T1
+    args.N2 = args.T2*args.max_fr #round(args.T2/args.step) # step should divide T2
+    # args.spike_height=1.0 #args.max_fr*args.step
+    args.n_dynamic= args.tau_dynamic*args.max_fr #args.tau_dynamic/args.step
     if args.update_rule == 'stdp' or args.update_rule =='nonspikingstdp':
-        args.n_trace=args.tau_trace/args.step
+        args.n_trace= args.tau_trace*args.max_fr #args.tau_trace/args.step
 
 print('N1 ',args.N1)
 print('N2 ',args.N2)

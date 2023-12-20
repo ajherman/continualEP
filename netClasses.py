@@ -93,22 +93,39 @@ class SNN(nn.Module):
                 torch.nn.init.zeros_(module.bias)
 
     def stepper(self, s=None, spike=None, error=None, trace=None, target=None, beta=0, return_derivatives=False, update_weights=False):
-        dsdt = []
         trace_decay = self.trace_decay
-
-        # Calculate dsdt
+        # Calculate inputs
+        input=[]
         if self.spiking:
-            dsdt.append(-s[0] + self.w[0](spike[1]))
+            input.append(self.w[0](spike[1]))
             if np.abs(beta) > 0:
-                dsdt[0] = dsdt[0] + beta*(target-spike[0])
+                input[0] = input[0] + beta*(target-spike[0])
             for i in range(1, self.ns):
-                dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
+                input.append(self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
         else:
-            dsdt.append(-s[0] + self.w[0](self.activation(s[1])))
+            input.append(self.w[0](self.activation(s[1])))
             if np.abs(beta) > 0:
-                dsdt[0] = dsdt[0] + beta*(target-self.activation(s[0]))
+                input[0] = input[0] + beta*(target-self.activation(s[0]))
             for i in range(1, self.ns):
-                dsdt.append(-s[i] + self.w[2*i](self.activation(s[i+1])) + self.w[2*i-1](self.activation(s[i-1])))
+                input.append(self.w[2*i](self.activation(s[i+1])) + self.w[2*i-1](self.activation(s[i-1])) )       
+
+        dsdt = []
+        for i in range(self.ns):
+            dsdt.append(-s[i] + input[i])
+
+        # # Calculate dsdt
+        # if self.spiking:
+        #     dsdt.append(-s[0] + self.w[0](spike[1]))
+        #     if np.abs(beta) > 0:
+        #         dsdt[0] = dsdt[0] + beta*(target-spike[0])
+        #     for i in range(1, self.ns):
+        #         dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
+        # else:
+        #     dsdt.append(-s[0] + self.w[0](self.activation(s[1])))
+        #     if np.abs(beta) > 0:
+        #         dsdt[0] = dsdt[0] + beta*(target-self.activation(s[0]))
+        #     for i in range(1, self.ns):
+        #         dsdt.append(-s[i] + self.w[2*i](self.activation(s[i+1])) + self.w[2*i-1](self.activation(s[i-1])))
 
         s_old = [x.clone() for x in s]
 
