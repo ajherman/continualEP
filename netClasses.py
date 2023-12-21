@@ -147,6 +147,7 @@ class SNN(nn.Module):
                     # trace[i] = self.trace_decay*trace[i]+self.activation(s[i])*(1-self.trace_decay)**2
                     trace[i] = self.trace_decay*trace[i]+self.activation(s[i])*(1-self.trace_decay)
 
+
         # Update s
         if self.no_clamp:
             for i in range(self.ns):
