@@ -52,7 +52,7 @@ batch_size=20
 tau_dynamic=0.2
 for M in {1,}
 do
-for omega in {1,}
+for omega in {2048,}
 do
 for max_fr in {5,}
 do
