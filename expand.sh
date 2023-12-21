@@ -57,10 +57,10 @@ do
 for max_fr in {25,} # 5, 25
 do
 
-skewsym_dir=skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"
+skewsym_dir=skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"_v2
 #nonspiking_stdp_dir=nonspiking_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
-fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
-slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
+fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"_v2
+slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"_v2
 
 mkdir -p $skewsym_dir
 #mkdir -p $nonspiking_stdp_dir
