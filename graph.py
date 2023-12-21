@@ -115,7 +115,7 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
 
-fig, ax = plt.subplots(4,3,figsize=(60,60))
+fig, ax = plt.subplots(3,3,figsize=(60,60))
 spike_method = 'binom'
 rules=['skewsym','slow_stdp','fast_stdp']
 # rules=['cep','skewsym','stdp']
@@ -134,7 +134,7 @@ for idx1,rule in enumerate(rules):
         colors = iter(colormap(np.linspace(0,1,len(Ms))))
         for M in Ms:
             # subdir="poisson_"+rule+"_M_"+str(M)
-            subdir=spike_method+"_"+rule+"_M_"+str(M)+"_omega_"+str(omega)+'_freq_'+str(freq)
+            subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)+'_freq_'+str(freq)
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"
@@ -155,7 +155,7 @@ fig.suptitle(title,fontsize=80)
 # fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 fig.legend(Ms, loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
 fig.savefig(args.directory+"/smoothing.png",bbox_inches="tight")
-fig.show()
+
 
 
 fig, ax = plt.subplots(4,3,figsize=(60,60))

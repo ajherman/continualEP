@@ -136,16 +136,16 @@ class SNN(nn.Module):
                     # trace[i] = self.trace_decay*(trace[i]+spike[i])
 
                     # Trying alternate version
-                    # trace[i] = self.trace_decay*trace[i] + spike[i]*(1-self.trace_decay)**2
-                    trace[i] = self.trace_decay*trace[i] + spike[i]*(1-self.trace_decay)
+                    trace[i] = self.trace_decay*trace[i] + spike[i]*(1-self.trace_decay)**2
+                    # trace[i] = self.trace_decay*trace[i] + spike[i]*(1-self.trace_decay)
 
             elif self.update_rule == 'nonspikingstdp': # Still need to modify this to match above
                 for i in range(self.ns+1):
                     # trace[i] = self.trace_decay*(trace[i]+self.activation(s[i]))
 
                     # Trying alternate version
-                    # trace[i] = self.trace_decay*trace[i]+self.activation(s[i])*(1-self.trace_decay)**2
-                    trace[i] = self.trace_decay*trace[i]+self.activation(s[i])*(1-self.trace_decay)
+                    trace[i] = self.trace_decay*trace[i]+self.activation(s[i])*(1-self.trace_decay)**2
+                    # trace[i] = self.trace_decay*trace[i]+self.activation(s[i])*(1-self.trace_decay)
 
 
         # Update s
