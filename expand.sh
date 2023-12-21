@@ -52,7 +52,7 @@ batch_size=20
 tau_dynamic=0.2
 for M in {1,5} # 1,5,25
 do
-for omega in {1,15,2048,} 1, 15, 2048
+for omega in {1,15,2048} #1, 15, 2048
 do
 for max_fr in {25,} # 5, 25
 do
