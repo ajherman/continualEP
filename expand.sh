@@ -3,7 +3,7 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 15
+#SBATCH -N 11
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
@@ -54,10 +54,10 @@ for M in {1,5,25}
 do
 for omega in {1,5,25}
 do
-for max_fr in {5,25,125}
+for max_fr in {25,}
 do
 
-skewsym_dir=fast_skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"
+skewsym_dir=skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"
 fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
 slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
 
