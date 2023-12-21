@@ -129,15 +129,6 @@ class SNN(nn.Module):
 
         s_old = [x.clone() for x in s]
 
-        # Update s
-        if self.no_clamp:
-            for i in range(self.ns):
-                s[i] = s[i] + self.dt*dsdt[i]
-        else:
-            for i in range(self.ns):
-                s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
-                dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
-
         # Traces
         if trace != None:
             if self.update_rule == 'stdp':
@@ -149,6 +140,15 @@ class SNN(nn.Module):
             elif self.update_rule == 'nonspikingstdp': # Still need to modify this to match above
                 for i in range(self.ns+1):
                     trace[i] = self.trace_decay*(trace[i]+self.activation(s[i]))
+
+        # Update s
+        if self.no_clamp:
+            for i in range(self.ns):
+                s[i] = s[i] + self.dt*dsdt[i]
+        else:
+            for i in range(self.ns):
+                s[i] = (s[i] + self.dt*dsdt[i]).clamp(min = 0).clamp(max = 1)
+                dsdt[i] = torch.where((s[i] == 0)|(s[i] ==1), torch.zeros_like(dsdt[i], device = self.device), dsdt[i])
 
         # Get spikes
         for i in range(self.ns+1):
