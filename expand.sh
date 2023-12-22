@@ -50,17 +50,17 @@ hidden_size=256
 # step=0.2 #0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
-for M in {1,5} # 1,5,25
+for M in {1,4} # 1,4,8,16,32
 do
-for omega in {1,15,2048} #1, 15, 2048
+for omega in {1,8,4096} # 1,8,32,4096
 do
-for max_fr in {25,} # 5, 25
+for max_fr in {8,} # 4,8,16
 do
 
-skewsym_dir=skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"_v2
+skewsym_dir=skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"
 #nonspiking_stdp_dir=nonspiking_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
-fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"_v2
-slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"_v2
+fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
+slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
 
 mkdir -p $skewsym_dir
 #mkdir -p $nonspiking_stdp_dir
