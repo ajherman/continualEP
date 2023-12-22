@@ -50,7 +50,7 @@ hidden_size=256
 # step=0.2 #0.02 # Keep fixed
 batch_size=20
 tau_dynamic=0.2
-for M in {1,4} # 1,4,8,16,32
+for M in {8,} # 1,4,8,16,32
 do
 for omega in {1,8,4096} # 1,8,32,4096
 do
