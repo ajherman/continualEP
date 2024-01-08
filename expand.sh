@@ -32,13 +32,13 @@ do
 # for hidden_size in {256,384,512}
 # do
 
-# skewsym_dir=skewsym_M_"$M"_omega_"$omega"_freq_"$max_fr"
-# fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
-# slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"_freq_"$max_fr"
+skewsym_dir=skewsym_M_"$M"_omega_"$omega"
+fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"
+slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"
 
-skewsym_dir=skewsym_up_"$up_sample"_hid_"$hidden_size"
-fast_stdp_dir=fast_stdp_up_"$up_sample"_hid_"$hidden_size"
-slow_stdp_dir=slow_stdp_up_"$up_sample"_hid_"$hidden_size"
+# skewsym_dir=skewsym_up_"$up_sample"_hid_"$hidden_size"
+# fast_stdp_dir=fast_stdp_up_"$up_sample"_hid_"$hidden_size"
+# slow_stdp_dir=slow_stdp_up_"$up_sample"_hid_"$hidden_size"
 
 mkdir -p $skewsym_dir
 mkdir -p $fast_stdp_dir
