@@ -35,6 +35,8 @@ do
 skewsym_dir=skewsym_M_"$M"_omega_"$omega"
 fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"
 slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"
+slug_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"
+
 
 # skewsym_dir=skewsym_up_"$up_sample"_hid_"$hidden_size"
 # fast_stdp_dir=fast_stdp_up_"$up_sample"_hid_"$hidden_size"
@@ -43,10 +45,12 @@ slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"
 mkdir -p $skewsym_dir
 mkdir -p $fast_stdp_dir
 mkdir -p $slow_stdp_dir
+mkdir -p $slug_stdp_dir
 
 srun -N 1 -n 1 -c $((M*3)) -o "$skewsym_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $skewsym_dir --omega $omega --max-fr $max_fr --spike-method binomial --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --update-rule skewsym &
 srun -N 1 -n 1 -c $((M*3)) -o "$fast_stdp_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $fast_stdp_dir --omega $omega --max-fr $max_fr --spike-method binomial --tau-dynamic $tau_dynamic --tau-trace 0.2 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --update-rule stdp &
 srun -N 1 -n 1 -c $((M*3)) -o "$slow_stdp_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $slow_stdp_dir --omega $omega --max-fr $max_fr --spike-method binomial --tau-dynamic $tau_dynamic --tau-trace 0.5 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --update-rule stdp &
+srun -N 1 -n 1 -c $((M*3)) -o "$slug_stdp_dir".out --open-mode=append ./main_wrapper.sh --M $M --spiking --load --use-time-variables --directory $slug_stdp_dir --omega $omega --max-fr $max_fr --spike-method binomial --tau-dynamic $tau_dynamic --tau-trace 0.8 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size 784 --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --update-rule stdp &
 
 # srun -N 1 -n 1 -c $cores -o "$skewsym_dir".out --open-mode=append ./main_wrapper.sh --up-sample $up_sample --spiking --load --use-time-variables --directory $skewsym_dir --omega $omega --max-fr $max_fr --spike-method binomial --tau-dynamic $tau_dynamic --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size $((784*up_sample)) --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --update-rule skewsym &
 # srun -N 1 -n 1 -c $cores -o "$fast_stdp_dir".out --open-mode=append ./main_wrapper.sh --up-sample $up_sample --spiking --load --use-time-variables --directory $fast_stdp_dir --omega $omega --max-fr $max_fr --spike-method binomial --tau-dynamic $tau_dynamic --tau-trace 0.2 --action train --batch-size $batch_size --activation-function hardsigm --size_tab 10 $hidden_size $((784*up_sample)) --lr_tab 0.0028 0.0056 --epochs $epochs --T1 $T1 --T2 $T2 --beta $beta --cep --update-rule stdp &
