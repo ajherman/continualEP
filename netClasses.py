@@ -187,11 +187,15 @@ class SNN(nn.Module):
         save_data_dict = {'s':[],'spike':[],'w':[]}
 
         # Create expanded arrays for data and target
-        expand_data = torch.tile(data,(1,self.M))
-        if target != None:
+        if self.M!=1:
+            expand_data = torch.tile(data,(1,self.M))
+        if target != None and self.M!=1:
             expand_target = torch.tile(target,(1,self.M))
         else:
             expand_target = None
+
+        if self.up_sample!=1:
+            expand_data=torch.tile(data,(1,self.up_sample))
 
         # Set init values for arrays
         for i in range(self.ns+1):

@@ -128,7 +128,7 @@ parser.add_argument(
 parser.add_argument(
     '--learning-rule',
     type=str,
-    default='ep',
+    default='stdp',
     metavar='LR',
     help='learning rule (ep/vf, default: ep)')
 parser.add_argument(
@@ -277,6 +277,11 @@ parser.add_argument(
     type=str,
     default='mean',
     help='determines how blowup parameter M gets used')
+parser.add_argument(
+    '--up-sample',
+    typ=int,
+    default=1,
+    help='factor to upsample input image along each dimension')
 
 args = parser.parse_args()
 
