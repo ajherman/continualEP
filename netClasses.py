@@ -190,13 +190,15 @@ class SNN(nn.Module):
         # Create expanded arrays for data and target
         if self.M!=1:
             expand_data = torch.tile(data,(1,self.M))
+        else:
+            expand_data = data
         if target != None and self.M!=1:
             expand_target = torch.tile(target,(1,self.M))
         else:
-            expand_target = None
+            expand_target = target
 
         if self.up_sample!=1:
-            expand_data=torch.tile(data,(1,self.up_sample))
+            expand_data=torch.tile(expand_data,(1,self.up_sample))
 
         # Set init values for arrays
         for i in range(self.ns+1):
