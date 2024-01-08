@@ -35,7 +35,7 @@ do
 skewsym_dir=skewsym_M_"$M"_omega_"$omega"
 fast_stdp_dir=fast_stdp_M_"$M"_omega_"$omega"
 slow_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"
-slug_stdp_dir=slow_stdp_M_"$M"_omega_"$omega"
+slug_stdp_dir=slug_stdp_M_"$M"_omega_"$omega"
 
 
 # skewsym_dir=skewsym_up_"$up_sample"_hid_"$hidden_size"
