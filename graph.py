@@ -115,7 +115,7 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
 
-rules=['skewsym','slow_stdp','fast_stdp','slug_stdp','glacial_stdp']
+rules=['skewsym','fast_stdp','slow_stdp','slug_stdp','glacial_stdp']
 # rules=['cep','skewsym','stdp']
 # Ms=[1,4,7,15]
 Ms=[1,4,8,16,32]
@@ -126,14 +126,14 @@ fig, ax = plt.subplots(5,2,figsize=(60,100))
 for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
         ax[idx1,idx2].grid(axis='y')
-        ax[idx1,idx2].set_xlim([0,30])
+        ax[idx1,idx2].set_xlim([0,50])
         ax[idx1,idx2].set_ylim([0,16])
         ax[idx1,idx2].set_xlabel('Epoch',fontsize=40)
         ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
         ax[idx1,idx2].set_title("Rule: "+rule+r", $\omega=$"+str(omega),fontsize=50)
         colors = iter(colormap(np.linspace(0,1,len(Ms))))
         for M in Ms:
-            subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)
+            subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)#+"_freq_8"
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"
