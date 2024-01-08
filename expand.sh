@@ -8,7 +8,7 @@
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
-epochs=100
+epochs=50
 cores=10
 
 # Binomial
@@ -22,7 +22,7 @@ batch_size=20
 tau_dynamic=0.2
 omega=1
 max_fr=6
-for M in {4,16,32} # 1,4,8,16,32
+for M in {8,16,32} # 1,4,8,16,32
 do
 for omega in {1,} # 1,4096
 do
