@@ -3,13 +3,13 @@
 
 #SBATCH --job-name=main
 #SBATCH --time 10:00:00
-#SBATCH -N 11
+#SBATCH -N 15
 #SBATCH -p shared-gpu
 #module load miniconda3
 #source activate /vast/home/ajherman/miniconda3/envs/pytorch
 
 epochs=100
-cores=20
+cores=10
 
 # Binomial
 # Accumulator neuron experiments

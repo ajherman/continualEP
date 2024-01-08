@@ -279,7 +279,7 @@ parser.add_argument(
     help='determines how blowup parameter M gets used')
 parser.add_argument(
     '--up-sample',
-    typ=int,
+    type=int,
     default=1,
     help='factor to upsample input image along each dimension')
 
