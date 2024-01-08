@@ -115,46 +115,46 @@ fig.savefig(args.directory+"/test2.png",bbox_inches="tight")
 '''
 
 
-rules=['skewsym','slow_stdp','fast_stdp']
+rules=['skewsym','slow_stdp','fast_stdp','slug_stdp','glacial_stdp']
 # rules=['cep','skewsym','stdp']
 # Ms=[1,4,7,15]
-Ms=[1,4,8]
-omegas=['1','8','4096']
+Ms=[1,4,8,16,32]
+omegas=['1','4096']
 freqs=[8,16]
-for rule in rules:
-    fig, ax = plt.subplots(3,3,figsize=(60,60))
-    for idx1,freq in enumerate(freqs):
-        for idx2,omega in enumerate(omegas):
-            ax[idx1,idx2].grid(axis='y')
-            ax[idx1,idx2].set_xlim([0,30])
-            ax[idx1,idx2].set_ylim([0,20])
-            ax[idx1,idx2].set_xlabel('Epoch',fontsize=40)
-            ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
-            ax[idx1,idx2].set_title('Max fr = '+str(freq)+r", $\omega=$"+str(omega),fontsize=50)
-            colors = iter(colormap(np.linspace(0,1,len(Ms))))
-            for M in Ms:
-                subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)+'_freq_'+str(freq)
-                train_error,test_error=[0],[0]
+# for rule in rules:
+fig, ax = plt.subplots(5,2,figsize=(60,100))
+for idx1,rule in enumerate(rules):
+    for idx2,omega in enumerate(omegas):
+        ax[idx1,idx2].grid(axis='y')
+        ax[idx1,idx2].set_xlim([0,30])
+        ax[idx1,idx2].set_ylim([0,20])
+        ax[idx1,idx2].set_xlabel('Epoch',fontsize=40)
+        ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
+        ax[idx1,idx2].set_title("Rule: "+rule+r", $\omega=$"+str(omega),fontsize=50)
+        colors = iter(colormap(np.linspace(0,1,len(Ms))))
+        for M in Ms:
+            subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)
+            train_error,test_error=[0],[0]
 
-                results_file = args.directory+"/"+subdir+"/results.csv"
-                train_error,test_error=[],[] # So it will increment the color even if it can't find the file
-                if os.path.isfile(results_file):
-                    with open(results_file,'r',newline='') as csv_file:
-                        csv_reader = csv.reader(csv_file)
-                        try:
-                            train_error,test_error = np.array(list(csv_reader)).astype('float').T
-                        except:
-                            print(results_file)
-                c=next(colors)
-                ax[idx1,idx2].plot(test_error,linewidth=2,color=c)
-                # ax[idx1,idx2].plot(train_error,linewidth=2,color=c,linestyle='dashed')
+            results_file = args.directory+"/"+subdir+"/results.csv"
+            train_error,test_error=[],[] # So it will increment the color even if it can't find the file
+            if os.path.isfile(results_file):
+                with open(results_file,'r',newline='') as csv_file:
+                    csv_reader = csv.reader(csv_file)
+                    try:
+                        train_error,test_error = np.array(list(csv_reader)).astype('float').T
+                    except:
+                        print(results_file)
+            c=next(colors)
+            ax[idx1,idx2].plot(test_error,linewidth=2,color=c)
+            # ax[idx1,idx2].plot(train_error,linewidth=2,color=c,linestyle='dashed')
 
-    title = "Error over time: "+rule
-    fig.suptitle(title,fontsize=80)
-    # fig.legend([1,1,4,4,7,7,], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
-    fig.legend(Ms, loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
-    fig.savefig(args.directory+"/smoothing_"+rule+".png",bbox_inches="tight")
-    fig.clf()
+title = "Error over time: "+rule
+fig.suptitle(title,fontsize=80)
+# fig.legend([1,1,4,4,8,8,16,16,32,32], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
+fig.legend(Ms, loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
+fig.savefig(args.directory+"/pop_avg.png",bbox_inches="tight")
+fig.clf()
 
 
 fig, ax = plt.subplots(4,3,figsize=(60,60))
