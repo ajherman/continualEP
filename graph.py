@@ -127,7 +127,7 @@ for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
         ax[idx1,idx2].grid(axis='y')
         ax[idx1,idx2].set_xlim([0,30])
-        ax[idx1,idx2].set_ylim([0,20])
+        ax[idx1,idx2].set_ylim([0,16])
         ax[idx1,idx2].set_xlabel('Epoch',fontsize=40)
         ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
         ax[idx1,idx2].set_title("Rule: "+rule+r", $\omega=$"+str(omega),fontsize=50)
