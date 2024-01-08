@@ -122,7 +122,7 @@ Ms=[1,4,8,16,32]
 omegas=['1','4096']
 freqs=[8,16]
 # for rule in rules:
-fig, ax = plt.subplots(5,2,figsize=(100,60))
+fig, ax = plt.subplots(5,2,figsize=(60,100))
 for idx1,rule in enumerate(rules):
     for idx2,omega in enumerate(omegas):
         ax[idx1,idx2].grid(axis='y')
@@ -130,7 +130,7 @@ for idx1,rule in enumerate(rules):
         ax[idx1,idx2].set_ylim([0,20])
         ax[idx1,idx2].set_xlabel('Epoch',fontsize=40)
         ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
-        ax[idx1,idx2].set_title('Max fr = '+str(freq)+r", $\omega=$"+str(omega),fontsize=50)
+        ax[idx1,idx2].set_title("Rule: "+rule+r", $\omega=$"+str(omega),fontsize=50)
         colors = iter(colormap(np.linspace(0,1,len(Ms))))
         for M in Ms:
             subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)
