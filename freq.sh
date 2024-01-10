@@ -23,9 +23,9 @@ tau_dynamic=0.2
 omega=1
 # max_fr=6
 M=1
-for max_fr in {16,32} # 1,4,8,16,32
+for max_fr in {1,4,8,16,32} # 1,4,8,16,32
 do
-for omega in {4096,} # 1,4096
+for omega in {1,} # 1,4096
 do
 
 # for up_sample in {1,4,16}

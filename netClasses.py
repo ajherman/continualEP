@@ -254,7 +254,8 @@ class SNN(nn.Module):
         beta = self.beta
 
         # Trying to account for step size...
-        scale_factor = 25./(beta*batch_size*self.max_fr**2)
+        # scale_factor = 25./(beta*batch_size*self.max_fr**2)
+        scale_factor = 1./(beta*batch_size)
 
         for i in range(self.ns - 1):
             if self.update_rule == 'asym':
