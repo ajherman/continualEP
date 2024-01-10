@@ -15,6 +15,7 @@ class SNN(nn.Module):
     def __init__(self, args):
         super(SNN, self).__init__()
         self.up_sample=args.up_sample
+        self.max_fr = args.max_fr
         self.N1 = args.N1
         self.N2 = args.N2
         self.dt = args.dt
