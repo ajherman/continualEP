@@ -251,7 +251,10 @@ class SNN(nn.Module):
         gradw_bias = []
         batch_size = s[0].size(0)
         beta = self.beta
-        scale_factor = 1/(beta*batch_size)
+
+        # Trying to account for step size...
+        scale_factor = 25./(beta*batch_size*self.max_fr**2)
+
         for i in range(self.ns - 1):
             if self.update_rule == 'asym':
                 gradw.append(scale_factor*torch.mm(torch.transpose(self.activation(s[i]) - self.activation(seq[i]), 0, 1), self.activation(s[i + 1])))

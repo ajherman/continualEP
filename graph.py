@@ -120,7 +120,7 @@ rules=['skewsym','fast_stdp','slow_stdp','slug_stdp','glacial_stdp']
 # Ms=[1,4,7,15]
 Ms=[1,4,8,16,32]
 omegas=['1','4096']
-freqs=[8,16]
+freqs=[4,8,16,32]
 # for rule in rules:
 fig, ax = plt.subplots(5,2,figsize=(60,100))
 for idx1,rule in enumerate(rules):
@@ -132,8 +132,10 @@ for idx1,rule in enumerate(rules):
         ax[idx1,idx2].set_ylabel('Test error rate (%)',fontsize=40)
         ax[idx1,idx2].set_title("Rule: "+rule+r", $\omega=$"+str(omega),fontsize=50)
         colors = iter(colormap(np.linspace(0,1,len(Ms))))
-        for M in Ms:
-            subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)#+"_freq_8"
+        # for M in Ms:
+        M=1
+        for freq in freqs:
+            subdir=rule+"_M_"+str(M)+"_omega_"+str(omega)+"_freq_"+str(freq)
             train_error,test_error=[0],[0]
 
             results_file = args.directory+"/"+subdir+"/results.csv"
@@ -151,8 +153,11 @@ for idx1,rule in enumerate(rules):
 
 title = "Error over time: "+rule
 fig.suptitle(title,fontsize=80)
-# fig.legend([1,1,4,4,8,8,16,16,32,32], loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
-fig.legend(Ms, loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
+
+# Comparse Ms or freqs
+# fig.legend(Ms, loc='lower center', ncol=len(Ms), bbox_transform=fig.transFigure,fontsize=40)
+fig.legend(freqs, loc='lower center', ncol=len(freqs), bbox_transform=fig.transFigure,fontsize=40)
+
 fig.savefig(args.directory+"/pop_avg.png",bbox_inches="tight")
 fig.clf()
 
