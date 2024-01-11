@@ -282,7 +282,11 @@ parser.add_argument(
     type=int,
     default=1,
     help='factor to upsample input image along each dimension')
-
+parser.add_argument(
+    '--save-interval',
+    type=int,
+    default=100,
+    help='factor to upsample input image along each dimension')
 args = parser.parse_args()
 
 
@@ -431,8 +435,8 @@ if __name__ == '__main__':
         while net.current_epoch<args.epochs:
             tic = time.time()
             epoch=net.current_epoch
-            save_interval=200
-            error_train = train(net, train_loader, epoch, args.learning_rule,save_interval,args.directory)
+            # save_interval=200
+            error_train = train(net, train_loader, epoch, args.learning_rule,args.save_interval,args.directory)
 
             error_train_tab.append(error_train)
 

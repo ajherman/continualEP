@@ -120,7 +120,7 @@ rules=['skewsym','fast_stdp','slow_stdp','slug_stdp','glacial_stdp']
 # Ms=[1,4,7,15]
 Ms=[1,4,8,16,32]
 omegas=['1','4096']
-freqs=[4,8,16,32]
+freqs=[4,8,16,32,64]
 # for rule in rules:
 fig, ax = plt.subplots(5,2,figsize=(60,100))
 for idx1,rule in enumerate(rules):

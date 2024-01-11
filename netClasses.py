@@ -115,20 +115,6 @@ class SNN(nn.Module):
         for i in range(self.ns):
             dsdt.append(-s[i] + input[i])
 
-        # # Calculate dsdt
-        # if self.spiking:
-        #     dsdt.append(-s[0] + self.w[0](spike[1]))
-        #     if np.abs(beta) > 0:
-        #         dsdt[0] = dsdt[0] + beta*(target-spike[0])
-        #     for i in range(1, self.ns):
-        #         dsdt.append(-s[i] + self.w[2*i](spike[i+1]) + self.w[2*i-1](spike[i-1]))
-        # else:
-        #     dsdt.append(-s[0] + self.w[0](self.activation(s[1])))
-        #     if np.abs(beta) > 0:
-        #         dsdt[0] = dsdt[0] + beta*(target-self.activation(s[0]))
-        #     for i in range(1, self.ns):
-        #         dsdt.append(-s[i] + self.w[2*i](self.activation(s[i+1])) + self.w[2*i-1](self.activation(s[i-1])))
-
         s_old = [x.clone() for x in s]
 
         # Traces
